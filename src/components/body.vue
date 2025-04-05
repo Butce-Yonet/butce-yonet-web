@@ -73,7 +73,6 @@ export default {
     }),
     layoutobject: {
       get: function () {
-        console.log(this.layout)
         return JSON.parse(JSON.stringify(layoutClasses.find((item) => Object.keys(item).pop() === this.layout.settings.layout)))[this.layout.settings.layout];
       },
       set: function () {
@@ -104,7 +103,6 @@ export default {
         });
       });
       this.layoutobj = layoutClasses.find((item) => Object.keys(item).pop() === this.layout.settings.layout);
-      console.log("layobj==>", this.layoutobj)
 
       if ((window.innerWidth < 991 && this.layout.settings.layout === 'LosAngeles') || (window.innerWidth < 991 && this.layout.settings.layout === 'Singapore') || (window.innerWidth < 991 && this.layout.settings.layout === 'Barcelona')) {
         const newlayout = JSON.parse(JSON.stringify(this.layoutobj).replace('horizontal-wrapper', 'compact-wrapper'));
