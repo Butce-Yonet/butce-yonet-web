@@ -22,25 +22,8 @@
           <svg class="fill-icon">
             <use href="@/assets/svg/icon-sprite.svg#fill-home"></use>
           </svg>
-          <span class="lan-3">Dashboard </span></a>
+          <span class="lan-3">Dashboard</span></a>
       </li>
-      <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="https://pixelstrap.freshdesk.com/support/home"
-          target="_blank">
-          <svg class="stroke-icon">
-            <use href="@/assets/svg/icon-sprite.svg#stroke-social"></use>
-          </svg>
-          <svg class="fill-icon">
-            <use href="@/assets/svg/icon-sprite.svg#fill-social"></use>
-          </svg><span>Raise Support</span></a></li>
-      <li class="sidebar-list"><a class="sidebar-link sidebar-title"
-          href="https://vue-cuba-doc-vuepixelstrap.vercel.app/getting_started" target="_blank">
-          <svg class="stroke-icon">
-            <use href="@/assets/svg/icon-sprite.svg#stroke-form"></use>
-          </svg>
-          <svg class="fill-icon">
-            <use href="@/assets/svg/icon-sprite.svg#fill-form"></use>
-          </svg><span>Documentation </span></a></li>
-
     </ul>
   </div>
 </template>
