@@ -16,7 +16,10 @@ export default {
         } else {
             window.localStorage.setItem('access_token', accessToken);
             window.localStorage.setItem('refresh_token', refreshtoken);
-            window.location.reload();
+
+            authClient.getUserInfo().finally(() => {
+                window.location.reload();
+            });
         }
     }
 }
