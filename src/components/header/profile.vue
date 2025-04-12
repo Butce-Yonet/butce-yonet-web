@@ -10,7 +10,7 @@
       </div>
     </div>
     <ul class="profile-dropdown onhover-show-div">
-      <li>
+      <li @click="logout">
         <vue-feather type="log-in"></vue-feather><span>Log out</span>
       </li>
     </ul>
@@ -18,12 +18,12 @@
 </template>
 
 <script>
+import authClient from '@/services/authClient';
 export default {
   name: 'Profile',
   methods: {
     logout: function () {
-      this.$router.replace('/auth/login');
-      localStorage.removeItem('User')
+      authClient.logout();
     }
   },
 };

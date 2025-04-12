@@ -52,7 +52,6 @@ export default {
   },
   data() {
     return {
-      loading: true,
       mobileheader_toggle_var: false,
       sidebar_toggle_var: false,
       horizontal_Sidebar: true,
@@ -62,6 +61,7 @@ export default {
   },
   computed: {
     ...mapState({
+      loading: state => state.loading,
       menuItems: state => state.menu.data,
       layout: state => state.layout.layout,
       togglesidebar: (state) => state.menu.togglesidebar,
@@ -84,10 +84,6 @@ export default {
   },
   watch: {
     '$route'() {
-      setTimeout(() => {
-        this.loading = !this.loading
-      }, 3000)
-      this.loading = !this.loading
       this.menuItems.filter(items => {
         if (items.path === this.$route.path)
           this.$store.dispatch('menu/setActiveRoute', items);
@@ -155,9 +151,6 @@ export default {
         this.$store.state.menu.togglesidebar = false;
       }
     }
-  },
-  mounted() {
-    this.loading = false;
   }
 };
 </script>

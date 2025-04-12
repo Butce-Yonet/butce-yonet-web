@@ -16,14 +16,21 @@
     name: 'Mode',
     data() {
       return {
-        mixLayout: 'light-only',
+        mixLayout: localStorage.getItem('mixLayout') || 'light-only',
       };
     },
     methods: {
       customizeMixLayout(val) {
+        localStorage.setItem("mixLayout", val);
         this.mixLayout = val;
         this.$store.dispatch('layout/setLayout', {class:val});
       },
     },
+    created(){
+      var layoutType = localStorage.getItem('mixLayout');
+      if(layoutType){
+        this.$store.dispatch('layout/setLayout', {class: layoutType})
+      }
+    }
   };
 </script>

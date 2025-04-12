@@ -38,7 +38,6 @@ export default {
         changeLocale(locale) {
             this.$i18n.locale = locale.id
             this.$store.dispatch('setLang', locale);
-
         },
     },
     computed: {
@@ -48,7 +47,7 @@ export default {
         })
     },
     mounted() {
-        this.$store.dispatch('setLang', { id: localStorage.getItem('currentLanguage') || 'EN', icon: localStorage.getItem('currentLanguageIcon') || 'flag-icon-us' })
+        this.$store.dispatch('setLang', { id: localStorage.getItem('currentLanguage') || 'tr', icon: localStorage.getItem('currentLanguageIcon') || 'flag-icon-tr' })
     }
 }
 </script>
