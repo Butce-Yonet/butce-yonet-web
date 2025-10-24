@@ -54,7 +54,7 @@ export default {
     return {
       mobileheader_toggle_var: false,
       sidebar_toggle_var: false,
-      horizontal_Sidebar: true,
+      horizontal_Sidebar: false,
       resized: false,
       layoutobj: {}
     };
@@ -115,9 +115,9 @@ export default {
   created() {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
+    this.layout.settings.layout = 'LosAngeles';
     this.resized = this.sidebar_toggle_var;
     this.$store.dispatch('layout/set');
-    this.layout.settings.layout = 'LosAngeles';
     this.layoutobj = layoutClasses.find((item) => Object.keys(item).pop() === this.layout.settings.layout);
     this.layoutobj = JSON.parse(JSON.stringify(this.layoutobj))[this.layout.settings.layout];
 

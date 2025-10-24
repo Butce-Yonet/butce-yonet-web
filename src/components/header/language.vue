@@ -38,6 +38,7 @@ export default {
         changeLocale(locale) {
             this.$i18n.locale = locale.id
             this.$store.dispatch('setLang', locale);
+            window.location.reload();
         },
     },
     computed: {

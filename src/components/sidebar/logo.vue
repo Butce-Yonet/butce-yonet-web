@@ -2,11 +2,11 @@
   <router-link to="/">
     <img
       class="img-fluid for-light"
-      src="../../assets/images/logo/logo.png"
+      src="../../../logo.png"
       alt=""
     /><img
       class="img-fluid for-dark"
-      src="../../assets/images/logo/logo_dark.png"
+      src="../../../logo.png"
       alt=""
     />
   </router-link>

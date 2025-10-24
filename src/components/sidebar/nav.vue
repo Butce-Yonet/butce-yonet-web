@@ -8,13 +8,6 @@
           <vue-feather type="arrow-left"></vue-feather>
         </li>
         <Navmenu />
-        <li
-          class="right-arrow"
-          :class="{'d-none': layout.settings.layout_type=='rtl'? hideRightArrowRTL : hideRightArrow }"
-          @click="(layoutobject == 'horizontal_sidebar' && layout.settings.layout_type=='rtl') ? scrollToRightRTL() : scrollToRight()"
-        >
-          <vue-feather type="arrow-right"></vue-feather>
-        </li>
       </nav>
 </template>
 <script>

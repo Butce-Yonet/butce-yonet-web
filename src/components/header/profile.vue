@@ -1,17 +1,13 @@
 <template>
   <li class="profile-nav onhover-dropdown pe-0 py-0">
     <div class="media profile-media">
-      <img class="b-r-10" src="@/assets/images/dashboard/profile.png" alt="" />
+      <img class="b-r-10" src="../../../avatar.png" alt="" style="max-width: 35px; min-height: 35px;"/>
       <div class="media-body">
-        <span>Emay Walter</span>
-        <p class="mb-0 font-roboto">
-          Admin <i class="middle fa fa-angle-down"></i>
-        </p>
       </div>
     </div>
     <ul class="profile-dropdown onhover-show-div">
       <li @click="logout">
-        <vue-feather type="log-in"></vue-feather><span>Log out</span>
+        <vue-feather type="log-in"></vue-feather><span>{{ $t('logout') }}</span>
       </li>
     </ul>
   </li>
