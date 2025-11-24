@@ -1,0 +1,92 @@
+# Butçe Yönet Web - Cursor Rules
+
+## Proje Genel Bilgileri
+- **Framework**: Vue 3 (Composition API veya Options API)
+- **Router**: Vue Router 4
+- **State Management**: Vuex 4
+- **Styling**: SCSS, Bootstrap 5
+- **Icons**: Vue Feather
+- **Internationalization**: Vue i18n (Türkçe ve İngilizce)
+- **Build Tool**: Vue CLI
+
+## Kod Stili ve Standartları
+
+### Vue Component Yapısı
+- Component dosyaları PascalCase ile adlandırılmalı (örn: `Profile.vue`)
+- Component içinde `<template>`, `<script>`, `<style>` sırası korunmalı
+- Options API kullanılıyorsa: `name`, `data`, `methods`, `computed`, `mounted` gibi standart sıralama takip edilmeli
+- Composition API kullanılıyorsa: `<script setup>` syntax tercih edilmeli
+
+### Dosya Organizasyonu
+- API servisleri: `src/services/api/` klasöründe
+- Componentler: `src/components/` klasöründe, alt klasörlerle organize edilmeli
+- Sayfalar: `src/pages/` klasöründe
+- Router: `src/router/` klasöründe modüler yapı
+- Store modülleri: `src/store/modules/` klasöründe
+- Locale dosyaları: `src/locales/` klasöründe (tr.json, en.json)
+
+### İsimlendirme Kuralları
+- Component isimleri: PascalCase (örn: `UserProfile`)
+- Dosya isimleri: camelCase veya kebab-case (örn: `profile.vue` veya `user-profile.vue`)
+- Değişken ve fonksiyon isimleri: camelCase
+- Sabitler: UPPER_SNAKE_CASE
+- CSS class isimleri: kebab-case
+
+### Vue Component Best Practices
+- Her component'te `name` property tanımlanmalı
+- Props için type validation kullanılmalı
+- Emit event'leri kebab-case ile adlandırılmalı
+- Computed property'ler reactive data için kullanılmalı
+- Lifecycle hooks uygun şekilde kullanılmalı
+
+### API ve HTTP İstekleri
+- Tüm API çağrıları `src/services/api/` klasöründeki dosyalarda organize edilmeli
+- HTTP client `src/services/httpClient.js` üzerinden kullanılmalı
+- API fonksiyonları async/await pattern kullanmalı
+- Hata yönetimi try-catch blokları ile yapılmalı
+
+### Router Kullanımı
+- Route tanımları modüler dosyalarda (auth.js, dashboard.js) organize edilmeli
+- Route name'leri kebab-case kullanmalı
+- Lazy loading için dynamic import kullanılmalı: `() => import('@/pages/...')`
+
+### State Management (Vuex)
+- Store modülleri `src/store/modules/` klasöründe ayrı dosyalarda tutulmalı
+- Mutations, actions ve getters uygun şekilde organize edilmeli
+- Namespaced modules kullanılmalı
+
+### Internationalization (i18n)
+- Tüm kullanıcıya gösterilen metinler i18n ile yönetilmeli
+- Locale key'leri dot notation ile organize edilmeli (örn: `dashboard.title`)
+- Hem Türkçe (`tr.json`) hem İngilizce (`en.json`) dosyaları güncel tutulmalı
+- Template'te: `$t('key')` veya `{{ $t('key') }}` kullanılmalı
+
+### Styling Kuralları
+- SCSS dosyaları `src/assets/scss/` klasöründe organize edilmeli
+- Component-specific styles için `<style scoped>` kullanılmalı
+- Bootstrap 5 utility class'ları tercih edilmeli
+- Custom CSS için BEM metodolojisi veya kebab-case class isimleri kullanılmalı
+
+### Import Sıralaması
+1. Vue core imports
+2. Third-party library imports
+3. Router/Store imports
+4. Component imports
+5. Utility/helper imports
+6. Asset imports (images, styles)
+
+### Kod Kalitesi
+- ESLint kurallarına uyulmalı
+- Yorum satırları Türkçe veya İngilizce olabilir, tutarlı olmalı
+- Dead code (yorum satırına alınmış kod) temizlenmeli
+- Console.log production build'de kaldırılmalı
+
+### Git Commit Mesajları
+- Commit mesajları açıklayıcı olmalı
+- Türkçe veya İngilizce kullanılabilir
+
+## Özel Notlar
+- Proje bütçe yönetimi uygulamasıdır
+- Authentication ve authorization yapısı mevcuttur
+- Transaction, notebook, label gibi domain-specific API'ler bulunmaktadır
+

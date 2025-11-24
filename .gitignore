@@ -20,6 +20,10 @@ dist/
 npm-debug.log
 yarn-error.log
 
+# Environment Variables
+.env.local
+.env.*.local
+
 ### Web ###
 *.asp
 *.cer

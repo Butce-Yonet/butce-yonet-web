@@ -1,12 +1,5 @@
 <template>
       <nav class="sidebar-main" id="sidebar-main">
-        <li
-          class="left-arrow"
-          :class="{'d-none': layout.settings.layout_type =='rtl'? hideLeftArrowRTL: hideLeftArrow }"
-          @click="(layoutobject.split(' ').includes('horizontal-wrapper') && layout.settings.layout_type==='rtl') ? scrollToLeftRTL() : scrollToLeft()"
-        >
-          <vue-feather type="arrow-left"></vue-feather>
-        </li>
         <Navmenu />
       </nav>
 </template>
@@ -40,7 +33,7 @@
       }),
       layoutobject: {	
         get: function () {	
-          return JSON.parse(JSON.stringify(layoutClasses.find((item) => Object.keys(item).pop() === this.layout.settings.layout)))[this.layout.settings.layout];
+          return JSON.parse(JSON.stringify(layoutClasses.find((item) => Object.keys(item).pop() === this.layout.settings.layout)))[this.layout.settings.layout];	
         },	
         set: function () {	
           this.layoutobj = layoutClasses.find((item) => Object.keys(item).pop() === this.layout.settings.layout);	
@@ -91,6 +84,30 @@
           this.$store.state.menu.hideRightArrow = false; 
         }
       },
+      //   scrollToRight() {
+      //     this.temp = this.$store.state.menu.menuWidth + this.$store.state.menu.width;
+      //     // Checking condition for remaing margin
+      //     if (this.temp > this.$store.state.menu.menuWidth) {
+      //       this.$store.state.menu.margin = -this.temp;
+      //       this.$store.state.menu.hideRightArrow = true;
+      //     } else {
+      //       this.$store.state.menu.margin += -this.$store.state.menu.width;
+      //       this.$store.state.menu.hideLeftArrow = false;
+      //     }
+      //   }
+      // scrollToRight() {
+      //   this.temp = this.$store.state.menu.menuWidth + this.$store.state.menu.margin;
+      //   // Checking condition for remaing margin
+      //   if (this.temp >this.$store.state.menu.menuWidth) {
+      //     this.$store.state.menu.margin = -this.temp;
+      //   } else {
+      //     this.$store.state.menu.margin += -this.$store.state.menu.width;
+      //     this.$store.state.menu.hideLeftArrow = false; 
+      //     if(this.$store.state.menu.margin <= -4689) {
+      //       this.$store.state.menu.hideRightArrow = true; 
+      //     }
+      //   }
+      // }
       scrollToRight() {
         this.temp = this.$store.state.menu.width - this.$store.state.menu.margin;
         // Checking condition for remaing margin

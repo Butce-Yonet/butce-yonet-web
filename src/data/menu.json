@@ -1,0 +1,45 @@
+{
+  "data": [
+    {
+      "title": "Dashboard",
+      "icon": "stroke-home",
+      "iconf":"fill-home",
+      "type": "sub",
+      "badgeType": "light-primary",
+      "badgeValue": "5",
+      "active": false,
+      "children": [
+        {
+          "path": "/",
+          "title": "Default",
+          "type": "link",
+          "active":true
+        },
+        {
+          "path": "/dashboard/ecommerce",
+          "title": "Ecommerce",
+          "type": "link",
+          "active":false
+        },
+        {
+          "path": "/dashboard/online",
+          "title": "Online Course",
+          "type": "link",
+          "active":false
+        },
+        {
+          "path": "/dashboard/crypto",
+          "title": "Crypto",
+          "type": "link",
+          "active":false
+        },
+        {
+          "path": "/dashboard/social",
+          "title": "Social",
+          "type": "link",
+          "active":false
+        }
+      ]
+    }
+  ]
+}

@@ -15,7 +15,11 @@
     </div>
     <div class="logo-icon-wrapper">
       <router-link to="/">
-       </router-link>
+        <img
+          class="img-fluid"
+          src="../../assets/images/logo/logo-icon.png"
+          alt=""
+      /></router-link>
     </div>
     <Nav />
   </div>

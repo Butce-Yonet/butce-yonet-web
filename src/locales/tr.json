@@ -1,7 +1,6 @@
 {
-    "menu":{
-        "notebooks": "Defterlerim"
-    },
-    "addNotebookTitle": "Yeni Defter Ekle",
-    "logout": "Çıkış"
+  "menu": {
+    "notebooks": "Defterlerim",
+    "createNotebook": "Yeni Defter Oluştur"
+  }
 }

@@ -2,7 +2,7 @@
   <div class="header-logo-wrapper col-auto p-0">
     <div class="logo-wrapper">
       <router-link to="/">
-        <img class="img-fluid" src="../../../logo.png" alt />
+        <img class="img-fluid" src="../../assets/images/logo/logo.png" alt />
       </router-link>
     </div>
     <div class="toggle-sidebar" @click="toggle_sidebar">

@@ -13,7 +13,6 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-import "swiper/css";
 import Profile from './profile';
 import Logo from './logo.vue';
 import Language from './language.vue';
@@ -23,11 +22,6 @@ export default {
     Profile,
     Logo,
     Language
-  },
-  data() {
-    return {
-      bookmark: false,
-    };
   },
   computed: {
     ...mapState({

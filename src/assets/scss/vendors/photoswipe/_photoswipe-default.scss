@@ -42,7 +42,7 @@
 .pswp__button,
 .pswp__button--arrow--left:before,
 .pswp__button--arrow--right:before {
-  // background: url(../../images/lightgallry/default-skin.png) 0 0 no-repeat;
+  background: url(../../images/lightgallry/default-skin.png) 0 0 no-repeat;
   background-size: 264px 88px;
   width: 44px;
   height: 44px
@@ -52,13 +52,11 @@
 (-webkit-min-device-pixel-ratio:1.09375),
 (min-resolution:105dpi),
 (min-resolution:1.1dppx) {
-
   .pswp--svg .pswp__button,
   .pswp--svg .pswp__button--arrow--left:before,
   .pswp--svg .pswp__button--arrow--right:before {
-    // background-image: url(../../images/lightgallry/default-skin.svg)
+    background-image: url(../../images/lightgallry/default-skin.svg)
   }
-
   .pswp--svg .pswp__button--arrow--left,
   .pswp--svg .pswp__button--arrow--right {
     background: 0
@@ -332,7 +330,7 @@ a.pswp__share--download:hover {
 }
 
 .pswp__preloader--active .pswp__preloader__icn {
-  // background: url(preloader.gif) 0 0 no-repeat
+  background: url(preloader.gif) 0 0 no-repeat
 }
 
 .pswp--css_animation .pswp__preloader--active {
@@ -394,61 +392,55 @@ a.pswp__share--download:hover {
 }
 
 @-webkit-keyframes clockwise {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg)
-  }
-
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg)
-  }
+0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg)
+}
+100%{
+     -webkit-transform: rotate(360deg);
+     transform: rotate(360deg)
+   }
 }
 
 @keyframes clockwise {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg)
-  }
-
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg)
-  }
+0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg)
+}
+100% {
+     -webkit-transform: rotate(360deg);
+     transform: rotate(360deg)
+   }
 }
 
 @-webkit-keyframes donut-rotate {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg)
-  }
-
-  50% {
+0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg)
+}
+50% {
     -webkit-transform: rotate(-140deg);
     transform: rotate(-140deg)
   }
-
-  100% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg)
-  }
+100% {
+     -webkit-transform: rotate(0deg);
+     transform: rotate(0deg)
+   }
 }
 
 @keyframes donut-rotate {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg)
-  }
-
-  50% {
+0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg)
+}
+50% {
     -webkit-transform: rotate(-140deg);
     transform: rotate(-140deg)
   }
-
-  100% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg)
-  }
+100% {
+     -webkit-transform: rotate(0deg);
+     transform: rotate(0deg)
+   }
 }
 
 .pswp__ui {

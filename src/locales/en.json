@@ -1,7 +1,6 @@
 {
-    "menu":{
-     "notebooks": "My Notebooks"
-    },
-    "addNotebookTitle": "Add New Notebook",
-    "logout": "Logout"
+  "menu": {
+    "notebooks": "My Notebooks",
+    "createNotebook": "Create New Notebook"
+  }
 }

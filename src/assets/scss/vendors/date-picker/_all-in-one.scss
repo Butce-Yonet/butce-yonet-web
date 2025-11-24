@@ -1,5 +1,3 @@
-@use "sass:math";
-
 @import '../../utils/variables.scss';
 $datepickerDayCellSize: 32px !default;
 $datepickerWidth: 250px !default;
@@ -211,7 +209,7 @@ $datepickerTransitionOffset: 8px !default;
 // -------------------------------------------------
 
 .datepicker--cell-day {
-  width: math.div(100, 7)#{'%'};
+  width: (100/7)#{'%'};
   height: 34px;
   &.-other-month- {
     @extend %otherMonth;
@@ -250,7 +248,7 @@ $datepickerTransitionOffset: 8px !default;
 // -------------------------
 
 .datepicker--cell-year {
-  width: math.div(100%, $datepickerYearsPerRow);
+  width: 100% / $datepickerYearsPerRow;
   height: 33.33%;
 
   &.-other-decade- {
@@ -335,7 +333,7 @@ $datepickerTransitionOffset: 8px !default;
 
 //  Pointer
 // -------------------------------------------------
-$pointerHalfSize: $datepickerPointerSize * 0.5 - 1;
+$pointerHalfSize: $datepickerPointerSize / 2 - 1;
 
 .datepicker--pointer {
   position: absolute;
