@@ -21,9 +21,9 @@
 import authService from '@/services/auth.service';
 export default {
   name: 'Profile',
-  data(){
-    return {
-     currentUser: {} 
+  computed: {
+    currentUser() {
+      return this.$store.getters['user/getCurrentUser']
     }
   },
   methods: {
@@ -31,9 +31,5 @@ export default {
       authService.logout();
     }
   },
-  created(){
-    this.currentUser = this.$store.getters['user/getCurrentUser']
-    console.log(this.currentUser)
-  }
 };
 </script>

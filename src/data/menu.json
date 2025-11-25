@@ -1,42 +1,46 @@
 {
   "data": [
     {
-      "title": "Dashboard",
-      "icon": "stroke-home",
-      "iconf":"fill-home",
+      "title": "menu.createNotebook",
+      "icon": "book-open",
+      "type": "createNotebookModal"
+    },
+    {
+      "title": "menu.notebooks",
+      "icon": "book",
       "type": "sub",
       "badgeType": "light-primary",
-      "badgeValue": "5",
+      "badgeValue": "0",
       "active": false,
       "children": [
         {
           "path": "/",
           "title": "Default",
-          "type": "link",
+          "type": "notebook",
           "active":true
         },
         {
           "path": "/dashboard/ecommerce",
           "title": "Ecommerce",
-          "type": "link",
+          "type": "notebook",
           "active":false
         },
         {
           "path": "/dashboard/online",
           "title": "Online Course",
-          "type": "link",
+          "type": "notebook",
           "active":false
         },
         {
           "path": "/dashboard/crypto",
           "title": "Crypto",
-          "type": "link",
+          "type": "notebook",
           "active":false
         },
         {
           "path": "/dashboard/social",
           "title": "Social",
-          "type": "link",
+          "type": "notebook",
           "active":false
         }
       ]

@@ -2,5 +2,10 @@
   "menu": {
     "notebooks": "Defterlerim",
     "createNotebook": "Yeni Defter Oluştur"
+  },
+  "header": {
+    "activeNotebook": "Aktif Defter",
+    "createNotebook":"Yeni Defter Oluştur",
+    "editNotebook":"Defteri Düzenle"
   }
 }

@@ -2,5 +2,12 @@
   "menu": {
     "notebooks": "My Notebooks",
     "createNotebook": "Create New Notebook"
+  },
+  "header": {
+    "activeNotebook": "Active Notebook"
+  },
+  "createNotebookModal": {
+    "createTitle": "Create Notebook",
+    "editTitle": "Edit Notebook"
   }
 }
