@@ -239,7 +239,8 @@
 import authService from '@/services/auth.service';
 
 export default {
-  mounted() {
+  created(){
+    
   }
 }
 </script>
