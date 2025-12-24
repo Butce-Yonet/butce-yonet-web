@@ -2,7 +2,7 @@
   <div class="header-wrapper row m-0">
     <Logo />
     <div class="left-header col-xxl-5 col-xl-6 col-lg-5 col-md-4 col-sm-3 p-0">
-      <h6>
+      <h6 v-if="selectedNotebook">
         <span class="badge badge-success"> {{ $t('header.activeNotebook') }} - {{ selectedNotebook.name }}</span>
       </h6>
     </div>

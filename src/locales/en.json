@@ -4,10 +4,26 @@
     "createNotebook": "Create New Notebook"
   },
   "header": {
-    "activeNotebook": "Active Notebook"
+    "activeNotebook": "Active Notebook",
+    "createNotebook":"Create New Notebook",
+    "editNotebook":"Edit Notebook"
   },
   "createNotebookModal": {
     "createTitle": "Create Notebook",
-    "editTitle": "Edit Notebook"
+    "editTitle": "Edit Notebook",
+    "form":{
+      "placeholder":{
+        "name": "Notebook Name"
+      }
+    }
+  },
+  "common":{
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "validation:": {
+    "message": {
+      "required": "This field is required."
+    }
   }
 }

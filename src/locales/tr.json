@@ -7,5 +7,23 @@
     "activeNotebook": "Aktif Defter",
     "createNotebook":"Yeni Defter Oluştur",
     "editNotebook":"Defteri Düzenle"
+  },
+  "createNotebookModal": {
+    "createTitle": "Defter Oluştur",
+    "editTitle": "Defteri Düzenle",
+    "form":{
+      "placeholder":{
+        "name": "Defter Adı"
+      }
+    }
+  },
+  "common":{
+    "save": "Kaydet",
+    "cancel": "İptal"
+  },
+  "validation":{
+    "message":{
+      "required": "Bu alan zorunludur."
+    }
   }
 }
