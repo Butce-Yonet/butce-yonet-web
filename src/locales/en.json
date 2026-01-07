@@ -15,15 +15,45 @@
       "placeholder":{
         "name": "Notebook Name"
       }
+    },
+    "messages":{
+      "createSuccess": "Notebook created successfully.",
+      "editSuccess": "Notebook updated successfully.",
+      "createError": "An error occurred while creating the notebook.",
+      "editError": "An error occurred while updating the notebook.",
+      "areYouSureDelete": "Are you sure you want to delete this notebook?",
+      "deleteSuccess": "Notebook deleted successfully.",
+      "deleteError": "An error occurred while deleting the notebook."
     }
   },
   "common":{
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "logout": "Log out",
+    "actions": "Actions",
+    "noDataText": "No data available"
   },
   "validation:": {
     "message": {
       "required": "This field is required."
+    }
+  },
+  "editNotebookDetail": {
+    "title": "Edit Notebook Details",
+    "users": "Users",
+    "categories": "Categories",
+    "usersTable":{
+      "headers":{
+        "name": "Name",
+        "surname": "Surname",
+        "username": "Username",
+        "email": "Email"
+      }
+    },
+    "messages":{
+      "notebookUsersLoadError": "Failed to load user list"
     }
   }
 }

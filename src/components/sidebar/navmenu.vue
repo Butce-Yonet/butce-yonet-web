@@ -1,6 +1,5 @@
 <template>
     <div id="sidebar-menu">
-
         <ul class="sidebar-links custom-scrollbar" id="myDIV"
             :style="[layoutobject.split(' ').includes('horizontal-wrapper') ? layout.settings.layout_type == 'rtl' ? { '  -right': margin + 'px' } : { 'margin-left': margin + 'px' } : { margin: '0px' }]">
             <li class="back-btn">
@@ -17,7 +16,7 @@
                 </div>
 
                 <label :class="'badge badge-' + menuItem.badgeType" v-if="menuItem.badgeType">{{ (menuItem.badgeValue)
-                }}</label>
+                    }}</label>
                 <a href="javascript:void(0)" class="sidebar-link sidebar-title" :class="{ 'active': menuItem.active }"
                     v-if="menuItem.type == 'sub'" @click="setNavActive(menuItem, index)">
 
@@ -95,9 +94,17 @@
                         <a href="#" v-if="childrenItem.type == 'notebook'" class="submenu-title"
                             :class="{ 'active': childrenItem.active }" @click="changeNotebook(childrenItem)">
                             {{ $t(childrenItem.title) }}
-                            <label :class="'badge badge-' + childrenItem.badgeType + ' pull-right'"
-                                v-if="childrenItem.badgeType">{{ (childrenItem.badgeValue) }}</label>
-                            <i class="fa fa-angle-right pull-right mt-1" v-if="childrenItem.children"></i>
+                            <div class="float-end">
+                                <button class="btn btn-warning btn-xs m-r-5" @click.stop="openEditNotebookModal(childrenItem)">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-primary btn-xs m-r-5" @click.stop="openEditNotebookDetailModal(childrenItem)">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+                                <button :disabled="childrenItem.data.isDefault" class="btn btn-danger btn-xs" @click.stop="deleteNotebook(childrenItem)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
                         </a>
 
                         <a :href="childrenItem.path" v-if="childrenItem.type == 'extLink'" class="submenu-title">
@@ -224,7 +231,6 @@ export default {
 
     },
     created() {
-
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
         if (this.$store.state.menu.width < 991) {
@@ -337,35 +343,7 @@ export default {
             this.$store.state.menu.width = window.innerWidth - 450;
         },
         getNotebooks() {
-            this.$store.dispatch('menu/setNotebooks', [])
-            var defaultNotebook = {};
-            notebookService.getNotebooks().then((response) => {
-                if (response.data && response.data.data) {
-                    var notebooks = []
-
-                    response.data.data.filter(notebook => {
-                        var menuItem = {
-                            path: '/',
-                            title: notebook.name,
-                            type: 'notebook',
-                            active: false,
-                            data: notebook
-                        };
-
-                        notebooks.push(menuItem)
-
-                        if (notebook.isDefault) {
-                            defaultNotebook = notebook;
-                        }
-                    });
-
-                    this.$store.dispatch('menu/setNotebooks', notebooks);
-                    this.$store.dispatch('menu/setActiveRouteFromNotebook', defaultNotebook);
-                    this.$store.dispatch('notebook/setSelectedNotebook', defaultNotebook)
-                }
-            }).catch((error) => {
-                console.error('Error fetching notebooks:', error);
-            });
+            notebookService.mapNotebooksToMenu();
         },
         changeNotebook(menuItem) {
             this.$store.dispatch('menu/setActiveRouteFromNotebook', menuItem);
@@ -375,6 +353,47 @@ export default {
             this.$store.dispatch('notebook/showCreateNotebookModal');
             this.$store.dispatch('notebook/setModalMode', 'create');
             this.$store.dispatch('notebook/setModalNotebook', {});
+        },
+        deleteNotebook(item) {
+            this.$swal({
+                title: this.$t('createNotebookModal.messages.areYouSureDelete'),
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: this.$t('common.yes'),
+                denyButtonText: this.$t('common.no'),
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    notebookService.deleteNotebook(item.data.id).then((response) =>{
+                        if (response.status === 200){
+                            this.$swal({
+                                title: this.$t('createNotebookModal.messages.deleteSuccess'),
+                                icon: "success"
+                            });
+    
+                            notebookService.mapNotebooksToMenu();
+                        }else{
+                            this.$swal({
+                                title: this.$t('createNotebookModal.messages.deleteError'),
+                                icon: "error"
+                            });
+                        }
+                    }).catch(() => {
+                        this.$swal({
+                            title: this.$t('createNotebookModal.messages.deleteError'),
+                            icon: "error"
+                        });
+                    })
+                } 
+            });
+        },
+        openEditNotebookModal(item){
+            this.$store.dispatch('notebook/showCreateNotebookModal');
+            this.$store.dispatch('notebook/setModalMode', 'edit');
+            this.$store.dispatch('notebook/setModalNotebook', item.data);
+        },
+        openEditNotebookDetailModal(item){
+            this.$store.dispatch('notebook/showEditNotebookDetailModal');
+            this.$store.dispatch('notebook/setModalNotebook', item.data);
         }
     },
 };

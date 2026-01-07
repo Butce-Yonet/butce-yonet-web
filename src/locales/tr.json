@@ -15,15 +15,45 @@
       "placeholder":{
         "name": "Defter Adı"
       }
+    },
+    "messages":{
+      "createSuccess": "Defter başarıyla oluşturuldu.",
+      "editSuccess": "Defter başarıyla güncellendi.",
+      "createError": "Defter oluşturulurken bir hata oluştu.",
+      "editError": "Defter güncellenirken bir hata oluştu.",
+      "areYouSureDelete": "Bu defteri silmek istediğinize emin misiniz?",
+      "deleteSuccess": "Defter başarıyla silindi.",
+      "deleteError": "Defter silinirken bir hata oluştu."
     }
   },
   "common":{
     "save": "Kaydet",
-    "cancel": "İptal"
+    "cancel": "İptal",
+    "yes": "Evet",
+    "no": "Hayır",
+    "logout": "Çıkış Yap",
+    "actions": "İşlemler",
+    "noDataText": "Kayıt bulunamadı"
   },
   "validation":{
     "message":{
       "required": "Bu alan zorunludur."
+    }
+  },
+  "editNotebookDetail": {
+    "title": "Defter Detaylarını Düzenle",
+    "users": "Kullanıcılar",
+    "categories": "Kategoriler",
+    "usersTable":{
+      "headers":{
+        "name": "Ad",
+        "surname": "Soyad",
+        "username": "Kullanıcı Adı",
+        "email": "E-posta"
+      }
+    },
+    "messages":{
+      "notebookUsersLoadError": "Kullanıcı listesi yüklenemedi"
     }
   }
 }

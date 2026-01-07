@@ -11,7 +11,7 @@
     </div>
     <ul class="profile-dropdown onhover-show-div">
       <li @click="logout">
-        <vue-feather type="log-in"></vue-feather><span>Log out</span>
+        <vue-feather type="log-in"></vue-feather><span>{{ $t('common.logout') }}</span>
       </li>
     </ul>
   </li>

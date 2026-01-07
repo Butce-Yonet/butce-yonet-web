@@ -36,6 +36,7 @@
 <script>
 import * as yup from 'yup';
 import { createYupValidator } from '@/services/validator.service';
+import notebookService from '@/services/notebook.service';
 export default {
     data() {
         return {
@@ -58,6 +59,7 @@ export default {
     methods: {
         closeModal() {
             this.$store.dispatch('notebook/hideCreateNotebookModal');
+            this.$store.dispatch('notebook/setModalMode', 'create');
 
             this.form = {
                 name: ''
@@ -68,7 +70,53 @@ export default {
             }, 200)
         },
         async saveNotebook() {
+            const isValid = await this.validator.validateForm(this.form, this.errors);
+            if (!isValid) return;
 
+            if (this.modalMode === 'create') {
+                var response = await notebookService.createNotebook({
+                    name: this.form.name
+                });
+
+                if (response.status === 200 && response.data) {
+                    this.$swal({
+                        title: this.$t('createNotebookModal.messages.createSuccess'),
+                        icon: "success",
+                    });
+
+                    notebookService.mapNotebooksToMenu();
+                } else {
+                    this.$swal({
+                        title: this.$t('createNotebookModal.messages.createError'),
+                        icon: "error",
+                    });
+                }
+
+            } else if (this.modalMode === 'edit') {
+                var response = await notebookService.updateNotebook(
+                    this.getModalNotebook.id,
+                    {
+                        id: this.getModalNotebook.id,
+                        name: this.form.name
+                    }
+                );
+
+                if (response.status === 200 && response.data) {
+                    this.$swal({
+                        title: this.$t('createNotebookModal.messages.editSuccess'),
+                        icon: "success",
+                    });
+
+                    notebookService.mapNotebooksToMenu();
+                } else {
+                    this.$swal({
+                        title: this.$t('createNotebookModal.messages.editError'),
+                        icon: "error"
+                    });
+                }
+            }
+
+            this.closeModal();
         }
     },
     watch: {
@@ -77,6 +125,13 @@ export default {
             async handler(newVal, oldVal) {
                 if (!oldVal) return;
                 this.isValid = await this.validator.validateForm(this.form, this.errors);
+            }
+        },
+        modalMode(newVal) {
+            if (newVal === 'edit' && this.getModalNotebook) {
+                this.form.name = this.getModalNotebook.name;
+            } else {
+                this.form.name = '';
             }
         }
     },
