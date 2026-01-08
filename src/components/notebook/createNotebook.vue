@@ -74,41 +74,56 @@ export default {
             if (!isValid) return;
 
             if (this.modalMode === 'create') {
-                var response = await notebookService.createNotebook({
-                    name: this.form.name
-                });
-
-                if (response.status === 200 && response.data) {
-                    this.$swal({
-                        title: this.$t('createNotebookModal.messages.createSuccess'),
-                        icon: "success",
+                try {
+                    var response = await notebookService.createNotebook({
+                        name: this.form.name
                     });
 
-                    notebookService.mapNotebooksToMenu();
-                } else {
+                    if (response.status === 200 && response.data) {
+                        this.$swal({
+                            title: this.$t('createNotebookModal.messages.createSuccess'),
+                            icon: "success",
+                        });
+
+                        notebookService.mapNotebooksToMenu();
+                    } else {
+                        this.$swal({
+                            title: this.$t('createNotebookModal.messages.createError'),
+                            icon: "error",
+                        });
+                    }
+                } catch (e) {
                     this.$swal({
                         title: this.$t('createNotebookModal.messages.createError'),
                         icon: "error",
                     });
                 }
 
+
             } else if (this.modalMode === 'edit') {
-                var response = await notebookService.updateNotebook(
-                    this.getModalNotebook.id,
-                    {
-                        id: this.getModalNotebook.id,
-                        name: this.form.name
+                try {
+                    var response = await notebookService.updateNotebook(
+                        this.getModalNotebook.id,
+                        {
+                            id: this.getModalNotebook.id,
+                            name: this.form.name
+                        }
+                    );
+
+                    if (response.status === 200 && response.data) {
+                        this.$swal({
+                            title: this.$t('createNotebookModal.messages.editSuccess'),
+                            icon: "success",
+                        });
+
+                        notebookService.mapNotebooksToMenu();
+                    } else {
+                        this.$swal({
+                            title: this.$t('createNotebookModal.messages.editError'),
+                            icon: "error"
+                        });
                     }
-                );
-
-                if (response.status === 200 && response.data) {
-                    this.$swal({
-                        title: this.$t('createNotebookModal.messages.editSuccess'),
-                        icon: "success",
-                    });
-
-                    notebookService.mapNotebooksToMenu();
-                } else {
+                } catch (e) {
                     this.$swal({
                         title: this.$t('createNotebookModal.messages.editError'),
                         icon: "error"
