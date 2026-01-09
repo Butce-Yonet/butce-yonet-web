@@ -5,18 +5,18 @@
   },
   "header": {
     "activeNotebook": "Active Notebook",
-    "createNotebook":"Create New Notebook",
-    "editNotebook":"Edit Notebook"
+    "createNotebook": "Create New Notebook",
+    "editNotebook": "Edit Notebook"
   },
   "createNotebookModal": {
     "createTitle": "Create Notebook",
     "editTitle": "Edit Notebook",
-    "form":{
-      "placeholder":{
+    "form": {
+      "placeholder": {
         "name": "Notebook Name"
       }
     },
-    "messages":{
+    "messages": {
       "createSuccess": "Notebook created successfully.",
       "editSuccess": "Notebook updated successfully.",
       "createError": "An error occurred while creating the notebook.",
@@ -26,7 +26,7 @@
       "deleteError": "An error occurred while deleting the notebook."
     }
   },
-  "common":{
+  "common": {
     "save": "Save",
     "cancel": "Cancel",
     "yes": "Yes",
@@ -36,7 +36,17 @@
     "noDataText": "No data available",
     "email": "Email",
     "income": "Income",
-    "expense": "Expense"
+    "expense": "Expense",
+    "frequency":{
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "lastDayOfTheMonth": "Last Day of the Month",
+      "firstBusinessDayOfTheMonth": "First Business Day of the Month",
+      "lastBusinessDayOfTheMonth": "Last Business Day of the Month",
+      "xTHOfTheMonth": "Xth Day of the Month"
+    }
   },
   "validation:": {
     "message": {
@@ -48,15 +58,15 @@
     "title": "Edit Notebook Details",
     "users": "Users",
     "categories": "Categories",
-    "usersTable":{
-      "headers":{
+    "usersTable": {
+      "headers": {
         "name": "Name",
         "surname": "Surname",
         "username": "Username",
         "email": "Email"
       }
     },
-    "messages":{
+    "messages": {
       "notebookUsersLoadError": "Failed to load user list",
       "notebookUserCreateSuccess": "Notebook user added successfully.",
       "notebookUserCreateError": "An error occurred while adding the notebook user.",
@@ -73,21 +83,99 @@
       "notebookLabelEditSuccess": "Notebook label edited successfully."
     }
   },
-  "transactionList":{
+  "transactionList": {
     "title": "Income - Expense Transactions",
-    "transactionModal":{
+    "transactionModal": {
       "createTitle": "Create Income - Expense Transaction",
       "editTitle": "Edit Income - Expense Transaction",
-      "messages":{
-        "currenciesLoadError": "Failed to load currencies"
+      "messages": {
+        "currenciesLoadError": "Failed to load currencies",
+        "transactionCreateSuccess": "Income - Expense transaction created successfully.",
+        "transactionCreateError": "An error occurred while creating the income - expense transaction.",
+        "transactionEditSuccess": "Income - Expense transaction updated successfully.",
+        "transactionEditError": "An error occurred while updating the income - expense transaction."
       },
-      "nameLabel": "Transaction Name",
-      "descriptionLabel": "Description",
-      "amountLabel": "Amount",
-      "currencyLabel": "Currency",
-      "transactionTypeLabel": "Transaction Type",
-      "transactionDateLabel": "Transaction Date",
-      "labelsLabel": "Labels"
+      "form": {
+        "placeholder": {
+          "name": "Transaction Name",
+          "description": "Description",
+          "amount": "Amount",
+          "currency": "Select Currency",
+          "transactionType": "Select Transaction Type",
+          "transactionDate": "Select Transaction Date",
+          "labels": "Select Labels"
+        }
+      }
+    },
+    "messages": {
+      "transactionsLoadError": "Failed to load income - expense transactions",
+      "areYouSureDeleteTransaction": "Are you sure you want to delete this income - expense transaction?",
+      "transactionDeleteSuccess": "Income - Expense transaction deleted successfully.",
+      "transactionDeleteError": "An error occurred while deleting the income - expense transaction."
+    },
+    "noLabel": "Uncategorized",
+    "table":{
+      "headers": {
+        "notebookName":"Notebook",
+        "name": "Name",
+        "description": "Description",
+        "amount": "Amount",
+        "currency": "Currency",
+        "transactionType": "Transaction Type",
+        "transactionDate": "Transaction Date",
+        "labels": "Labels"
+      }
+    }
+  },
+  "recurringTransactionList": {
+    "title": "Recurring Income - Expense Transactions",
+    "transactionModal": {
+      "createTitle": "Create Recurring Income - Expense Transaction",
+      "editTitle": "Edit Recurring Income - Expense Transaction",
+      "messages": {
+        "currenciesLoadError": "Failed to load currencies",
+        "transactionCreateSuccess": "Recurring income - expense transaction created successfully.",
+        "transactionCreateError": "An error occurred while creating the recurring income - expense transaction.",
+        "transactionEditSuccess": "Recurring income - expense transaction updated successfully.",
+        "transactionEditError": "An error occurred while updating the recurring income - expense transaction."
+      },
+      "recurringInfo": "Recurring Info",
+      "transactionInfo": "Income - Expense Info",
+      "form": {
+        "placeholder": {
+          "name": "Name",
+          "description": "Description",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "frequency": "Recurring Frequency",
+          "interval": "Interval",
+          "transaction": {
+            "name": "Transaction Name",
+            "description": "Description",
+            "amount": "Amount",
+            "currency": "Select Currency",
+            "transactionType": "Select Transaction Type",
+            "transactionDate": "Select Transaction Date",
+            "labels": "Select Labels"
+          }
+        }
+      }
+    },
+    "messages": {
+      "recurringTransactionsLoadError": "Failed to load recurring income - expense transactions"
+    },
+    "table":{
+      "headers":{
+        "notebookName": "Notebook",
+        "name": "Transaction Name",
+        "transactionType": "Transaction Type",
+        "amount": "Amount",
+        "currency": "Currency",
+        "labels": "Labels",
+        "frequency": "Frequency",
+        "interval": "Interval",
+        "nextOccurence": "Next Occurrence"
+      }
     }
   }
 }

@@ -1,8 +1,11 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-12 col-md-12 p-5">
+      <div class="col-sm-12 col-md-12 m-t-15">
         <transaction-list></transaction-list>
+      </div>
+      <div class="col-sm-12 col-md-8">
+        <recurring-transaction-list></recurring-transaction-list>
       </div>
     </div>
     <create-notebook></create-notebook>
@@ -14,12 +17,14 @@
 import createNotebookComponent from '@/components/notebook/createNotebook.vue';
 import editNotebookDetailComponent from '@/components/notebook/editNotebookDetail.vue';
 import transactionList from '@/components/transaction/transactionList.vue';
+import recurringTransactionList from '@/components/recurringtransaction/recurringTransactionList.vue';
 import * as bootstrap from 'bootstrap';
 export default {
   components: {
     'create-notebook': createNotebookComponent,
     'edit-notebook-detail': editNotebookDetailComponent,
-    'transaction-list': transactionList
+    'transaction-list': transactionList,
+    'recurring-transaction-list': recurringTransactionList
   },
   data() {
     return {

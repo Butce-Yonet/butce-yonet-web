@@ -5,18 +5,18 @@
   },
   "header": {
     "activeNotebook": "Aktif Defter",
-    "createNotebook":"Yeni Defter Oluştur",
-    "editNotebook":"Defteri Düzenle"
+    "createNotebook": "Yeni Defter Oluştur",
+    "editNotebook": "Defteri Düzenle"
   },
   "createNotebookModal": {
     "createTitle": "Defter Oluştur",
     "editTitle": "Defteri Düzenle",
-    "form":{
-      "placeholder":{
+    "form": {
+      "placeholder": {
         "name": "Defter Adı"
       }
     },
-    "messages":{
+    "messages": {
       "createSuccess": "Defter başarıyla oluşturuldu.",
       "editSuccess": "Defter başarıyla güncellendi.",
       "createError": "Defter oluşturulurken bir hata oluştu.",
@@ -26,7 +26,7 @@
       "deleteError": "Defter silinirken bir hata oluştu."
     }
   },
-  "common":{
+  "common": {
     "save": "Kaydet",
     "cancel": "İptal",
     "yes": "Evet",
@@ -36,10 +36,20 @@
     "noDataText": "Kayıt bulunamadı",
     "email": "E-posta",
     "income": "Gelir",
-    "expense": "Gider"
+    "expense": "Gider",
+    "frequency":{
+      "daily": "Günlük",
+      "weekly": "Haftalık",
+      "monthly": "Aylık",
+      "yearly": "Yıllık",
+      "lastDayOfTheMonth": "Ayın Son Günü",
+      "firstBusinessDayOfTheMonth": "Ayın İlk İş Günü",
+      "lastBusinessDayOfTheMonth": "Ayın Son İş Günü",
+      "xTHOfTheMonth": "Ayın X Günü"
+    }
   },
-  "validation":{
-    "message":{
+  "validation": {
+    "message": {
       "required": "Bu alan zorunludur.",
       "email": "Lütfen geçerli bir e-posta adresi giriniz."
     }
@@ -48,21 +58,21 @@
     "title": "Defter Detaylarını Düzenle",
     "users": "Kullanıcılar",
     "categories": "Kategoriler",
-    "usersTable":{
-      "headers":{
+    "usersTable": {
+      "headers": {
         "name": "Ad",
         "surname": "Soyad",
         "username": "Kullanıcı Adı",
         "email": "E-posta"
       }
     },
-    "labelsTable":{
-      "headers":{
+    "labelsTable": {
+      "headers": {
         "name": "Ad",
         "color": "Renk"
       }
     },
-    "messages":{
+    "messages": {
       "notebookUsersLoadError": "Kullanıcı listesi yüklenemedi",
       "notebookUserCreateSuccess": "Defter kullanıcısı başarıyla eklendi.",
       "notebookUserCreateError": "Defter kullanıcısı eklenirken bir hata oluştu.",
@@ -79,21 +89,99 @@
       "notebookLabelEditSuccess": "Defter etiketi başarıyla düzenlendi."
     }
   },
-  "transactionList":{
+  "transactionList": {
     "title": "Gelir - Gider kayıtları",
-    "transactionModal":{
+    "transactionModal": {
       "createTitle": "Gelir - Gider Kaydı Oluştur",
       "editTitle": "Gelir - Gider Kaydını Düzenle",
-      "messages":{
-        "currenciesLoadError": "Para birimleri yüklenemedi"
+      "messages": {
+        "currenciesLoadError": "Para birimleri yüklenemedi",
+        "transactionCreateSuccess": "Gelir - Gider kaydı başarıyla oluşturuldu.",
+        "transactionCreateError": "Gelir - Gider kaydı oluşturulurken bir hata oluştu.",
+        "transactionEditSuccess": "Gelir - Gider kaydı başarıyla güncellendi.",
+        "transactionEditError": "Gelir - Gider kaydı güncellenirken bir hata oluştu."
       },
-      "nameLabel": "İşlem Adı",
-      "descriptionLabel": "Açıklama",
-      "amountLabel": "Tutar",
-      "currencyLabel": "Para Birimi",
-      "transactionTypeLabel": "İşlem Türü",
-      "transactionDateLabel": "İşlem Tarihi",
-      "labelsLabel": "Etiketler"
+      "form": {
+        "placeholder": {
+          "nameLabel": "İşlem Adı",
+          "descriptionLabel": "Açıklama",
+          "amountLabel": "Tutar",
+          "currencyLabel": "Para Birimi",
+          "transactionTypeLabel": "İşlem Türü",
+          "transactionDateLabel": "İşlem Tarihi",
+          "labelsLabel": "Etiketler"
+        }
+      }
+    },
+    "messages": {
+      "transactionsLoadError": "Gelir - Gider kayıtları yüklenemedi",
+      "areYouSureDeleteTransaction": "Bu gelir - gider kaydını silmek istediğinize emin misiniz?",
+      "transactionDeleteSuccess": "Gelir - Gider kaydı başarıyla silindi.",
+      "transactionDeleteError": "Gelir - Gider kaydı silinirken bir hata oluştu."
+    },
+    "noLabel": "Kategorize Edilmeli",
+    "table":{
+      "headers": {
+        "notebookName":"Defter",
+        "name": "Ad",
+        "description": "Açıklama",
+        "amount": "Tutar",
+        "currency": "Para Birimi",
+        "transactionType": "İşlem Türü",
+        "transactionDate": "İşlem Tarihi",
+        "labels": "Etiketler"
+      }
+    }
+  },
+  "recurringTransactionList": {
+    "title": "Tekrarlayan Gelir - Gider Kayıtları",
+    "transactionModal": {
+      "createTitle": "Tekrarlayan Gelir - Gider Kaydı Oluştur",
+      "editTitle": "Tekrarlayan Gelir - Gider Kaydını Düzenle",
+      "messages": {
+        "currenciesLoadError": "Para birimleri yüklenemedi",
+        "transactionCreateSuccess": "Tekrarlayan gelir - gider kaydı başarıyla oluşturuldu.",
+        "transactionCreateError": "Tekrarlayan gelir - gider kaydı oluşturulurken bir hata oluştu.",
+        "transactionEditSuccess": "Tekrarlayan gelir - gider kaydı başarıyla güncellendi.",
+        "transactionEditError": "Tekrarlayan gelir - gider kaydı güncellenirken bir hata oluştu."
+      },
+      "recurringInfo": "Tekrarlama Bilgileri",
+      "transactionInfo": "Gelir-Gider Bilgileri",
+      "form":{
+        "placeholder":{
+          "name": "Ad",
+          "description": "Açıklama",
+          "startDate": "Başlangıç Tarihi",
+          "endDate": "Bitiş Tarihi",
+          "frequency": "Tekrarlama Sıklığı",
+          "interval": "Aralık",
+          "transaction":{
+            "name": "İşlem Adı",
+            "description": "Açıklama",
+            "amount": "Tutar",
+            "currency": "Para Birimi",
+            "transactionType": "İşlem Türü",
+            "transactionDate": "İşlem Tarihi",
+            "labels": "Etiketler"
+          }
+        }
+      }
+    },
+    "messages":{
+      "recurringTransactionsLoadError": "Tekrarlayan gelir - gider kayıtları yüklenemedi"
+    },
+    "table":{
+      "headers":{
+        "notebookName":"Defter",
+        "name":"İşlem Adı",
+        "transactionType":"İşlem Türü",
+        "amount": "Tutar",
+        "currency": "Para Birimi",
+        "labels": "Etiketler",
+        "frequency":"Tekrarlama Sıklığı",
+        "interval":"Aralık",
+        "nextOccurrence": "Bir Sonraki Tarih"
+      }
     }
   }
 }
