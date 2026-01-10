@@ -101,13 +101,13 @@
       },
       "form": {
         "placeholder": {
-          "name": "Transaction Name",
-          "description": "Description",
-          "amount": "Amount",
-          "currency": "Select Currency",
-          "transactionType": "Select Transaction Type",
-          "transactionDate": "Select Transaction Date",
-          "labels": "Select Labels"
+          "nameLabel": "Transaction Name",
+          "descriptionLabel": "Description",
+          "amountLabel": "Amount",
+          "currencyLabel": "Select Currency",
+          "transactionTypeLabel": "Select Transaction Type",
+          "transactionDateLabel": "Select Transaction Date",
+          "labelsLabel": "Select Labels"
         }
       }
     },
