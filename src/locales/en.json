@@ -70,6 +70,12 @@
         "email": "Email"
       }
     },
+    "labelsTable": {
+      "headers": {
+        "name": "Name",
+        "color": "Color"
+      }
+    },
     "messages": {
       "notebookUsersLoadError": "Failed to load user list",
       "notebookUserCreateSuccess": "Notebook user added successfully.",
