@@ -68,7 +68,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-12 col-md-12">
+                    <div class="col-sm-12 col-md-12" v-if="mode === 'create'">
                         <div class="card border">
                             <div class="card-header">
                                 {{ $t('recurringTransactionList.transactionModal.transactionInfo') }}
@@ -134,7 +134,8 @@
                         <button class="btn btn-danger float-end" @click="closeModal">
                             {{ $t('common.cancel') }}
                         </button>
-                        <button class="btn btn-success float-end m-l-5" @click="save" :disabled="!isValid">
+                        <button class="btn btn-success float-end m-l-5" @click="save"
+                            :disabled="!isValid || submitting">
                             {{ $t('common.save') }}
                         </button>
                     </div>
@@ -173,7 +174,7 @@ export default {
                 startDate: new Date(),
                 endDate: new Date(),
                 frequency: 0,
-                interval: null,
+                interval: 0,
                 transaction: {
                     name: '',
                     description: '',
@@ -212,6 +213,27 @@ export default {
             async handler(newVal) {
                 if (newVal._isShown) {
                     await this.getNotebookLabels();
+
+                    if (this.mode === 'edit' && this.transactionData) {
+                        this.form = {
+                            name: this.transactionData.name,
+                            description: this.transactionData.description,
+                            startDate: new Date(this.transactionData.startDate),
+                            endDate: new Date(this.transactionData.endDate),
+                            frequency: this.transactionData.frequency,
+                            interval: this.transactionData.interval,
+                            transaction: {
+                                name: this.transactionData.transaction.name,
+                                description: this.transactionData.transaction.description,
+                                amount: this.transactionData.transaction.amount,
+                                currencyId: this.transactionData.transaction.currency.id,
+                                transactionType: this.transactionData.transaction.transactionType,
+                                transactionDate: new Date(this.transactionData.transaction.transactionDate),
+                                labels: this.transactionData.transaction.labels.map(label => label.id)
+                            }
+                        }
+                    }
+
                 } else {
                     this.form = {
                         name: '',
@@ -219,7 +241,7 @@ export default {
                         startDate: new Date(),
                         endDate: new Date(),
                         frequency: 0,
-                        interval: null,
+                        interval: 0,
                         transaction: {
                             name: '',
                             description: '',
@@ -287,6 +309,7 @@ export default {
             }
         },
         async createRecurringTransaction() {
+            this.submitting = true;
             var requestModel = {
                 NotebookId: this.$store.state.notebook.selectedNotebook.id,
                 Name: this.form.name,
@@ -329,11 +352,58 @@ export default {
                     icon: 'error',
                     title: this.$t('recurringTransactionList.transactionModal.messages.transactionCreateError'),
                 });
+            } finally {
+                this.submitting = false;
             }
 
         },
         async editRecurringTransaction() {
+            this.submitting = true;
+            var requestModel = {
+                NotebookId: this.$store.state.notebook.selectedNotebook.id,
+                Name: this.form.name,
+                Description: this.form.description,
+                StartDate: this.form.startDate,
+                EndDate: this.form.endDate,
+                Frequency: this.form.frequency,
+                Interval: this.form.interval,
+                Transaction: {
+                    Name: this.form.transaction.name,
+                    Description: this.form.transaction.description,
+                    Amount: this.form.transaction.amount,
+                    CurrencyId: this.form.transaction.currencyId,
+                    TransactionType: this.form.transaction.transactionType,
+                    TransactionDate: this.form.transaction.transactionDate,
+                    Labels: this.form.transaction.labels
+                }
+            }
 
+            try {
+                var response = await recurringTransactionService.updateRecurringTransaction(this.$store.state.notebook.selectedNotebook.id, this.transactionData.id, requestModel);
+                if (response.status === 200) {
+                    this.$swal({
+                        icon: 'success',
+                        title: this.$t('recurringTransactionList.transactionModal.messages.transactionEditSuccess'),
+                    });
+                    this.closeModal();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);
+                    return;
+                }
+
+                this.$swal({
+                    icon: 'error',
+                    title: this.$t('recurringTransactionList.transactionModal.messages.transactionEditError'),
+                });
+            } catch (e) {
+                this.$swal({
+                    icon: 'error',
+                    title: this.$t('recurringTransactionList.transactionModal.messages.transactionEditError'),
+                });
+            } finally {
+                this.submitting = false;
+            }
         }
     },
     created() {

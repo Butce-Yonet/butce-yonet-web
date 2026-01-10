@@ -3,7 +3,8 @@
         <div class="card border">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5>{{ $t('transactionList.title') }}</h5>
-                <button class="btn btn-success float-end" @click="openTransactionModal">
+                <button class="btn btn-success float-end" id="openTransactionCreateModalButton"
+                    @click="openTransactionModal">
                     <i class="fa fa-plus"></i>
                 </button>
             </div>
@@ -19,8 +20,9 @@
                         </button>
                     </div>
                     <div class="col-sm-12 col-md-12 m-t-15">
-                        <EasyDataTable v-model:server-options="serverOptions" :server-items-length="itemsLength"
-                            :headers="headers" :items="transactions" :loading="loading">
+                        <EasyDataTable id="transactionList" v-model:server-options="serverOptions"
+                            :server-items-length="itemsLength" :headers="headers" :items="transactions"
+                            :loading="loading">
 
                             <template #empty-message>
                                 <span>{{ $t('common.noDataText') }}</span>
@@ -49,7 +51,7 @@
                             </template>
 
                             <template #item-amount="item">
-                                {{ item.amount }} {{ item.currency.symbol }}
+                                {{ formatCurrency(item.amount, item.currency.code) }}
                             </template>
 
                             <template #item-labels="item">
@@ -96,8 +98,16 @@ export default {
     data() {
         return {
             dates: [
-                new Date(new Date().setMonth(new Date().getMonth() - 1)),
-                new Date()
+                new Date(
+                    new Date().getFullYear(),
+                    new Date().getMonth() - 1,
+                    1
+                ),
+                new Date(
+                    new Date().getFullYear(),
+                    new Date().getMonth() + 1,
+                    0
+                )
             ],
             loading: false,
             headers: [
@@ -163,6 +173,12 @@ export default {
             async handler(newVal, oldVal) {
                 await this.loadTransactions();
             }
+        },
+        dates: {
+            deep: true,
+            async handler(newVal, oldVal) {
+                await this.loadTransactions();
+            }
         }
     },
     methods: {
@@ -173,8 +189,22 @@ export default {
                 PageSize: this.serverOptions.rowsPerPage,
                 SortColumn: '',
                 SortDirection: 'Ascending',
-                StartTime: this.dates[0] ? this.dates[0].toISOString() : null,
-                EndTime: this.dates[1] ? this.dates[1].toISOString() : null
+                StartTime: this.dates[0]
+                    ? new Date(
+                        this.dates[0].getFullYear(),
+                        this.dates[0].getMonth(),
+                        this.dates[0].getDate(),
+                        0, 0, 0
+                    ).toISOString()
+                    : null,
+                EndTime: this.dates[1]
+                    ? new Date(
+                        this.dates[1].getFullYear(),
+                        this.dates[1].getMonth(),
+                        this.dates[1].getDate(),
+                        0, 0, 0
+                    ).toISOString()
+                    : null
             };
 
             try {
@@ -230,7 +260,17 @@ export default {
             this.modalMode = 'edit';
             this.selectedTransaction = item;
             this.modal.show();
-        }
+        },
+        formatCurrency(amount, currencyCode) {
+            if (amount == null) return '';
+
+            return new Intl.NumberFormat('tr-TR', {
+                style: 'currency',
+                currency: currencyCode,
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        },
     },
     mounted() {
         const modalElement = document.getElementById('transactionModal');

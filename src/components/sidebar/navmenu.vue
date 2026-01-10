@@ -4,7 +4,19 @@
             :style="[layoutobject.split(' ').includes('horizontal-wrapper') ? layout.settings.layout_type == 'rtl' ? { '  -right': margin + 'px' } : { 'margin-left': margin + 'px' } : { margin: '0px' }]">
             <li class="back-btn">
                 <router-link to="/">
-                    <img class="img-fluid" src="../../assets/images/logo/logo-icon.png" alt="" /></router-link>
+                    <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="icon-only-centered" transform="translate(2.5, 2.5)">
+                            <rect x="2" y="18" width="6" height="10" rx="1" fill="#475569" />
+                            <rect x="10" y="12" width="6" height="16" rx="1" fill="#334155" />
+                            <rect x="18" y="4" width="6" height="24" rx="1" fill="#10b981" />
+
+                            <path d="M5 16 L13 10 L21 2" stroke="#10b981" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+
+                            <circle cx="28" cy="4" r="3" fill="#34d399" />
+                        </g>
+                    </svg>
+                </router-link>
                 <div class="mobile-back text-end">
                     <span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i>
                 </div>
@@ -16,7 +28,7 @@
                 </div>
 
                 <label :class="'badge badge-' + menuItem.badgeType" v-if="menuItem.badgeType">{{ (menuItem.badgeValue)
-                    }}</label>
+                }}</label>
                 <a href="javascript:void(0)" class="sidebar-link sidebar-title" :class="{ 'active': menuItem.active }"
                     v-if="menuItem.type == 'sub'" @click="setNavActive(menuItem, index)">
 
@@ -29,8 +41,9 @@
                     </div>
                 </a>
 
-                <a href="#" class="sidebar-link sidebar-title" :class="{ 'active': menuItem.active }"
-                    v-if="menuItem.type == 'createNotebookModal'" @click="openCreateNotebookModal">
+                <a id="sidebarCreateNotebookButton" href="#" class="sidebar-link sidebar-title"
+                    :class="{ 'active': menuItem.active }" v-if="menuItem.type == 'createNotebookModal'"
+                    @click="openCreateNotebookModal">
                     <vue-feather :type="menuItem.icon"></vue-feather>
                     <span>
                         {{ $t(menuItem.title) }}
@@ -91,17 +104,22 @@
                             <i class="fa fa-angle-right pull-right mt-1" v-if="childrenItem.children"></i>
                         </router-link>
 
-                        <a href="#" v-if="childrenItem.type == 'notebook'" class="submenu-title"
-                            :class="{ 'active': childrenItem.active }" @click="changeNotebook(childrenItem)">
+                        <a id="sidebar-my-notebooks" href="#" v-if="childrenItem.type == 'notebook'"
+                            class="submenu-title" :class="{ 'active': childrenItem.active }"
+                            @click="changeNotebook(childrenItem)">
                             {{ $t(childrenItem.title) }}
                             <div class="float-end">
-                                <button class="btn btn-warning btn-xs m-r-5" @click.stop="openEditNotebookModal(childrenItem)">
+                                <button class="btn btn-warning btn-xs m-r-5 sidebar-my-notebook-edit"
+                                    @click.stop="openEditNotebookModal(childrenItem)">
                                     <i class="fa fa-pencil"></i>
                                 </button>
-                                <button class="btn btn-primary btn-xs m-r-5" @click.stop="openEditNotebookDetailModal(childrenItem)">
+                                <button class="btn btn-primary btn-xs m-r-5 sidebar-my-notebook-detail"
+                                    @click.stop="openEditNotebookDetailModal(childrenItem)">
                                     <i class="fa fa-cogs"></i>
                                 </button>
-                                <button :disabled="childrenItem.data.isDefault" class="btn btn-danger btn-xs" @click.stop="deleteNotebook(childrenItem)">
+                                <button :disabled="childrenItem.data.isDefault"
+                                    class="btn btn-danger btn-xs sidebar-my-notebook-delete"
+                                    @click.stop="deleteNotebook(childrenItem)">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -363,15 +381,15 @@ export default {
                 denyButtonText: this.$t('common.no'),
             }).then((result) => {
                 if (result.isConfirmed) {
-                    notebookService.deleteNotebook(item.data.id).then((response) =>{
-                        if (response.status === 200){
+                    notebookService.deleteNotebook(item.data.id).then((response) => {
+                        if (response.status === 200) {
                             this.$swal({
                                 title: this.$t('createNotebookModal.messages.deleteSuccess'),
                                 icon: "success"
                             });
-    
+
                             notebookService.mapNotebooksToMenu();
-                        }else{
+                        } else {
                             this.$swal({
                                 title: this.$t('createNotebookModal.messages.deleteError'),
                                 icon: "error"
@@ -383,15 +401,15 @@ export default {
                             icon: "error"
                         });
                     })
-                } 
+                }
             });
         },
-        openEditNotebookModal(item){
+        openEditNotebookModal(item) {
             this.$store.dispatch('notebook/showCreateNotebookModal');
             this.$store.dispatch('notebook/setModalMode', 'edit');
             this.$store.dispatch('notebook/setModalNotebook', item.data);
         },
-        openEditNotebookDetailModal(item){
+        openEditNotebookDetailModal(item) {
             this.$store.dispatch('notebook/showEditNotebookDetailModal');
             this.$store.dispatch('notebook/setModalNotebook', item.data);
         }

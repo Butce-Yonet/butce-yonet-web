@@ -37,7 +37,7 @@
     "email": "E-posta",
     "income": "Gelir",
     "expense": "Gider",
-    "frequency":{
+    "frequency": {
       "daily": "Günlük",
       "weekly": "Haftalık",
       "monthly": "Aylık",
@@ -46,7 +46,11 @@
       "firstBusinessDayOfTheMonth": "Ayın İlk İş Günü",
       "lastBusinessDayOfTheMonth": "Ayın Son İş Günü",
       "xTHOfTheMonth": "Ayın X Günü"
-    }
+    },
+    "next": "İleri",
+    "previous": "Geri",
+    "done": "Bitir",
+    "closeTour": "Turu Kapat"
   },
   "validation": {
     "message": {
@@ -120,9 +124,9 @@
       "transactionDeleteError": "Gelir - Gider kaydı silinirken bir hata oluştu."
     },
     "noLabel": "Kategorize Edilmeli",
-    "table":{
+    "table": {
       "headers": {
-        "notebookName":"Defter",
+        "notebookName": "Defter",
         "name": "Ad",
         "description": "Açıklama",
         "amount": "Tutar",
@@ -147,15 +151,15 @@
       },
       "recurringInfo": "Tekrarlama Bilgileri",
       "transactionInfo": "Gelir-Gider Bilgileri",
-      "form":{
-        "placeholder":{
+      "form": {
+        "placeholder": {
           "name": "Ad",
           "description": "Açıklama",
           "startDate": "Başlangıç Tarihi",
           "endDate": "Bitiş Tarihi",
           "frequency": "Tekrarlama Sıklığı",
           "interval": "Aralık",
-          "transaction":{
+          "transaction": {
             "name": "İşlem Adı",
             "description": "Açıklama",
             "amount": "Tutar",
@@ -167,21 +171,65 @@
         }
       }
     },
-    "messages":{
-      "recurringTransactionsLoadError": "Tekrarlayan gelir - gider kayıtları yüklenemedi"
+    "messages": {
+      "recurringTransactionsLoadError": "Tekrarlayan gelir - gider kayıtları yüklenemedi",
+      "areYouSureDelete": "Bu tekrarlayan gelir - gider kaydını silmek istediğinize emin misiniz?",
+      "recurringTransactionDeleteSuccess": "Tekrarlayan gelir - gider kaydı başarıyla silindi.",
+      "recurringTransactionDeleteError": "Tekrarlayan gelir - gider kaydı silinirken bir hata oluştu."
     },
-    "table":{
-      "headers":{
-        "notebookName":"Defter",
-        "name":"İşlem Adı",
-        "transactionType":"İşlem Türü",
+    "table": {
+      "headers": {
+        "notebookName": "Defter",
+        "name": "İşlem Adı",
+        "transactionType": "İşlem Türü",
         "amount": "Tutar",
         "currency": "Para Birimi",
         "labels": "Etiketler",
-        "frequency":"Tekrarlama Sıklığı",
-        "interval":"Aralık",
+        "frequency": "Tekrarlama Sıklığı",
+        "interval": "Aralık",
         "nextOccurrence": "Bir Sonraki Tarih"
       }
+    }
+  },
+  "upcommingRecurringTransactionList": {
+    "title": "Yaklaşan Tekrarlayan Gelir - Gider Kayıtları"
+  },
+  "dashboardTour": {
+    "step1": {
+      "title": "Defter Oluşturma Butonu",
+      "description": "Yeni bir defter oluşturmak için buraya tıklayın."
+    },
+    "step2": {
+      "title": "Defterlerim",
+      "description": "Tüm defterlerinizi buradan görüntüleyebilir ve yönetebilirsiniz."
+    },
+    "step3": {
+      "title": "Defter Düzenle",
+      "description": "Seçili defterin detaylarını düzenlemek için buraya tıklayın."
+    },
+    "step4": {
+      "title": "Defter Detaylarını Düzenle",
+      "description": "Defter kullanıcılarını ve etiketlerini yönetmek için bu bölümü kullanın."
+    },
+    "step5": {
+      "title": "Defter Silme",
+      "description": "Seçili defteri silmek için bu butonu kullanın."
+    },
+    "step6": {
+      "title": "Gelir-Gider Kayıtları",
+      "description": "Gelir ve gider kayıtlarınızı buradan görüntüleyebilir ve yönetebilirsiniz."
+    },
+    "step7": {
+      "title": "Gelir-Gider Kaydı Ekleme",
+      "description": "Yeni bir gelir veya gider kaydı eklemek için buraya tıklayın."
+    },
+    "step8": {
+      "title": "Tekrarlayan Gelir-Gider Kayıtları",
+      "description": "Tekrarlayan gelir ve gider kayıtlarınızı buradan görüntüleyebilir ve yönetebilirsiniz."
+    },
+    "step9": {
+      "title": "Tekrarlayan Gelir-Gider Kaydı Ekleme",
+      "description": "Yeni bir tekrarlayan gelir veya gider kaydı eklemek için  buraya tıklayın."
     }
   }
 }

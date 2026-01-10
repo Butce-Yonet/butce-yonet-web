@@ -37,7 +37,7 @@
     "email": "Email",
     "income": "Income",
     "expense": "Expense",
-    "frequency":{
+    "frequency": {
       "daily": "Daily",
       "weekly": "Weekly",
       "monthly": "Monthly",
@@ -46,7 +46,11 @@
       "firstBusinessDayOfTheMonth": "First Business Day of the Month",
       "lastBusinessDayOfTheMonth": "Last Business Day of the Month",
       "xTHOfTheMonth": "Xth Day of the Month"
-    }
+    },
+    "next": "Next",
+    "previous": "Previous",
+    "done": "Done",
+    "closeTour": "Close Tour"
   },
   "validation:": {
     "message": {
@@ -114,9 +118,9 @@
       "transactionDeleteError": "An error occurred while deleting the income - expense transaction."
     },
     "noLabel": "Uncategorized",
-    "table":{
+    "table": {
       "headers": {
-        "notebookName":"Notebook",
+        "notebookName": "Notebook",
         "name": "Name",
         "description": "Description",
         "amount": "Amount",
@@ -162,10 +166,13 @@
       }
     },
     "messages": {
-      "recurringTransactionsLoadError": "Failed to load recurring income - expense transactions"
+      "recurringTransactionsLoadError": "Failed to load recurring income - expense transactions",
+      "areYouSureDelete": "Are you sure you want to delete this recurring income - expense transaction?",
+      "recurringTransactionDeleteSuccess": "Recurring income - expense transaction deleted successfully.",
+      "recurringTransactionDeleteError": "An error occurred while deleting the recurring income - expense transaction."
     },
-    "table":{
-      "headers":{
+    "table": {
+      "headers": {
         "notebookName": "Notebook",
         "name": "Transaction Name",
         "transactionType": "Transaction Type",
@@ -177,5 +184,8 @@
         "nextOccurence": "Next Occurrence"
       }
     }
+  },
+  "upcommingRecurringTransactionList": {
+    "title": "Upcoming Recurring Transactions"
   }
 }

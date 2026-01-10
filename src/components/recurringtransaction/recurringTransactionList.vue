@@ -2,13 +2,13 @@
     <div class="card border">
         <div class="card-header d-flex align-items-center justify-content-between">
             <h5>{{ $t('recurringTransactionList.title') }}</h5>
-            <button class="btn btn-success float-end" @click="openRecurringTransactionModal">
+            <button class="btn btn-success float-end" id="openRecurringTransactionCreateModalButton" @click="openRecurringTransactionModal">
                 <i class="fa fa-plus"></i>
             </button>
         </div>
         <div class="card-body">
             <div class="col-sm-12 col-md-12 m-t-15">
-                <EasyDataTable v-model:server-options="serverOptions" :server-items-length="itemsLength"
+                <EasyDataTable id="recurringTransactionList" v-model:server-options="serverOptions" :server-items-length="itemsLength"
                     :headers="headers" :items="recurringTransactions" :loading="loading">
                     <template #empty-message>
                         <span>{{ $t('common.noDataText') }}</span>
@@ -33,7 +33,7 @@
                     </template>
 
                     <template #item-amount="item">
-                        {{ item.transaction.amount }} {{ item.transaction.currency.symbol }}
+                        {{ formatCurrency(item.transaction.amount, item.transaction.currency.code) }}
                     </template>
 
                     <template #item-nextOccurrence="item">
@@ -195,7 +195,6 @@ export default {
 
                 this.itemsLength = response.data.data.totalRecords;
                 this.recurringTransactions = response.data.data.items;
-                console.log(this.recurringTransactions)
             } catch (e) {
                 this.$swal('Error', this.$t('recurringTransactionList.messages.recurringTransactionsLoadError'), 'error');
             } finally {
@@ -205,13 +204,45 @@ export default {
         formatDate(date) {
             return moment(date).format('DD-MM-YYYY');
         },
+        formatCurrency(amount, currencyCode) {
+            if (amount == null) return '';
+
+            return new Intl.NumberFormat(this.$i18n?.locale || 'tr-TR', {
+                style: 'currency',
+                currency: currencyCode,
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        },
         openEditModal(item) {
             this.modalMode = 'edit';
             this.selectedTransaction = item;
             this.modal.show();
         },
-        async deleteRecurringTransaction(item) {
+        deleteRecurringTransaction(item) {
+            this.$swal({
+                title: this.$t('recurringTransactionList.messages.areYouSureDelete'),
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: this.$t('common.yes'),
+                cancelButtonText: this.$t('common.no'),
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        var response = await recurringTransactionService.deleteRecurringTransaction(this.$store.state.notebook.selectedNotebook.id, item.id);
 
+                        if (response.status !== 200) {
+                            this.$swal({ icon: 'error', text: this.$t('recurringTransactionList.messages.recurringTransactionDeleteError') });
+                            return;
+                        }
+
+                        this.$swal({ icon: 'success', text: this.$t('recurringTransactionList.messages.recurringTransactionDeleteSuccess') });
+                        await this.loadRecurringTransactions();
+                    } catch (e) {
+                        this.$swal({ icon: 'error', text: this.$t('recurringTransactionList.messages.recurringTransactionDeleteError') });
+                    }
+                }
+            });
         }
     },
     mounted() {

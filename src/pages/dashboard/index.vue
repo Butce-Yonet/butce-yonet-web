@@ -19,6 +19,10 @@ import editNotebookDetailComponent from '@/components/notebook/editNotebookDetai
 import transactionList from '@/components/transaction/transactionList.vue';
 import recurringTransactionList from '@/components/recurringtransaction/recurringTransactionList.vue';
 import * as bootstrap from 'bootstrap';
+
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
 export default {
   components: {
     'create-notebook': createNotebookComponent,
@@ -29,7 +33,8 @@ export default {
   data() {
     return {
       modal: {},
-      detailModal: {}
+      detailModal: {},
+      tour: {}
     }
   },
   watch: {
@@ -63,6 +68,104 @@ export default {
         backdrop: 'static',
         keyboard: false
       });
+    }
+
+    this.tour = new driver({
+      allowClose: true,
+      showCloseButton: true,
+      closeBtnText: this.$t('common.closeTour'),
+      nextBtnText: this.$t('common.next'),
+      prevBtnText: this.$t('common.previous'),
+      doneBtnText: this.$t('common.done'),
+      steps: [
+        {
+          element: '#sidebarCreateNotebookButton',
+          popover:
+          {
+            title: this.$t('dashboardTour.step1.title'),
+            description: this.$t('dashboardTour.step1.description')
+          }
+        },
+        {
+          element: '#sidebar-my-notebooks',
+          popover:
+          {
+            title: this.$t('dashboardTour.step2.title'),
+            description: this.$t('dashboardTour.step2.description')
+          }
+        },
+        {
+          element: '.sidebar-my-notebook-edit',
+          popover:
+          {
+            title: this.$t('dashboardTour.step3.title'),
+            description: this.$t('dashboardTour.step3.description')
+          }
+        },
+        {
+          element: '.sidebar-my-notebook-detail',
+          popover:
+          {
+            title: this.$t('dashboardTour.step4.title'),
+            description: this.$t('dashboardTour.step4.description')
+          }
+        },
+        {
+          element: '.sidebar-my-notebook-delete',
+          popover:
+          {
+            title: this.$t('dashboardTour.step5.title'),
+            description: this.$t('dashboardTour.step5.description')
+          }
+        },
+        {
+          element: '#transactionList',
+          popover:
+          {
+            title: this.$t('dashboardTour.step6.title'),
+            description: this.$t('dashboardTour.step6.description')
+          }
+        },
+        {
+          element: '#openTransactionCreateModalButton',
+          popover:
+          {
+            title: this.$t('dashboardTour.step7.title'),
+            description: this.$t('dashboardTour.step7.description')
+          }
+        },
+        {
+          element: '#recurringTransactionList',
+          popover:
+          {
+            title: this.$t('dashboardTour.step8.title'),
+            description: this.$t('dashboardTour.step8.description')
+          }
+        },
+        {
+          element: '#openRecurringTransactionCreateModalButton',
+          popover:
+          {
+            title: this.$t('dashboardTour.step9.title'),
+            description: this.$t('dashboardTour.step9.description')
+          }
+        }
+      ],
+      onDestroyed: () => {
+    const userId = this.$store.getters['user/getCurrentUser']["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+        const tourStorageKey = `dashboardTourCompleted_${userId}`;
+
+        localStorage.setItem(tourStorageKey, 'true');
+      },
+    })
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const userId = this.$store.getters['user/getCurrentUser']["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+    const tourStorageKey = `dashboardTourCompleted_${userId}`;
+    const tourAlreadyShown = localStorage.getItem(tourStorageKey);
+
+    if (!isMobile && !tourAlreadyShown) {
+      this.tour.drive();
     }
   }
 }
