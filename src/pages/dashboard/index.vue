@@ -23,6 +23,9 @@ import * as bootstrap from 'bootstrap';
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
+import currencyService from '@/services/currency.service';
+import notebookLabelService from '@/services/notebook.label.service';
+
 export default {
   components: {
     'create-notebook': createNotebookComponent,
@@ -50,6 +53,39 @@ export default {
         this.detailModal.show();
       } else {
         this.detailModal.hide();
+      }
+    },
+    '$store.state.notebook.selectedNotebook': {
+      deep: true,
+      async handler() {
+        await this.getCurrencies();
+        await this.getNotebookLabels();
+      }
+    }
+  },
+  methods: {
+    async getCurrencies() {
+      try {
+        var response = await currencyService.getCurrencies();
+        this.currencies = response.data;
+        this.$store.dispatch('currency/setCurrencies', this.currencies);
+      } catch (e) {
+        this.$swal({
+          icon: 'error',
+          title: this.$t('common.messages.currenciesLoadError'),
+        });
+      }
+    },
+    async getNotebookLabels(){
+      try {
+        var response = await notebookLabelService.getNotebookLabels(this.$store.getters['notebook/getSelectedNotebook'].id);
+        this.notebookLabels = response.data;
+        this.$store.dispatch('dashboard/setLabels', this.notebookLabels);
+      } catch (e) {
+        this.$swal({
+          icon: 'error',
+          title: this.$t('common.messages.notebookLabelsLoadError'),
+        });
       }
     }
   },
@@ -152,7 +188,7 @@ export default {
         }
       ],
       onDestroyed: () => {
-    const userId = this.$store.getters['user/getCurrentUser']["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+        const userId = this.$store.getters['user/getCurrentUser']["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
         const tourStorageKey = `dashboardTourCompleted_${userId}`;
 
         localStorage.setItem(tourStorageKey, 'true');

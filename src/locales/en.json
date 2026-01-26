@@ -50,7 +50,11 @@
     "next": "Next",
     "previous": "Previous",
     "done": "Done",
-    "closeTour": "Close Tour"
+    "closeTour": "Close Tour",
+    "messages":{
+      "currenciesLoadError": "Failed to load currencies",
+      "notebookLabelsLoadError": "Failed to load labels"
+    }
   },
   "validation:": {
     "message": {
@@ -83,7 +87,6 @@
       "notebookUserAreYouSureDelete": "Are you sure you want to delete this notebook user?",
       "notebookUserDeleteSuccess": "Notebook user deleted successfully.",
       "notebookUserDeleteError": "An error occurred while deleting the notebook user.",
-      "notebookLabelsLoadError": "Failed to load category list",
       "notebookLabelCreateSuccess": "Notebook label added successfully.",
       "notebookLabelCreateError": "An error occurred while adding the notebook label.",
       "notebookLabelAreYouSureDelete": "Are you sure you want to delete this notebook label?",
@@ -99,7 +102,6 @@
       "createTitle": "Create Income - Expense Transaction",
       "editTitle": "Edit Income - Expense Transaction",
       "messages": {
-        "currenciesLoadError": "Failed to load currencies",
         "transactionCreateSuccess": "Income - Expense transaction created successfully.",
         "transactionCreateError": "An error occurred while creating the income - expense transaction.",
         "transactionEditSuccess": "Income - Expense transaction updated successfully.",
@@ -143,7 +145,6 @@
       "createTitle": "Create Recurring Income - Expense Transaction",
       "editTitle": "Edit Recurring Income - Expense Transaction",
       "messages": {
-        "currenciesLoadError": "Failed to load currencies",
         "transactionCreateSuccess": "Recurring income - expense transaction created successfully.",
         "transactionCreateError": "An error occurred while creating the recurring income - expense transaction.",
         "transactionEditSuccess": "Recurring income - expense transaction updated successfully.",

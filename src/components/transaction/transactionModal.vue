@@ -71,8 +71,6 @@
 </template>
 
 <script>
-import currencyService from '@/services/currency.service';
-import notebookLabelService from '@/services/notebook.label.service';
 import transactionService from '@/services/transaction.service';
 import * as yup from 'yup';
 import { createYupValidator } from '@/services/validator.service';
@@ -106,12 +104,12 @@ export default {
             errors: {},
             isValid: false,
             submitting: false,
-            currencies: [],
+            currencies: this.$store.getters['dashboard/getCurrencies'],
             transactionTypes: [
                 { value: 0, text: this.$t('common.income') },
                 { value: 1, text: this.$t('common.expense') }
             ],
-            labels: []
+            labels: this.$store.getters['dashboard/getLabels']
         }
     },
     computed: {
@@ -124,7 +122,6 @@ export default {
             deep: true,
             async handler(newVal) {
                 if (newVal._isShown) {
-                    await this.getNotebookLabels();
                     this.fillForm();
                 } else {
                     this.form = {
@@ -139,12 +136,6 @@ export default {
                 }
             }
         },
-        '$store.state.notebook.selectedNotebook': {
-            deep: true,
-            async handler(newVal) {
-                await this.getNotebookLabels();
-            }
-        },
         form: {
             deep: true,
             async handler(newVal) {
@@ -155,35 +146,6 @@ export default {
     methods: {
         closeModal() {
             this.modal.hide();
-        },
-        async getCurrencies() {
-            try {
-                var response = await currencyService.getCurrencies();
-                this.currencies = response.data;
-            } catch (e) {
-                this.$swal({
-                    icon: 'error',
-                    title: this.$t('transactionList.transactionModal.messages.currenciesLoadError'),
-                });
-            }
-        },
-        async getNotebookLabels() {
-            try {
-                var response = await notebookLabelService.getNotebookLabels(this.getModalNotebook.id);
-                if (response.status === 200) {
-                    this.labels = response.data.data;
-                } else {
-                    this.$swal({
-                        icon: 'error',
-                        title: this.$t('editNotebookDetail.messages.notebookLabelsLoadError'),
-                    });
-                }
-            } catch (e) {
-                this.$swal({
-                    icon: 'error',
-                    title: this.$t('editNotebookDetail.messages.notebookLabelsLoadError'),
-                });
-            }
         },
         async save() {
             if (this.mode === 'create') {
@@ -278,8 +240,6 @@ export default {
         }
     },
     created() {
-        this.getCurrencies();
-
         var schema = yup.object({
             name: yup.string().required(this.$t('validation.message.required')),
             description: yup.string(),

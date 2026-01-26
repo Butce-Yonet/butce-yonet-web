@@ -50,7 +50,11 @@
     "next": "İleri",
     "previous": "Geri",
     "done": "Bitir",
-    "closeTour": "Turu Kapat"
+    "closeTour": "Turu Kapat",
+    "messages":{
+      "currenciesLoadError":"Para birimleri yüklenemedi",
+      "notebookLabelsLoadError": "Etiketler yüklenemedi"
+    }
   },
   "validation": {
     "message": {
@@ -83,7 +87,6 @@
       "notebookUserAreYouSureDelete": "Bu defter kullanıcısını silmek istediğinize emin misiniz?",
       "notebookUserDeleteSuccess": "Defter kullanıcısı başarıyla silindi.",
       "notebookUserDeleteError": "Defter kullanıcısı silinirken bir hata oluştu.",
-      "notebookLabelsLoadError": "Etiketler yüklenemedi",
       "notebookLabelCreateSuccess": "Defter etiketi başarıyla eklendi.",
       "notebookLabelCreateError": "Defter etiketi eklenirken bir hata oluştu.",
       "notebookLabelAreYouSureDelete": "Bu defter etiketini silmek istediğinize emin misiniz?",
@@ -99,7 +102,6 @@
       "createTitle": "Gelir - Gider Kaydı Oluştur",
       "editTitle": "Gelir - Gider Kaydını Düzenle",
       "messages": {
-        "currenciesLoadError": "Para birimleri yüklenemedi",
         "transactionCreateSuccess": "Gelir - Gider kaydı başarıyla oluşturuldu.",
         "transactionCreateError": "Gelir - Gider kaydı oluşturulurken bir hata oluştu.",
         "transactionEditSuccess": "Gelir - Gider kaydı başarıyla güncellendi.",
@@ -143,7 +145,6 @@
       "createTitle": "Tekrarlayan Gelir - Gider Kaydı Oluştur",
       "editTitle": "Tekrarlayan Gelir - Gider Kaydını Düzenle",
       "messages": {
-        "currenciesLoadError": "Para birimleri yüklenemedi",
         "transactionCreateSuccess": "Tekrarlayan gelir - gider kaydı başarıyla oluşturuldu.",
         "transactionCreateError": "Tekrarlayan gelir - gider kaydı oluşturulurken bir hata oluştu.",
         "transactionEditSuccess": "Tekrarlayan gelir - gider kaydı başarıyla güncellendi.",
