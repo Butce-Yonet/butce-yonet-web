@@ -68,7 +68,7 @@ export default {
       try {
         var response = await currencyService.getCurrencies();
         this.currencies = response.data;
-        this.$store.dispatch('currency/setCurrencies', this.currencies);
+        this.$store.dispatch('dashboard/setCurrencies', this.currencies);
       } catch (e) {
         this.$swal({
           icon: 'error',
@@ -79,7 +79,7 @@ export default {
     async getNotebookLabels(){
       try {
         var response = await notebookLabelService.getNotebookLabels(this.$store.getters['notebook/getSelectedNotebook'].id);
-        this.notebookLabels = response.data;
+        this.notebookLabels = response.data.data;
         this.$store.dispatch('dashboard/setLabels', this.notebookLabels);
       } catch (e) {
         this.$swal({

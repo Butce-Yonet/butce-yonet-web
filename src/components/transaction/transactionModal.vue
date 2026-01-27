@@ -43,7 +43,8 @@
                             <label>{{ $t('transactionList.transactionModal.form.placeholder.transactionTypeLabel')
                             }}</label>
                             <small v-if="errors.transactionType" class="text-danger"> *</small>
-                            <VSelect :options="transactionTypes" label="text" :reduce="c => c.value" v-model="form.transactionType"></VSelect>
+                            <VSelect :options="transactionTypes" label="text" :reduce="c => c.value"
+                                v-model="form.transactionType"></VSelect>
                         </div>
                         <div class="col-sm-12 col-md-6 m-t-10">
                             <label>{{ $t('transactionList.transactionModal.form.placeholder.transactionDateLabel')
@@ -121,6 +122,8 @@ export default {
         modal: {
             deep: true,
             async handler(newVal) {
+                this.currencies = this.$store.getters['dashboard/getCurrencies'];
+                this.labels = this.$store.getters['dashboard/getLabels'];
                 if (newVal._isShown) {
                     this.fillForm();
                 } else {
@@ -227,7 +230,7 @@ export default {
                 });
             }
         },
-        fillForm(){
+        fillForm() {
             if (this.mode === 'edit' && this.transactionData) {
                 this.form.name = this.transactionData.name;
                 this.form.description = this.transactionData.description;

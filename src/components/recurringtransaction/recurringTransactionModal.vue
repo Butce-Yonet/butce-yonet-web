@@ -209,6 +209,8 @@ export default {
         modal: {
             deep: true,
             async handler(newVal) {
+                this.currencies = this.$store.getters['dashboard/getCurrencies'];
+                this.labels = this.$store.getters['dashboard/getLabels'];
                 if (newVal._isShown) {
                     if (this.mode === 'edit' && this.transactionData) {
                         this.form = {
