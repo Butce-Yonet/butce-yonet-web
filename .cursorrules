@@ -8,85 +8,96 @@
 - **Icons**: Vue Feather
 - **Internationalization**: Vue i18n (Türkçe ve İngilizce)
 - **Build Tool**: Vue CLI
+- **Path Alias**: `@/` → `src/` (jsconfig.json)
+
+## Bağımlılıklar
+- **HTTP**: axios (httpClient.js üzerinden)
+- **UI**: Bootstrap 5, vue-select, vue3-easy-data-table, VueDatePicker (@vuepic/vue-datepicker)
+- **Form/Validasyon**: yup
+- **Diğer**: vue-sweetalert2, moment, chart.js, driver.js
+
+## Ortam Yapısı
+- **development**, **staging**, **production** ortamları mevcut
+- Environment değişkenleri `.env.development`, `.env.staging`, `.env.production` dosyalarında
+- `VUE_APP_` prefix'i ile tanımlanmalı
+- API URL, auth URL vb. `src/constants/config.js` üzerinden kullanılır
+
+## Dosya Organizasyonu
+- **Servisler**: `src/services/` (auth.service.js, httpClient.js, notebook.service.js, transaction.service.js, vb.)
+- **API çağrıları**: httpClient (`src/services/httpClient.js`) kullanılmalı
+- **Componentler**: `src/components/` (header/, sidebar/, notebook/, transaction/, recurringtransaction/, vb.)
+- **Sayfalar**: `src/pages/` (dashboard/, auth/, error/)
+- **Router**: `src/router/index.js`
+- **Store**: `src/store/index.js`, modüller `src/store/modules/` (layout, menu, user, notebook, dashboard)
+- **Sabitler**: `src/constants/` (config.js, layout.js)
+- **Locale**: `src/locales/` (tr.json, en.json), `src/locales/index.js` i18n kurulumu
+- **Statik veri**: `src/data/` (menu.json, layout.json, bonusui.json)
 
 ## Kod Stili ve Standartları
 
 ### Vue Component Yapısı
-- Component dosyaları PascalCase ile adlandırılmalı (örn: `Profile.vue`)
-- Component içinde `<template>`, `<script>`, `<style>` sırası korunmalı
-- Options API kullanılıyorsa: `name`, `data`, `methods`, `computed`, `mounted` gibi standart sıralama takip edilmeli
-- Composition API kullanılıyorsa: `<script setup>` syntax tercih edilmeli
+- Component dosyaları camelCase veya kebab-case (örn: `navmenu.vue`, `transactionModal.vue`)
+- Sıra: `<template>`, `<script>`, `<style>`
+- Options API: `name`, `data`, `computed`, `watch`, `created`/`mounted`, `methods`
+- Composition API kullanılıyorsa `<script setup>` tercih edilmeli
 
-### Dosya Organizasyonu
-- API servisleri: `src/services/api/` klasöründe
-- Componentler: `src/components/` klasöründe, alt klasörlerle organize edilmeli
-- Sayfalar: `src/pages/` klasöründe
-- Router: `src/router/` klasöründe modüler yapı
-- Store modülleri: `src/store/modules/` klasöründe
-- Locale dosyaları: `src/locales/` klasöründe (tr.json, en.json)
-
-### İsimlendirme Kuralları
-- Component isimleri: PascalCase (örn: `UserProfile`)
-- Dosya isimleri: camelCase veya kebab-case (örn: `profile.vue` veya `user-profile.vue`)
-- Değişken ve fonksiyon isimleri: camelCase
+### İsimlendirme
+- Component `name`: PascalCase (örn: `Navmenu`, `TransactionModal`)
+- Değişken/fonksiyon: camelCase
 - Sabitler: UPPER_SNAKE_CASE
-- CSS class isimleri: kebab-case
+- CSS class: kebab-case
+- Route name: kebab-case (örn: `auth-callback`)
 
-### Vue Component Best Practices
-- Her component'te `name` property tanımlanmalı
+### Vue Best Practices
+- Her component'te `name` tanımlanmalı
 - Props için type validation kullanılmalı
-- Emit event'leri kebab-case ile adlandırılmalı
-- Computed property'ler reactive data için kullanılmalı
-- Lifecycle hooks uygun şekilde kullanılmalı
+- Emit event'leri kebab-case
+- Kullanıcıya gösterilen metinler i18n ile: `$t('key')` veya `{{ $t('key') }}`
 
-### API ve HTTP İstekleri
-- Tüm API çağrıları `src/services/api/` klasöründeki dosyalarda organize edilmeli
-- HTTP client `src/services/httpClient.js` üzerinden kullanılmalı
-- API fonksiyonları async/await pattern kullanmalı
-- Hata yönetimi try-catch blokları ile yapılmalı
+### API ve HTTP
+- Tüm API çağrıları `src/services/` altındaki servis dosyalarında (örn: notebook.service.js)
+- İstekler `httpClient` (axios instance) ile yapılmalı; token ve 401 refresh otomatik
+- async/await kullanılmalı, hata yönetimi try-catch ile yapılmalı
 
-### Router Kullanımı
-- Route tanımları modüler dosyalarda (auth.js, dashboard.js) organize edilmeli
-- Route name'leri kebab-case kullanmalı
-- Lazy loading için dynamic import kullanılmalı: `() => import('@/pages/...')`
+### Router
+- Route tanımları `src/router/index.js` içinde
+- Auth guard: `router.beforeEach` ile `authService.isAuthenticated()` kontrolü
+- Beyaz liste: `/auth/callback`, `/auth/failed`
 
-### State Management (Vuex)
-- Store modülleri `src/store/modules/` klasöründe ayrı dosyalarda tutulmalı
-- Mutations, actions ve getters uygun şekilde organize edilmeli
-- Namespaced modules kullanılmalı
+### Vuex
+- Modüller: layout, menu, user, notebook, dashboard
+- Namespaced modules kullanılıyor
+- Mutations, actions, getters modül dosyalarında
 
-### Internationalization (i18n)
-- Tüm kullanıcıya gösterilen metinler i18n ile yönetilmeli
-- Locale key'leri dot notation ile organize edilmeli (örn: `dashboard.title`)
-- Hem Türkçe (`tr.json`) hem İngilizce (`en.json`) dosyaları güncel tutulmalı
-- Template'te: `$t('key')` veya `{{ $t('key') }}` kullanılmalı
+### i18n
+- Locale key'leri dot notation (örn: `menu.notebooks`, `menu.createNotebook`)
+- tr.json ve en.json senkron tutulmalı
+- Varsayılan dil ve seçenekler `src/constants/config.js` (defaultLocale, localeOptions)
 
-### Styling Kuralları
-- SCSS dosyaları `src/assets/scss/` klasöründe organize edilmeli
-- Component-specific styles için `<style scoped>` kullanılmalı
+### Styling
+- SCSS: `src/assets/scss/`
+- Component stilleri: `<style scoped>`
 - Bootstrap 5 utility class'ları tercih edilmeli
-- Custom CSS için BEM metodolojisi veya kebab-case class isimleri kullanılmalı
 
 ### Import Sıralaması
-1. Vue core imports
-2. Third-party library imports
-3. Router/Store imports
-4. Component imports
-5. Utility/helper imports
-6. Asset imports (images, styles)
+1. Vue / core
+2. Third-party
+3. Router / Store
+4. Components
+5. Services / constants / utils
+6. Assets (styles, images)
 
 ### Kod Kalitesi
 - ESLint kurallarına uyulmalı
-- Yorum satırları Türkçe veya İngilizce olabilir, tutarlı olmalı
-- Dead code (yorum satırına alınmış kod) temizlenmeli
-- Console.log production build'de kaldırılmalı
+- Yorumlar Türkçe veya İngilizce, tutarlı olmalı
+- Gereksiz console.log kaldırılmalı
+- Dead code temizlenmeli
 
-### Git Commit Mesajları
-- Commit mesajları açıklayıcı olmalı
-- Türkçe veya İngilizce kullanılabilir
+## Domain / Özel Notlar
+- **Bütçe yönetimi** uygulaması; notebook (defter), transaction (işlem), recurring transaction, label, raporlama
+- **Auth**: auth.service.js (login, logout, getToken, getRefreshToken, refreshToken), callback sayfası
+- **Menü**: menu.json + store menu modülü; Defterlerim menüsü notebook listesi ile dinamik
+- **Servisler**: notebook.service, transaction.service, recurring.transaction.service, transaction.label.service, notebook.label.service, notebook.users.service, report.service, currency.service, validator.service
 
-## Özel Notlar
-- Proje bütçe yönetimi uygulamasıdır
-- Authentication ve authorization yapısı mevcuttur
-- Transaction, notebook, label gibi domain-specific API'ler bulunmaktadır
-
+## Git
+- Commit mesajları açıklayıcı olmalı, Türkçe veya İngilizce kullanılabilir
