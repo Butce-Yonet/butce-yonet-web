@@ -246,7 +246,7 @@ export default {
                         name: '',
                         description: '',
                         amount: 0,
-                        currencyId: '',
+                        currencyId: this.getDefaultCurrencyId(),
                         transactionType: 0,
                         transactionDate: new Date(),
                         labels: []
@@ -351,6 +351,13 @@ export default {
                 this.submitting = false;
             }
         },
+        getDefaultCurrencyId() {
+            const list = this.$store.getters['dashboard/getCurrencies'];
+            const byRank = list.find(c => c.rank === 1);
+            if (byRank) return byRank.id;
+            const byCode = list.find(c => c.code === 'TRY');
+            return byCode ? byCode.id : '';
+        },
         fillForm() {
             if (this.mode === 'edit' && this.transactionData) {
                 this.form.name = this.transactionData.name;
@@ -360,6 +367,8 @@ export default {
                 this.form.transactionType = this.transactionData.transactionType;
                 this.form.transactionDate = new Date(this.transactionData.transactionDate);
                 this.form.labels = this.transactionData.labels.map(label => label.id);
+            } else {
+                this.form.currencyId = this.getDefaultCurrencyId();
             }
         }
     },

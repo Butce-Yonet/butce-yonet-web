@@ -72,6 +72,7 @@
                                             v-model="form.startDate"
                                             :time-config="{ enableTimePicker: false }"
                                             auto-apply
+                                            teleport
                                         />
                                     </div>
 
@@ -85,6 +86,7 @@
                                             v-model="form.endDate"
                                             :time-config="{ enableTimePicker: false }"
                                             auto-apply
+                                            teleport
                                         />
                                     </div>
 
@@ -371,6 +373,8 @@ export default {
                                 labels: this.transactionData.transaction.labels.map(label => label.id)
                             }
                         }
+                    } else if (this.mode === 'create') {
+                        this.form.transaction.currencyId = this.getDefaultCurrencyId();
                     }
                 } else {
                     this.form = {
@@ -384,7 +388,7 @@ export default {
                             name: '',
                             description: '',
                             amount: 0,
-                            currencyId: '',
+                            currencyId: this.getDefaultCurrencyId(),
                             transactionType: 0,
                             transactionDate: new Date(),
                             labels: []
@@ -401,6 +405,13 @@ export default {
         }
     },
     methods: {
+        getDefaultCurrencyId() {
+            const list = this.$store.getters['dashboard/getCurrencies'];
+            const byRank = list.find(c => c.rank === 1);
+            if (byRank) return byRank.id;
+            const byCode = list.find(c => c.code === 'TRY');
+            return byCode ? byCode.id : '';
+        },
         closeModal() {
             this.modal.hide();
         },
@@ -543,7 +554,7 @@ export default {
 .form-section {
     border: 1.5px solid #e5e7eb;
     border-radius: 12px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .form-section-title {
@@ -555,6 +566,7 @@ export default {
     color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    border-radius: 10px 10px 0 0;
 }
 
 .form-section-body {
