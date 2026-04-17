@@ -1,36 +1,83 @@
 <template>
     <div class="tab-pane fade show active" id="notebook-users-tab-content" role="tabpanel"
         aria-labelledby="notebook-users-tab">
-        <div class="col-sm-12 col-md-12 m-t-20">
-            <div class="col-sm-12 col-md-4 offset-md-8">
-                <div class="input-group input-group-sm">
-                    <input v-model="notebookUserForm.email" class="form-control" :disabled="notebookUserFormSubmitting"
-                        :placeholder="$t('common.email')" />
-                    <button class="btn btn-success input-group-text" @click="saveNotebookUser"
-                        :disabled="notebookUserFormSubmitting || !notebookUserFormIsValid">
-                        <i class="fa fa-plus" style="color: white;"></i>
+
+        <!-- Add User Card -->
+        <div class="add-section mb-4">
+            <div class="add-section-header">
+                <i class="fa fa-user-plus me-2"></i>
+                {{ $t('common.email') }}
+            </div>
+            <div class="add-section-body">
+                <div class="row g-2 align-items-start">
+                    <div class="col">
+                        <input
+                            v-model="notebookUserForm.email"
+                            class="form-control"
+                            :disabled="notebookUserFormSubmitting"
+                            :placeholder="$t('common.email')"
+                            @keyup.enter="saveNotebookUser"
+                        />
+                        <small class="text-danger mt-1 d-block" v-if="notebookUserFormErrors.email">
+                            {{ notebookUserFormErrors.email }}
+                        </small>
+                    </div>
+                    <div class="col-auto">
+                        <button
+                            class="btn btn-success px-4"
+                            @click="saveNotebookUser"
+                            :disabled="notebookUserFormSubmitting || !notebookUserFormIsValid"
+                        >
+                            <span v-if="notebookUserFormSubmitting">
+                                <span class="spinner-border spinner-border-sm me-1"></span>
+                            </span>
+                            <span v-else><i class="fa fa-plus me-1"></i></span>
+                            Ekle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users List -->
+        <div v-if="notebookUserLoading" class="text-center py-5">
+            <div class="spinner-border text-success" role="status"></div>
+        </div>
+
+        <div v-else-if="notebookUsers.length === 0" class="empty-state">
+            <i class="fa fa-users"></i>
+            <p>{{ $t('common.noDataText') }}</p>
+        </div>
+
+        <div v-else class="user-list">
+            <div
+                v-for="user in notebookUsers"
+                :key="user.id"
+                class="user-card"
+            >
+                <div class="user-avatar" :style="{ background: getAvatarColor(user.name) }">
+                    {{ getInitials(user.name, user.surname) }}
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ user.name }} {{ user.surname }}</div>
+                    <div class="user-email">{{ user.email }}</div>
+                </div>
+                <div class="user-actions">
+                    <span v-if="user.isDefault" class="badge badge-success me-2">
+                        <i class="fa fa-star me-1"></i>Sahip
+                    </span>
+                    <button
+                        class="btn btn-sm btn-outline-danger"
+                        :disabled="user.isDefault"
+                        v-tooltip="$t('common.tooltips.delete')"
+                        @click="deleteNotebookUser(user)"
+                    >
+                        <i class="fa fa-trash"></i>
                     </button>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-4 offset-md-8">
-                <small class="text-danger" v-if="notebookUserFormErrors.email">{{
-                    notebookUserFormErrors.email }}</small>
-            </div>
-            <div class="col-sm-12 col-md-12 m-t-10">
-                <EasyDataTable :headers="notebookUserHeaders" :items="notebookUsers" :loading="notebookUserLoading">
-                    <template #empty-message>
-                        <span>{{ $t('common.noDataText') }}</span>
-                    </template>
-
-                    <template #item-actions="item">
-                        <button class="btn btn-danger btn-xs" :disabled="item.isDefault"
-                            @click="deleteNotebookUser(item)">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </template>
-                </EasyDataTable>
-            </div>
         </div>
+
     </div>
 </template>
 
@@ -94,6 +141,14 @@ export default {
         },
     },
     methods: {
+        getInitials(name, surname) {
+            return ((name?.[0] || '') + (surname?.[0] || '')).toUpperCase();
+        },
+        getAvatarColor(name) {
+            const colors = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899'];
+            const index = (name?.charCodeAt(0) || 0) % colors.length;
+            return colors[index];
+        },
         async loadNotebookUsers() {
             this.notebookUserLoading = true;
             this.notebookUsers = [];
@@ -216,3 +271,103 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.add-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.add-section-header {
+    background: #f9fafb;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.add-section-body {
+    padding: 16px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px 0;
+    color: #9ca3af;
+}
+
+.empty-state i {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.user-card:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.user-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-email {
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+</style>

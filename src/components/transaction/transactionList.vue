@@ -1,84 +1,180 @@
 <template>
     <div>
         <div class="card border">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>{{ $t('transactionList.title') }}</h5>
-                <button class="btn btn-success float-end" id="openTransactionCreateModalButton"
-                    @click="openTransactionModal">
-                    <i class="fa fa-plus"></i>
-                </button>
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="mb-0">{{ $t('transactionList.title') }}</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <button
+                        class="btn btn-sm btn-outline-secondary"
+                        @click="showFilters = !showFilters"
+                    >
+                        <i class="fa fa-filter me-1"></i>
+                        {{ $t('common.filter') }}
+                        <span v-if="activeFilterCount > 0" class="filter-badge">{{ activeFilterCount }}</span>
+                    </button>
+                    <button
+                        v-if="hasActiveFilters"
+                        class="btn btn-sm btn-outline-danger"
+                        v-tooltip="$t('common.clearFilters')"
+                        @click="clearFilters"
+                    >
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <button class="btn btn-success" id="openTransactionCreateModalButton" @click="openTransactionModal">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
             </div>
+
+            <!-- Filter Panel -->
+            <div class="filter-panel" v-show="showFilters">
+                <div class="row g-2">
+                    <!-- Currency -->
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <label class="filter-label">{{ $t('transactionList.table.headers.currency') }}</label>
+                        <VSelect
+                            v-model="filters.currencyId"
+                            :options="currencies"
+                            label="code"
+                            :reduce="c => c.id"
+                            :placeholder="$t('common.all')"
+                            :clearable="true"
+                        >
+                            <template #option="currency">
+                                <span class="fw-semibold">{{ currency.code }}</span>
+                                <span class="text-muted ms-1 small">{{ currency.name }}</span>
+                            </template>
+                            <template #selected-option="currency">
+                                {{ currency.code }} — {{ currency.name }}
+                            </template>
+                        </VSelect>
+                    </div>
+                    <!-- Transaction Type -->
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <label class="filter-label">{{ $t('transactionList.table.headers.transactionType') }}</label>
+                        <select v-model="filters.transactionType" class="form-select form-select-sm">
+                            <option :value="null">{{ $t('common.all') }}</option>
+                            <option :value="0">{{ $t('common.income') }}</option>
+                            <option :value="1">{{ $t('common.expense') }}</option>
+                        </select>
+                    </div>
+                    <!-- Date -->
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <label class="filter-label">{{ $t('transactionList.table.headers.transactionDate') }}</label>
+                        <VueDatePicker
+                            v-model="filters.transactionDate"
+                            range
+                            :time-config="{ enableTimePicker: false }"
+                            auto-apply
+                            :placeholder="$t('common.all')"
+                        />
+                    </div>
+                    <!-- Name -->
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <label class="filter-label">{{ $t('transactionList.table.headers.name') }}</label>
+                        <input v-model="filters.name" class="form-control form-control-sm"
+                            :placeholder="$t('transactionList.table.headers.name')" />
+                    </div>
+                    <!-- Description -->
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <label class="filter-label">{{ $t('transactionList.table.headers.description') }}</label>
+                        <input v-model="filters.description" class="form-control form-control-sm"
+                            :placeholder="$t('transactionList.table.headers.description')" />
+                    </div>
+                    <!-- Amount -->
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <label class="filter-label">{{ $t('transactionList.table.headers.amount') }}</label>
+                        <input v-model="filters.amount" type="number" class="form-control form-control-sm"
+                            :placeholder="$t('transactionList.table.headers.amount')" />
+                    </div>
+                    <!-- Labels -->
+                    <div class="col-12">
+                        <label class="filter-label">{{ $t('transactionList.table.headers.labels') }}</label>
+                        <VSelect
+                            v-model="filters.labelIds"
+                            :options="labels"
+                            label="name"
+                            :reduce="l => l.id"
+                            :placeholder="$t('common.all')"
+                            :clearable="true"
+                            multiple
+                        >
+                            <template #option="label">
+                                <span class="label-dot me-1" :style="{ background: label.colorCode }"></span>
+                                {{ label.name }}
+                            </template>
+                            <template #selected-option="label">
+                                <span class="label-dot me-1" :style="{ background: label.colorCode }"></span>
+                                {{ label.name }}
+                            </template>
+                        </VSelect>
+                    </div>
+                </div>
+            </div>
+
             <div class="card-body">
-                <div class="row d-flex align-items-center justify-content-end">
-                    <div class="col-sm-12 offset-md-8 col-md-3">
-                        <VueDatePicker v-model="dates" range multi-calendars
-                            :time-config="{ enableTimePicker: false }" />
-                    </div>
-                    <div class="col-sm-12 col-md-1 m-t-10 mobile-only">
-                        <button class="btn btn-primary float-end" @click="loadTransactions">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                    <div class="col-sm-12 col-md-12 m-t-15">
-                        <EasyDataTable id="transactionList" v-model:server-options="serverOptions"
-                            :server-items-length="itemsLength" :headers="headers" :items="transactions"
-                            :loading="loading">
+                <div class="col-sm-12 col-md-12">
+                    <EasyDataTable
+                        id="transactionList"
+                        v-model:server-options="serverOptions"
+                        :server-items-length="itemsLength"
+                        :headers="headers"
+                        :items="transactions"
+                        :loading="loading"
+                    >
+                        <template #empty-message>
+                            <span>{{ $t('common.noDataText') }}</span>
+                        </template>
 
-                            <template #empty-message>
-                                <span>{{ $t('common.noDataText') }}</span>
-                            </template>
+                        <template #item-notebookName="item">
+                            <span class="badge badge-primary">
+                                {{ item.notebook.name }}
+                            </span>
+                        </template>
 
-                            <template #item-notebookName="item">
-                                <span class="badge badge-primary">
-                                    {{ item.notebook.name }}
+                        <template #item-currencyCode="item">
+                            <span class="badge badge-success">
+                                {{ item.currency.code }} - {{ item.currency.name }}
+                            </span>
+                        </template>
+
+                        <template #item-transactionType="item">
+                            <span v-if="item.transactionType == 0" class="badge badge-success">{{
+                                $t('common.income') }}</span>
+                            <span v-else class="badge badge-danger">{{ $t('common.expense') }}</span>
+                        </template>
+
+                        <template #item-transactionDate="item">
+                            <span>{{ formatDate(item.transactionDate) }}</span>
+                        </template>
+
+                        <template #item-amount="item">
+                            {{ formatCurrency(item.amount, item.currency.code) }}
+                        </template>
+
+                        <template #item-labels="item">
+                            <span v-for="label in item.labels" class="badge"
+                                :style="{ backgroundColor: label.colorCode }">
+                                {{ label.name }}
+                            </span>
+                            <span v-if="item.labels.length < 1">
+                                <span class="badge badge-danger">
+                                    <i class="fa fa-exclamation"></i>
+                                    {{ $t('transactionList.noLabel') }}
                                 </span>
-                            </template>
+                            </span>
+                        </template>
 
-                            <template #item-currencyCode="item">
-                                <span class="badge badge-success">
-                                    {{ item.currency.code }} - {{ item.currency.name }}
-                                </span>
-                            </template>
+                        <template #item-actions="item">
+                            <button class="btn btn-warning btn-xs" v-tooltip="$t('common.tooltips.edit')" @click="openEditModal(item)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-xs m-l-5" v-tooltip="$t('common.tooltips.delete')" @click="deleteTransaction(item)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </template>
 
-                            <template #item-transactionType="item">
-                                <span v-if="item.transactionType == 0" class="badge badge-success">{{
-                                    $t('common.income') }}</span>
-                                <span v-else class="badge badge-danger">{{ $t('common.expense') }}</span>
-                            </template>
-
-                            <template #item-transactionDate="item">
-                                <span>{{ formatDate(item.transactionDate) }}</span>
-                            </template>
-
-                            <template #item-amount="item">
-                                {{ formatCurrency(item.amount, item.currency.code) }}
-                            </template>
-
-                            <template #item-labels="item">
-                                <span v-for="label in item.labels" class="badge"
-                                    :style="{ backgroundColor: label.colorCode }">
-                                    {{ label.name }}
-                                </span>
-
-                                <span v-if="item.labels.length < 1">
-                                    <span class="badge badge-danger">
-                                        <i class="fa fa-exclamation"></i>
-                                        {{ $t('transactionList.noLabel') }}
-                                    </span>
-                                </span>
-                            </template>
-
-                            <template #item-actions="item">
-                                <button class="btn btn-warning btn-xs" @click="openEditModal(item)">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-xs m-l-5" @click="deleteTransaction(item)">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </template>
-
-                        </EasyDataTable>
-                    </div>
+                    </EasyDataTable>
                 </div>
             </div>
         </div>
@@ -91,62 +187,35 @@ import transactionModal from '@/components/transaction/transactionModal.vue';
 import * as bootstrap from 'bootstrap';
 import transactionService from '@/services/transaction.service';
 import moment from 'moment'
+
 export default {
     components: {
         'transaction-modal': transactionModal
     },
     data() {
         return {
-            dates: [
-                new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth() - 1,
-                    1
-                ),
-                new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth() + 1,
-                    0
-                )
-            ],
+            showFilters: false,
+            filters: {
+                currencyId: null,
+                transactionType: null,
+                name: '',
+                description: '',
+                amount: '',
+                transactionDate: [null, null],
+                labelIds: []
+            },
+            filterDebounce: null,
             loading: false,
             headers: [
-                {
-                    text: this.$t('transactionList.table.headers.notebookName'),
-                    value: 'notebookName'
-                },
-                {
-                    text: this.$t('transactionList.table.headers.currency'),
-                    value: 'currencyCode'
-                },
-                {
-                    text: this.$t('transactionList.table.headers.transactionType'),
-                    value: 'transactionType'
-                },
-                {
-                    text: this.$t('transactionList.table.headers.name'),
-                    value: 'name'
-                },
-                {
-                    text: this.$t('transactionList.table.headers.description'),
-                    value: 'description'
-                },
-                {
-                    text: this.$t('transactionList.table.headers.amount'),
-                    value: 'amount'
-                },
-                {
-                    text: this.$t('transactionList.table.headers.transactionDate'),
-                    value: 'transactionDate'
-                },
-                {
-                    text: this.$t('transactionList.table.headers.labels'),
-                    value: 'labels'
-                },
-                {
-                    text: this.$t('common.actions'),
-                    value: 'actions'
-                }
+                { text: this.$t('transactionList.table.headers.notebookName'), value: 'notebookName' },
+                { text: this.$t('transactionList.table.headers.currency'), value: 'currencyCode' },
+                { text: this.$t('transactionList.table.headers.transactionType'), value: 'transactionType' },
+                { text: this.$t('transactionList.table.headers.name'), value: 'name' },
+                { text: this.$t('transactionList.table.headers.description'), value: 'description' },
+                { text: this.$t('transactionList.table.headers.amount'), value: 'amount' },
+                { text: this.$t('transactionList.table.headers.transactionDate'), value: 'transactionDate' },
+                { text: this.$t('transactionList.table.headers.labels'), value: 'labels' },
+                { text: this.$t('common.actions'), value: 'actions' }
             ],
             transactions: [],
             itemsLength: 0,
@@ -161,54 +230,103 @@ export default {
             selectedTransaction: {}
         }
     },
+    computed: {
+        currencies() {
+            return this.$store.getters['dashboard/getCurrencies'];
+        },
+        labels() {
+            return this.$store.getters['dashboard/getLabels'];
+        },
+        hasActiveFilters() {
+            return (
+                this.filters.currencyId !== null ||
+                this.filters.transactionType !== null ||
+                this.filters.name ||
+                this.filters.description ||
+                this.filters.amount !== '' ||
+                this.filters.transactionDate[0] !== null ||
+                this.filters.labelIds.length > 0
+            );
+        },
+        activeFilterCount() {
+            let count = 0;
+            if (this.filters.currencyId !== null)        count++;
+            if (this.filters.transactionType !== null)   count++;
+            if (this.filters.name)                       count++;
+            if (this.filters.description)                count++;
+            if (this.filters.amount !== '')              count++;
+            if (this.filters.transactionDate[0] !== null) count++;
+            if (this.filters.labelIds.length > 0)        count++;
+            return count;
+        }
+    },
     watch: {
         '$store.state.notebook.selectedNotebook': {
             deep: true,
-            async handler(newVal, oldVal) {
+            async handler() {
+                this.serverOptions.page = 1;
                 await this.loadTransactions();
             }
         },
         serverOptions: {
             deep: true,
-            async handler(newVal, oldVal) {
+            async handler() {
                 await this.loadTransactions();
             }
         },
-        dates: {
+        filters: {
             deep: true,
-            async handler(newVal, oldVal) {
-                await this.loadTransactions();
+            handler() {
+                clearTimeout(this.filterDebounce);
+                this.filterDebounce = setTimeout(() => {
+                    this.serverOptions.page = 1;
+                    this.loadTransactions();
+                }, 400);
             }
         }
     },
     methods: {
+        clearFilters() {
+            this.filters = {
+                currencyId: null,
+                transactionType: null,
+                name: '',
+                description: '',
+                amount: '',
+                transactionDate: [null, null],
+                labelIds: []
+            };
+        },
         async loadTransactions() {
             this.loading = true;
+
+            const dateStart = this.filters.transactionDate?.[0];
+            const dateEnd   = this.filters.transactionDate?.[1];
+
             var queryParams = {
                 PageNumber: this.serverOptions.page,
                 PageSize: this.serverOptions.rowsPerPage,
                 SortColumn: '',
                 SortDirection: 'Ascending',
-                StartTime: this.dates[0]
-                    ? new Date(
-                        this.dates[0].getFullYear(),
-                        this.dates[0].getMonth(),
-                        this.dates[0].getDate(),
-                        0, 0, 0
-                    ).toISOString()
+                StartTime: dateStart
+                    ? new Date(dateStart.getFullYear(), dateStart.getMonth(), dateStart.getDate(), 0, 0, 0).toISOString()
                     : null,
-                EndTime: this.dates[1]
-                    ? new Date(
-                        this.dates[1].getFullYear(),
-                        this.dates[1].getMonth(),
-                        this.dates[1].getDate(),
-                        0, 0, 0
-                    ).toISOString()
-                    : null
+                EndTime: dateEnd
+                    ? new Date(dateEnd.getFullYear(), dateEnd.getMonth(), dateEnd.getDate(), 23, 59, 59).toISOString()
+                    : null,
+                Name:            this.filters.name            || null,
+                Description:     this.filters.description     || null,
+                Amount:          this.filters.amount !== ''   ? this.filters.amount : null,
+                CurrencyId:      this.filters.currencyId      ?? null,
+                TransactionType: this.filters.transactionType !== null ? this.filters.transactionType : null,
+                LabelIds:        this.filters.labelIds.length > 0 ? this.filters.labelIds : null,
             };
 
             try {
-                var response = await transactionService.getAllTransactions(this.$store.state.notebook.selectedNotebook.id, queryParams);
+                var response = await transactionService.getAllTransactions(
+                    this.$store.state.notebook.selectedNotebook.id,
+                    queryParams
+                );
 
                 if (response.status !== 200) {
                     this.$swal('Error', this.$t('transactionList.messages.transactionsLoadError'), 'error');
@@ -242,10 +360,15 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        var response = await transactionService.deleteTransaction(this.$store.state.notebook.selectedNotebook.id, item.id);
-
+                        var response = await transactionService.deleteTransaction(
+                            this.$store.state.notebook.selectedNotebook.id,
+                            item.id
+                        );
                         if (response.status === 200) {
-                            this.$swal(this.$t('transactionList.messages.transactionDeleteSuccess'), '', 'success');
+                            const key = item.transactionType === 0
+                                ? 'transactionList.messages.incomeDeleteSuccess'
+                                : 'transactionList.messages.expenseDeleteSuccess';
+                            this.$swal(this.$t(key), '', 'success');
                             await this.loadTransactions();
                         } else {
                             this.$swal('Error', this.$t('transactionList.messages.transactionDeleteError'), 'error');
@@ -263,7 +386,6 @@ export default {
         },
         formatCurrency(amount, currencyCode) {
             if (amount == null) return '';
-
             return new Intl.NumberFormat('tr-TR', {
                 style: 'currency',
                 currency: currencyCode,
@@ -280,17 +402,59 @@ export default {
                 keyboard: false
             });
         }
-
         if (this.$store.state.notebook.selectedNotebook.id > 0)
-            this.loadTransactions()
+            this.loadTransactions();
     },
 }
 </script>
 
 <style scoped>
-.mobile-only {
-    @media (min-width: 768px) {
-        margin: 0px !important;
-    }
+/* Filter panel */
+.filter-panel {
+    padding: 14px 20px;
+    background: #f9fafb;
+    border-bottom: 1.5px solid #e5e7eb;
+}
+
+.filter-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+}
+
+/* Küçültülmüş VueDatePicker */
+.filter-panel :deep(.dp__input) {
+    font-size: 13px;
+    height: 31px;
+    min-height: unset;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+/* Filter badge */
+.filter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: #10b981;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 4px;
+}
+
+.label-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 </style>

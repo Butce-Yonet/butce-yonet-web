@@ -1,63 +1,133 @@
 <template>
     <div class="tab-pane fade" id="notebook-categories-tab-content" role="tabpanel"
         aria-labelledby="notebook-categories-tab">
-        <div class="col-sm-12 col-md-12 m-t-20">
-            <div class="row">
-                <div class="col-sm-12 col-md-4">
-                    <input class="form-control fixed-height-input" v-model="notebookLabelForm.name">
-                    <small class="text-danger" v-if="notebookLabelFormErrors.name">{{
-                        notebookLabelFormErrors.name
-                        }}</small>
-                </div>
-                <div class="col-sm-12 col-md-4">
-                    <input class="form-control fixed-height-input" v-model="notebookLabelForm.color" type="color">
-                    <small class="text-danger" v-if="notebookLabelFormErrors.color">{{
-                        notebookLabelFormErrors.color
-                        }}</small>
-                </div>
-                <div class="col-sm-12 col-md-1">
-                    <button class="btn btn-success fixed-height-input" @click="saveNotebookLabel"
-                        :disabled="notebookLabelFormSubmitting">
-                        <i class="fa fa-plus"></i>
-                    </button>
-                </div>
-            </div> 
-            <div class="col-sm-12 col-md-12 m-t-10">
-                <EasyDataTable :headers="notebookLabelHeaders" :items="notebookLabels" :loading="notebookLabelLoading">
 
-                    <template #empty-message>
-                        <span>{{ $t('common.noDataText') }}</span>
-                    </template>
-
-                    <template #item-name="item">
-                        <input v-if="item.inlineEdit" v-model="notebookLabelEditForm.name"
-                            class="form-control form-control-sm" />
-                        <span v-else>{{ item.name }}</span>
-                    </template>
-
-                    <template #item-color="item">
-                        <input v-if="item.inlineEdit" type="color" v-model="notebookLabelEditForm.color"
-                            class="form-control form-control-sm" />
-                        <span v-else class="badge pill" :style="{ backgroundColor: item.color }">
-                            {{ item.name }}
-                        </span>
-                    </template>
-
-                    <template #item-actions="item">
-                        <button class="btn btn-warning btn-xs" @click="changeInlineEdit(item, true)">
-                            <i class="fa fa-pencil"></i>
+        <!-- Add Label Card -->
+        <div class="add-section mb-4">
+            <div class="add-section-header">
+                <i class="fa fa-tag me-2"></i>
+                {{ $t('editNotebookDetail.labelsTable.headers.name') }}
+            </div>
+            <div class="add-section-body">
+                <div class="row g-2 align-items-start">
+                    <div class="col">
+                        <input
+                            class="form-control"
+                            v-model="notebookLabelForm.name"
+                            :placeholder="$t('editNotebookDetail.labelsTable.headers.name')"
+                            @keyup.enter="saveNotebookLabel"
+                        />
+                        <small class="text-danger mt-1 d-block" v-if="notebookLabelFormErrors.name">
+                            {{ notebookLabelFormErrors.name }}
+                        </small>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-picker-wrap">
+                            <input
+                                class="form-control form-control-color"
+                                v-model="notebookLabelForm.color"
+                                type="color"
+                                :title="$t('editNotebookDetail.labelsTable.headers.color')"
+                            />
+                        </div>
+                        <small class="text-danger mt-1 d-block" v-if="notebookLabelFormErrors.color">
+                            {{ notebookLabelFormErrors.color }}
+                        </small>
+                    </div>
+                    <div class="col-auto">
+                        <button
+                            class="btn btn-success px-4"
+                            @click="saveNotebookLabel"
+                            :disabled="notebookLabelFormSubmitting"
+                        >
+                            <span v-if="notebookLabelFormSubmitting">
+                                <span class="spinner-border spinner-border-sm me-1"></span>
+                            </span>
+                            <span v-else><i class="fa fa-plus me-1"></i></span>
+                            Ekle
                         </button>
-                        <button class="btn btn-success btn-xs m-l-5" :disabled="notebookLabelEditForm.submitting"
-                            @click="editNotebookLabel(item)">
-                            <i class="fa fa-save"></i>
-                        </button>
-                        <button class="btn btn-danger btn-xs m-l-5" @click="deleteNotebookLabel(item)">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </template>
-                </EasyDataTable>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Labels List -->
+        <div v-if="notebookLabelLoading" class="text-center py-5">
+            <div class="spinner-border text-success" role="status"></div>
+        </div>
+
+        <div v-else-if="notebookLabels.length === 0" class="empty-state">
+            <i class="fa fa-tags"></i>
+            <p>{{ $t('common.noDataText') }}</p>
+        </div>
+
+        <div v-else class="label-list">
+            <div
+                v-for="label in notebookLabels"
+                :key="label.id"
+                class="label-card"
+                :class="{ 'label-card--editing': label.inlineEdit }"
+            >
+                <!-- View mode -->
+                <template v-if="!label.inlineEdit">
+                    <div class="label-color-dot" :style="{ background: label.color }"></div>
+                    <div class="label-badge" :style="{ background: label.color + '22', color: label.color, borderColor: label.color + '44' }">
+                        {{ label.name }}
+                    </div>
+                    <div class="label-actions ms-auto">
+                        <button
+                            class="btn btn-sm btn-outline-warning me-1"
+                            v-tooltip="$t('common.tooltips.edit')"
+                            @click="changeInlineEdit(label, true)"
+                        >
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button
+                            class="btn btn-sm btn-outline-danger"
+                            v-tooltip="$t('common.tooltips.delete')"
+                            @click="deleteNotebookLabel(label)"
+                        >
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </template>
+
+                <!-- Edit mode -->
+                <template v-else>
+                    <input
+                        class="form-control form-control-sm"
+                        v-model="notebookLabelEditForm.name"
+                        style="max-width: 220px;"
+                    />
+                    <input
+                        type="color"
+                        class="form-control form-control-color form-control-sm ms-2"
+                        v-model="notebookLabelEditForm.color"
+                    />
+                    <div class="label-actions ms-auto">
+                        <button
+                            class="btn btn-sm btn-success me-1"
+                            v-tooltip="$t('common.save')"
+                            :disabled="notebookLabelEditForm.submitting"
+                            @click="editNotebookLabel(label)"
+                        >
+                            <span v-if="notebookLabelEditForm.submitting">
+                                <span class="spinner-border spinner-border-sm"></span>
+                            </span>
+                            <i v-else class="fa fa-save"></i>
+                        </button>
+                        <button
+                            class="btn btn-sm btn-outline-secondary"
+                            v-tooltip="$t('common.cancel')"
+                            @click="changeInlineEdit(label, false)"
+                        >
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -68,25 +138,11 @@ import { createYupValidator } from '@/services/validator.service';
 export default {
     data() {
         return {
-            notebookLabelHeaders: [
-                {
-                    text: this.$t('editNotebookDetail.labelsTable.headers.name'),
-                    value: 'name'
-                },
-                {
-                    text: this.$t('editNotebookDetail.labelsTable.headers.color'),
-                    value: 'color'
-                },
-                {
-                    text: this.$t('common.actions'),
-                    value: 'actions'
-                }
-            ],
             notebookLabels: [],
             notebookLabelLoading: false,
             notebookLabelForm: {
                 name: '',
-                color: '#000000'
+                color: '#10b981'
             },
             notebookLabelFormErrors: {},
             notebookLabelFormIsValid: false,
@@ -110,7 +166,7 @@ export default {
             if (!newVal) {
                 this.notebookLabelForm = {
                     name: '',
-                    color: '#000000'
+                    color: '#10b981'
                 }
             } else {
                 this.loadNotebookLabels();
@@ -179,7 +235,7 @@ export default {
                     });
                     this.notebookLabelForm = {
                         name: '',
-                        color: '#000000'
+                        color: '#10b981'
                     }
                     await this.loadNotebookLabels();
                 } else {
@@ -205,7 +261,7 @@ export default {
                     item.inlineEdit = state;
 
                     if (state)
-                        this.notebookLabelEditForm = item;
+                        this.notebookLabelEditForm = { ...item };
                     else
                         this.notebookLabelEditForm = {
                             id: null,
@@ -313,3 +369,99 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.add-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.add-section-header {
+    background: #f9fafb;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.add-section-body {
+    padding: 16px;
+}
+
+.color-picker-wrap .form-control-color {
+    width: 48px;
+    height: 38px;
+    padding: 2px 4px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px 0;
+    color: #9ca3af;
+}
+
+.empty-state i {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.label-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: background 0.15s, border-color 0.15s;
+    min-height: 52px;
+}
+
+.label-card:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.label-card--editing {
+    background: #fffbeb;
+    border-color: #fcd34d;
+}
+
+.label-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.label-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.label-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+</style>

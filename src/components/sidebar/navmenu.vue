@@ -110,15 +110,18 @@
                             {{ $t(childrenItem.title) }}
                             <div class="float-end">
                                 <button class="btn btn-warning btn-xs m-r-5 sidebar-my-notebook-edit"
+                                    v-tooltip="$t('common.tooltips.editNotebook')"
                                     @click.stop="openEditNotebookModal(childrenItem)">
                                     <i class="fa fa-pencil"></i>
                                 </button>
                                 <button class="btn btn-primary btn-xs m-r-5 sidebar-my-notebook-detail"
+                                    v-tooltip="$t('common.tooltips.editNotebookDetail')"
                                     @click.stop="openEditNotebookDetailModal(childrenItem)">
                                     <i class="fa fa-cogs"></i>
                                 </button>
                                 <button :disabled="childrenItem.data.isDefault"
                                     class="btn btn-danger btn-xs sidebar-my-notebook-delete"
+                                    v-tooltip="$t('common.tooltips.deleteNotebook')"
                                     @click.stop="deleteNotebook(childrenItem)">
                                     <i class="fa fa-trash"></i>
                                 </button>
@@ -364,6 +367,7 @@ export default {
             notebookService.mapNotebooksToMenu();
         },
         changeNotebook(menuItem) {
+            localStorage.setItem('selectedNotebookId', menuItem.data.id);
             this.$store.dispatch('menu/setActiveRouteFromNotebook', menuItem);
             this.$store.dispatch('notebook/setSelectedNotebook', menuItem.data);
         },

@@ -1,71 +1,186 @@
 <template>
     <div class="modal fade modal-bookmark" id="transactionModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">
-                        <span v-if="mode === 'create'">{{ $t('transactionList.transactionModal.createTitle') }}</span>
-                        <span v-else>{{ $t('transactionList.transactionModal.editTitle') }}</span>
-                    </h3>
-                    <button class="btn-close" type="button" aria-label="Close" @click="closeModal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6 m-t-5">
-                            <label>{{ $t('transactionList.transactionModal.form.placeholder.nameLabel') }}</label>
-                            <small v-if="errors.name" class="text-danger"> *</small>
-                            <input class="form-control" v-model="form.name" />
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content border-0 shadow-lg">
+
+                <!-- Header -->
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="tx-icon-wrap" :class="mode === 'edit' ? 'icon-edit' : (form.transactionType === 1 ? 'icon-expense' : 'icon-income')">
+                            <i :class="mode === 'edit' ? 'fa fa-pencil' : (form.transactionType === 1 ? 'fa fa-arrow-down' : 'fa fa-arrow-up')"></i>
                         </div>
-                        <div class="col-sm-12 col-md-6 m-t-10">
-                            <label>{{ $t('transactionList.transactionModal.form.placeholder.descriptionLabel')
-                            }}</label>
-                            <small v-if="errors.description" class="text-danger"> *</small>
-                            <input class="form-control" v-model="form.description" />
-                        </div>
-                        <div class="col-sm-12 col-md-6 m-t-10">
-                            <label>{{ $t('transactionList.transactionModal.form.placeholder.amountLabel') }}</label>
-                            <small v-if="errors.amount" class="text-danger"> *</small>
-                            <input class="form-control" type="number" v-model.number="form.amount" />
-                        </div>
-                        <div class="col-sm-12 col-md-6 m-t-10">
-                            <label>{{ $t('transactionList.transactionModal.form.placeholder.currencyLabel') }}</label>
-                            <small v-if="errors.currencyId" class="text-danger"> *</small>
-                            <VSelect :options="currencies" label="code" :reduce="c => c.id" v-model="form.currencyId">
-                                <template #option="currency">
-                                    {{ currency.code }} - {{ currency.name }}
-                                </template>
-                                <template #selected-option="currency">
-                                    {{ currency.code }} - {{ currency.name }}
-                                </template>
-                            </VSelect>
-                        </div>
-                        <div class="col-sm-12 col-md-6 m-t-10">
-                            <label>{{ $t('transactionList.transactionModal.form.placeholder.transactionTypeLabel')
-                            }}</label>
-                            <small v-if="errors.transactionType" class="text-danger"> *</small>
-                            <VSelect :options="transactionTypes" label="text" :reduce="c => c.value"
-                                v-model="form.transactionType"></VSelect>
-                        </div>
-                        <div class="col-sm-12 col-md-6 m-t-10">
-                            <label>{{ $t('transactionList.transactionModal.form.placeholder.transactionDateLabel')
-                            }}</label>
-                            <small v-if="errors.transactionDate" class="text-danger"> *</small>
-                            <VueDatePicker v-model="form.transactionDate" :time-config="{ enableTimePicker: false }" />
-                        </div>
-                        <div class="col-sm-12 col-md-6 m-t-10">
-                            <label>{{ $t('transactionList.transactionModal.form.placeholder.labelsLabel') }}</label>
-                            <small v-if="errors.labels" class="text-danger"> *</small>
-                            <VSelect :options="labels" label="name" :reduce="c => c.id" v-model="form.labels" multiple>
-                            </VSelect>
-                        </div>
-                        <div class="col-sm-12 col-md-12 m-t-15 d-flex justify-content-end">
-                            <button class="btn btn-danger float-end" @click="closeModal">{{ $t('common.cancel')
-                                }}</button>
-                            <button class="btn btn-success float-end m-l-5" :disabled="!isValid" @click="save">{{
-                                $t('common.save') }}</button>
+                        <div>
+                            <p class="text-muted mb-0 small">
+                                {{ mode === 'create' ? $t('transactionList.transactionModal.createTitle') : $t('transactionList.transactionModal.editTitle') }}
+                            </p>
+                            <h5 class="modal-title mb-0 fw-semibold">
+                                {{ getModalNotebook.name }}
+                            </h5>
                         </div>
                     </div>
+                    <button class="btn-close" type="button" aria-label="Close" @click="closeModal"></button>
                 </div>
+
+                <!-- Body -->
+                <div class="modal-body px-4 pt-4 pb-4">
+                    <form novalidate @submit.prevent="save">
+
+                        <!-- Transaction Type Toggle -->
+                        <div class="type-toggle mb-4">
+                            <button
+                                type="button"
+                                class="type-btn"
+                                :class="form.transactionType === 0 ? 'type-btn--income active' : 'type-btn--income'"
+                                @click="form.transactionType = 0"
+                            >
+                                <i class="fa fa-arrow-up me-2"></i>
+                                {{ $t('common.income') }}
+                            </button>
+                            <button
+                                type="button"
+                                class="type-btn"
+                                :class="form.transactionType === 1 ? 'type-btn--expense active' : 'type-btn--expense'"
+                                @click="form.transactionType = 1"
+                            >
+                                <i class="fa fa-arrow-down me-2"></i>
+                                {{ $t('common.expense') }}
+                            </button>
+                        </div>
+
+                        <div class="row g-3">
+                            <!-- Name -->
+                            <div class="col-sm-12 col-md-6">
+                                <label class="field-label">
+                                    {{ $t('transactionList.transactionModal.form.placeholder.nameLabel') }}
+                                    <span class="text-danger ms-1" v-if="errors.name">*</span>
+                                </label>
+                                <input
+                                    class="form-control tx-input"
+                                    :class="{ 'is-invalid': errors.name }"
+                                    v-model="form.name"
+                                    :placeholder="$t('transactionList.transactionModal.form.placeholder.nameLabel')"
+                                />
+                            </div>
+
+                            <!-- Description -->
+                            <div class="col-sm-12 col-md-6">
+                                <label class="field-label">
+                                    {{ $t('transactionList.transactionModal.form.placeholder.descriptionLabel') }}
+                                </label>
+                                <input
+                                    class="form-control tx-input"
+                                    v-model="form.description"
+                                    :placeholder="$t('transactionList.transactionModal.form.placeholder.descriptionLabel')"
+                                />
+                            </div>
+
+                            <!-- Amount -->
+                            <div class="col-sm-12 col-md-6">
+                                <label class="field-label">
+                                    {{ $t('transactionList.transactionModal.form.placeholder.amountLabel') }}
+                                    <span class="text-danger ms-1" v-if="errors.amount">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text tx-input-addon">
+                                        <i class="fa fa-money"></i>
+                                    </span>
+                                    <input
+                                        class="form-control tx-input"
+                                        :class="{ 'is-invalid': errors.amount }"
+                                        type="number"
+                                        v-model.number="form.amount"
+                                        :placeholder="$t('transactionList.transactionModal.form.placeholder.amountLabel')"
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- Currency -->
+                            <div class="col-sm-12 col-md-6">
+                                <label class="field-label">
+                                    {{ $t('transactionList.transactionModal.form.placeholder.currencyLabel') }}
+                                    <span class="text-danger ms-1" v-if="errors.currencyId">*</span>
+                                </label>
+                                <VSelect
+                                    :options="currencies"
+                                    label="code"
+                                    :reduce="c => c.id"
+                                    v-model="form.currencyId"
+                                    :placeholder="$t('transactionList.transactionModal.form.placeholder.currencyLabel')"
+                                >
+                                    <template #option="currency">
+                                        <span class="fw-semibold">{{ currency.code }}</span>
+                                        <span class="text-muted ms-1 small">{{ currency.name }}</span>
+                                    </template>
+                                    <template #selected-option="currency">
+                                        {{ currency.code }} - {{ currency.name }}
+                                    </template>
+                                </VSelect>
+                            </div>
+
+                            <!-- Date -->
+                            <div class="col-sm-12 col-md-6">
+                                <label class="field-label">
+                                    {{ $t('transactionList.transactionModal.form.placeholder.transactionDateLabel') }}
+                                    <span class="text-danger ms-1" v-if="errors.transactionDate">*</span>
+                                </label>
+                                <VueDatePicker
+                                    v-model="form.transactionDate"
+                                    :time-config="{ enableTimePicker: false }"
+                                    auto-apply
+                                />
+                            </div>
+
+                            <!-- Labels -->
+                            <div class="col-sm-12 col-md-6">
+                                <label class="field-label">
+                                    {{ $t('transactionList.transactionModal.form.placeholder.labelsLabel') }}
+                                </label>
+                                <VSelect
+                                    :options="labels"
+                                    label="name"
+                                    :reduce="c => c.id"
+                                    v-model="form.labels"
+                                    multiple
+                                    :placeholder="$t('transactionList.transactionModal.form.placeholder.labelsLabel')"
+                                >
+                                    <template #option="label">
+                                        <span
+                                            class="label-dot me-2"
+                                            :style="{ background: label.colorCode }"
+                                        ></span>
+                                        {{ label.name }}
+                                    </template>
+                                    <template #selected-option="label">
+                                        <span
+                                            class="label-dot me-1"
+                                            :style="{ background: label.colorCode }"
+                                        ></span>
+                                        {{ label.name }}
+                                    </template>
+                                </VSelect>
+                            </div>
+                        </div>
+
+                        <!-- Footer Buttons -->
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <button class="btn btn-light px-4" type="button" @click="closeModal">
+                                {{ $t('common.cancel') }}
+                            </button>
+                            <button
+                                class="btn px-4 save-btn"
+                                :class="mode === 'edit' ? 'btn-warning' : (form.transactionType === 1 ? 'btn-danger' : 'btn-success')"
+                                :disabled="!isValid || submitting"
+                                type="submit"
+                            >
+                                <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
+                                <i v-else class="fa me-2" :class="mode === 'edit' ? 'fa-check' : 'fa-plus'"></i>
+                                {{ $t('common.save') }}
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
@@ -158,6 +273,7 @@ export default {
             }
         },
         async saveTransaction() {
+            this.submitting = true;
             var requestModel = {
                 NotebookId: this.getModalNotebook.id,
                 Transactions: []
@@ -169,10 +285,10 @@ export default {
                 var response = await transactionService.createTransaction(this.getModalNotebook.id, requestModel)
 
                 if (response.status === 200) {
-                    this.$swal({
-                        title: this.$t('transactionList.transactionModal.messages.transactionCreateSuccess'),
-                        icon: "success",
-                    });
+                    const key = this.form.transactionType === 0
+                        ? 'transactionList.transactionModal.messages.incomeCreateSuccess'
+                        : 'transactionList.transactionModal.messages.expenseCreateSuccess';
+                    this.$swal({ title: this.$t(key), icon: "success" });
                     this.closeModal();
 
                     setTimeout(() => {
@@ -189,9 +305,12 @@ export default {
                     title: this.$t('transactionList.transactionModal.messages.transactionCreateError'),
                     icon: "error",
                 });
+            } finally {
+                this.submitting = false;
             }
         },
         async editTransaction() {
+            this.submitting = true;
             var requestModel = {
                 NotebookId: this.getModalNotebook.id,
                 TransactionId: this.transactionData.id,
@@ -208,10 +327,10 @@ export default {
                 var response = await transactionService.updateTransaction(this.getModalNotebook.id, this.transactionData.id, requestModel)
 
                 if (response.status === 200) {
-                    this.$swal({
-                        title: this.$t('transactionList.transactionModal.messages.transactionEditSuccess'),
-                        icon: "success",
-                    });
+                    const key = this.form.transactionType === 0
+                        ? 'transactionList.transactionModal.messages.incomeEditSuccess'
+                        : 'transactionList.transactionModal.messages.expenseEditSuccess';
+                    this.$swal({ title: this.$t(key), icon: "success" });
                     this.closeModal();
 
                     setTimeout(() => {
@@ -228,6 +347,8 @@ export default {
                     title: this.$t('transactionList.transactionModal.messages.transactionEditError'),
                     icon: "error",
                 });
+            } finally {
+                this.submitting = false;
             }
         },
         fillForm() {
@@ -257,3 +378,121 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.modal-content {
+    border-radius: 16px;
+}
+
+.modal-header {
+    border-radius: 16px 16px 0 0;
+}
+
+.tx-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.icon-income  { background: linear-gradient(135deg, #10b981, #059669); }
+.icon-expense { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.icon-edit    { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+/* Type toggle */
+.type-toggle {
+    display: flex;
+    gap: 0;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.type-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    background: #f9fafb;
+    color: #6b7280;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.type-btn--income.active {
+    background: #ecfdf5;
+    color: #059669;
+    font-weight: 700;
+    box-shadow: inset 0 -2px 0 #10b981;
+}
+
+.type-btn--expense.active {
+    background: #fef2f2;
+    color: #dc2626;
+    font-weight: 700;
+    box-shadow: inset 0 -2px 0 #ef4444;
+}
+
+.type-btn:hover:not(.active) {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* Fields */
+.field-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+}
+
+.tx-input {
+    border-radius: 8px;
+    border: 1.5px solid #e5e7eb;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tx-input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+}
+
+.tx-input.is-invalid {
+    border-color: #ef4444;
+}
+
+.tx-input-addon {
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.input-group .tx-input {
+    border-radius: 0 8px 8px 0;
+}
+
+.label-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.save-btn {
+    font-weight: 600;
+}
+</style>

@@ -4,7 +4,7 @@
     "createNotebook": "Create New Notebook"
   },
   "header": {
-    "activeNotebook": "Active Notebook",
+    "activeNotebook": "Selected Notebook",
     "createNotebook": "Create New Notebook",
     "editNotebook": "Edit Notebook"
   },
@@ -33,7 +33,17 @@
     "no": "No",
     "logout": "Log out",
     "actions": "Actions",
+    "all": "All",
+    "clearFilters": "Clear Filters",
+    "filter": "Filter",
     "noDataText": "No data available",
+    "tooltips": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "editNotebook": "Edit Notebook",
+      "editNotebookDetail": "Edit Notebook Details",
+      "deleteNotebook": "Delete Notebook"
+    },
     "email": "Email",
     "income": "Income",
     "expense": "Expense",
@@ -103,8 +113,12 @@
       "editTitle": "Edit Income - Expense Transaction",
       "messages": {
         "transactionCreateSuccess": "Income - Expense transaction created successfully.",
+        "incomeCreateSuccess": "Income transaction created successfully.",
+        "expenseCreateSuccess": "Expense transaction created successfully.",
         "transactionCreateError": "An error occurred while creating the income - expense transaction.",
         "transactionEditSuccess": "Income - Expense transaction updated successfully.",
+        "incomeEditSuccess": "Income transaction updated successfully.",
+        "expenseEditSuccess": "Expense transaction updated successfully.",
         "transactionEditError": "An error occurred while updating the income - expense transaction."
       },
       "form": {
@@ -123,6 +137,8 @@
       "transactionsLoadError": "Failed to load income - expense transactions",
       "areYouSureDeleteTransaction": "Are you sure you want to delete this income - expense transaction?",
       "transactionDeleteSuccess": "Income - Expense transaction deleted successfully.",
+      "incomeDeleteSuccess": "Income transaction deleted successfully.",
+      "expenseDeleteSuccess": "Expense transaction deleted successfully.",
       "transactionDeleteError": "An error occurred while deleting the income - expense transaction."
     },
     "noLabel": "Uncategorized",
@@ -146,8 +162,12 @@
       "editTitle": "Edit Recurring Income - Expense Transaction",
       "messages": {
         "transactionCreateSuccess": "Recurring income - expense transaction created successfully.",
+        "incomeCreateSuccess": "Recurring income transaction created successfully.",
+        "expenseCreateSuccess": "Recurring expense transaction created successfully.",
         "transactionCreateError": "An error occurred while creating the recurring income - expense transaction.",
         "transactionEditSuccess": "Recurring income - expense transaction updated successfully.",
+        "incomeEditSuccess": "Recurring income transaction updated successfully.",
+        "expenseEditSuccess": "Recurring expense transaction updated successfully.",
         "transactionEditError": "An error occurred while updating the recurring income - expense transaction."
       },
       "recurringInfo": "Recurring Info",
@@ -176,6 +196,8 @@
       "recurringTransactionsLoadError": "Failed to load recurring income - expense transactions",
       "areYouSureDelete": "Are you sure you want to delete this recurring income - expense transaction?",
       "recurringTransactionDeleteSuccess": "Recurring income - expense transaction deleted successfully.",
+      "incomeDeleteSuccess": "Recurring income transaction deleted successfully.",
+      "expenseDeleteSuccess": "Recurring expense transaction deleted successfully.",
       "recurringTransactionDeleteError": "An error occurred while deleting the recurring income - expense transaction."
     },
     "table": {
@@ -189,6 +211,50 @@
         "frequency": "Frequency",
         "interval": "Interval",
         "nextOccurrence": "Next Occurrence"
+      }
+    }
+  },
+  "dashboard": {
+    "tabs": {
+      "transactions": "Transactions",
+      "reports": "Reports"
+    }
+  },
+  "reports": {
+    "selectNotebook": "Please select a notebook to view reports.",
+    "filters": {
+      "dateRange": "Date Range",
+      "currency": "Currency",
+      "transactionType": "Transaction Type",
+      "label": "Category"
+    },
+    "periodSummary": {
+      "title": "Period Summary",
+      "income": "Total Income",
+      "expense": "Total Expense",
+      "netBalance": "Net Balance",
+      "previous": "Previous period",
+      "currentPeriod": "Selected period",
+      "previousPeriod": "Previous period",
+      "noData": "No data found for the selected period."
+    },
+    "categorySpending": {
+      "title": "Spending Breakdown",
+      "total": "Total Spending",
+      "previousPeriod": "Previous period",
+      "noData": "No spending data found for this period."
+    },
+    "detailed": {
+      "title": "Detailed Report",
+      "categorizedTab": "Categorized",
+      "nonCategorizedTab": "Uncategorized",
+      "noData": "No data found for the selected filters.",
+      "table": {
+        "term": "Period",
+        "label": "Category",
+        "type": "Transaction Type",
+        "currency": "Currency",
+        "amount": "Amount"
       }
     }
   },

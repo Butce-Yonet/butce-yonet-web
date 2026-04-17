@@ -4,7 +4,7 @@
     "createNotebook": "Yeni Defter Oluştur"
   },
   "header": {
-    "activeNotebook": "Aktif Defter",
+    "activeNotebook": "Seçili Defter",
     "createNotebook": "Yeni Defter Oluştur",
     "editNotebook": "Defteri Düzenle"
   },
@@ -33,7 +33,17 @@
     "no": "Hayır",
     "logout": "Çıkış Yap",
     "actions": "İşlemler",
+    "all": "Tümü",
+    "clearFilters": "Filtreleri Temizle",
+    "filter": "Filtrele",
     "noDataText": "Kayıt bulunamadı",
+    "tooltips": {
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "editNotebook": "Defteri Düzenle",
+      "editNotebookDetail": "Defter Detaylarını Düzenle",
+      "deleteNotebook": "Defteri Sil"
+    },
     "email": "E-posta",
     "income": "Gelir",
     "expense": "Gider",
@@ -103,8 +113,12 @@
       "editTitle": "Gelir - Gider Kaydını Düzenle",
       "messages": {
         "transactionCreateSuccess": "Gelir - Gider kaydı başarıyla oluşturuldu.",
+        "incomeCreateSuccess": "Gelir kaydı başarıyla oluşturuldu.",
+        "expenseCreateSuccess": "Gider kaydı başarıyla oluşturuldu.",
         "transactionCreateError": "Gelir - Gider kaydı oluşturulurken bir hata oluştu.",
         "transactionEditSuccess": "Gelir - Gider kaydı başarıyla güncellendi.",
+        "incomeEditSuccess": "Gelir kaydı başarıyla güncellendi.",
+        "expenseEditSuccess": "Gider kaydı başarıyla güncellendi.",
         "transactionEditError": "Gelir - Gider kaydı güncellenirken bir hata oluştu."
       },
       "form": {
@@ -123,6 +137,8 @@
       "transactionsLoadError": "Gelir - Gider kayıtları yüklenemedi",
       "areYouSureDeleteTransaction": "Bu gelir - gider kaydını silmek istediğinize emin misiniz?",
       "transactionDeleteSuccess": "Gelir - Gider kaydı başarıyla silindi.",
+      "incomeDeleteSuccess": "Gelir kaydı başarıyla silindi.",
+      "expenseDeleteSuccess": "Gider kaydı başarıyla silindi.",
       "transactionDeleteError": "Gelir - Gider kaydı silinirken bir hata oluştu."
     },
     "noLabel": "Kategorize Edilmeli",
@@ -146,8 +162,12 @@
       "editTitle": "Tekrarlayan Gelir - Gider Kaydını Düzenle",
       "messages": {
         "transactionCreateSuccess": "Tekrarlayan gelir - gider kaydı başarıyla oluşturuldu.",
+        "incomeCreateSuccess": "Tekrarlayan gelir kaydı başarıyla oluşturuldu.",
+        "expenseCreateSuccess": "Tekrarlayan gider kaydı başarıyla oluşturuldu.",
         "transactionCreateError": "Tekrarlayan gelir - gider kaydı oluşturulurken bir hata oluştu.",
         "transactionEditSuccess": "Tekrarlayan gelir - gider kaydı başarıyla güncellendi.",
+        "incomeEditSuccess": "Tekrarlayan gelir kaydı başarıyla güncellendi.",
+        "expenseEditSuccess": "Tekrarlayan gider kaydı başarıyla güncellendi.",
         "transactionEditError": "Tekrarlayan gelir - gider kaydı güncellenirken bir hata oluştu."
       },
       "recurringInfo": "Tekrarlama Bilgileri",
@@ -176,6 +196,8 @@
       "recurringTransactionsLoadError": "Tekrarlayan gelir - gider kayıtları yüklenemedi",
       "areYouSureDelete": "Bu tekrarlayan gelir - gider kaydını silmek istediğinize emin misiniz?",
       "recurringTransactionDeleteSuccess": "Tekrarlayan gelir - gider kaydı başarıyla silindi.",
+      "incomeDeleteSuccess": "Tekrarlayan gelir kaydı başarıyla silindi.",
+      "expenseDeleteSuccess": "Tekrarlayan gider kaydı başarıyla silindi.",
       "recurringTransactionDeleteError": "Tekrarlayan gelir - gider kaydı silinirken bir hata oluştu."
     },
     "table": {
@@ -189,6 +211,50 @@
         "frequency": "Tekrarlama Sıklığı",
         "interval": "Aralık",
         "nextOccurrence": "Bir Sonraki Tarih"
+      }
+    }
+  },
+  "dashboard": {
+    "tabs": {
+      "transactions": "İşlemler",
+      "reports": "Raporlar"
+    }
+  },
+  "reports": {
+    "selectNotebook": "Rapor görüntülemek için bir defter seçin.",
+    "filters": {
+      "dateRange": "Tarih Aralığı",
+      "currency": "Para Birimi",
+      "transactionType": "İşlem Türü",
+      "label": "Kategori"
+    },
+    "periodSummary": {
+      "title": "Dönem Özeti",
+      "income": "Toplam Gelir",
+      "expense": "Toplam Gider",
+      "netBalance": "Net Bakiye",
+      "previous": "Önceki dönem",
+      "currentPeriod": "Seçili dönem",
+      "previousPeriod": "Önceki dönem",
+      "noData": "Seçili dönem için veri bulunamadı."
+    },
+    "categorySpending": {
+      "title": "Harcama Dağılımı",
+      "total": "Toplam Harcama",
+      "previousPeriod": "Önceki dönem",
+      "noData": "Bu dönem için harcama verisi bulunamadı."
+    },
+    "detailed": {
+      "title": "Detaylı Rapor",
+      "categorizedTab": "Kategorize",
+      "nonCategorizedTab": "Kategorize Edilmemiş",
+      "noData": "Seçili filtreler için veri bulunamadı.",
+      "table": {
+        "term": "Dönem",
+        "label": "Kategori",
+        "type": "İşlem Türü",
+        "currency": "Para Birimi",
+        "amount": "Tutar"
       }
     }
   },
