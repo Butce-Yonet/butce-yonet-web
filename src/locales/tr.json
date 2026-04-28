@@ -1,12 +1,21 @@
 {
   "menu": {
     "notebooks": "Defterlerim",
-    "createNotebook": "Yeni Defter Oluştur"
+    "createNotebook": "Yeni Defter Oluştur",
+    "home": "Ana Sayfa",
+    "transactions": "İşlemler",
+    "reports": "Raporlar",
+    "goals": "Hedefler",
+    "bills": "Faturalar",
+    "calendar": "Takvim",
+    "comingSoon": "Yakında"
   },
   "header": {
     "activeNotebook": "Seçili Defter",
     "createNotebook": "Yeni Defter Oluştur",
-    "editNotebook": "Defteri Düzenle"
+    "editNotebook": "Defteri Düzenle",
+    "newTransaction": "Yeni İşlem",
+    "newRecurringTransaction": "Yeni Tekrarlayan İşlem"
   },
   "createNotebookModal": {
     "createTitle": "Defter Oluştur",
@@ -36,7 +45,10 @@
     "all": "Tümü",
     "clearFilters": "Filtreleri Temizle",
     "filter": "Filtrele",
+    "total": "Toplam",
+    "other": "Diğer",
     "noDataText": "Kayıt bulunamadı",
+    "defaultLabel": "Varsayılan",
     "tooltips": {
       "edit": "Düzenle",
       "delete": "Sil",
@@ -61,8 +73,8 @@
     "previous": "Geri",
     "done": "Bitir",
     "closeTour": "Turu Kapat",
-    "messages":{
-      "currenciesLoadError":"Para birimleri yüklenemedi",
+    "messages": {
+      "currenciesLoadError": "Para birimleri yüklenemedi",
       "notebookLabelsLoadError": "Etiketler yüklenemedi"
     }
   },
@@ -104,6 +116,12 @@
       "notebookLabelDeleteError": "Defter etiketi silinirken bir hata oluştu.",
       "notebookLabelEditError": "Defter etiketi düzenlenirken bir hata oluştu.",
       "notebookLabelEditSuccess": "Defter etiketi başarıyla düzenlendi."
+    }
+  },
+  "transactionsPage": {
+    "tabs": {
+      "transactions": "İşlemler",
+      "recurring": "Tekrarlayan"
     }
   },
   "transactionList": {
@@ -218,6 +236,18 @@
     "tabs": {
       "transactions": "İşlemler",
       "reports": "Raporlar"
+    },
+    "recentTransactions": {
+      "title": "Son İşlemler",
+      "empty": "Henüz işlem kaydı yok.",
+      "viewAll": "Tümünü Gör"
+    },
+    "categoryChart": {
+      "title": "Kategori Dağılımı",
+      "expense": "Gider",
+      "income": "Gelir",
+      "empty": "Bu dönem için veri bulunamadı.",
+      "noLabel": "Kategorisiz"
     }
   },
   "reports": {
@@ -249,6 +279,12 @@
       "categorizedTab": "Kategorize",
       "nonCategorizedTab": "Kategorize Edilmemiş",
       "noData": "Seçili filtreler için veri bulunamadı.",
+      "tableView": "Tablo",
+      "chartView": "Grafik",
+      "chartTypes": {
+        "bar": "Sütun Grafik",
+        "doughnut": "Pasta Grafik"
+      },
       "table": {
         "term": "Dönem",
         "label": "Kategori",
@@ -263,40 +299,30 @@
   },
   "dashboardTour": {
     "step1": {
-      "title": "Defter Oluşturma Butonu",
-      "description": "Yeni bir defter oluşturmak için buraya tıklayın."
+      "title": "Defter Yönetimi",
+      "description": "Buraya tıklayarak defterlerinizi görüntüleyebilir, yeni defter oluşturabilir, mevcut defterlerinizi düzenleyebilir veya silebilirsiniz."
     },
     "step2": {
-      "title": "Defterlerim",
-      "description": "Tüm defterlerinizi buradan görüntüleyebilir ve yönetebilirsiniz."
-    },
-    "step3": {
-      "title": "Defter Düzenle",
-      "description": "Seçili defterin detaylarını düzenlemek için buraya tıklayın."
-    },
-    "step4": {
-      "title": "Defter Detaylarını Düzenle",
-      "description": "Defter kullanıcılarını ve etiketlerini yönetmek için bu bölümü kullanın."
-    },
-    "step5": {
-      "title": "Defter Silme",
-      "description": "Seçili defteri silmek için bu butonu kullanın."
-    },
-    "step6": {
       "title": "Gelir-Gider Kayıtları",
       "description": "Gelir ve gider kayıtlarınızı buradan görüntüleyebilir ve yönetebilirsiniz."
     },
-    "step7": {
+    "step3": {
       "title": "Gelir-Gider Kaydı Ekleme",
       "description": "Yeni bir gelir veya gider kaydı eklemek için buraya tıklayın."
     },
-    "step8": {
+    "step4": {
       "title": "Tekrarlayan Gelir-Gider Kayıtları",
       "description": "Tekrarlayan gelir ve gider kayıtlarınızı buradan görüntüleyebilir ve yönetebilirsiniz."
     },
-    "step9": {
+    "step5": {
       "title": "Tekrarlayan Gelir-Gider Kaydı Ekleme",
-      "description": "Yeni bir tekrarlayan gelir veya gider kaydı eklemek için  buraya tıklayın."
+      "description": "Yeni bir tekrarlayan gelir veya gider kaydı eklemek için buraya tıklayın."
     }
+  },
+  "consent": {
+    "termsOfService": "Kullanım Koşulları",
+    "privacyPolicy": "Gizlilik Politikası",
+    "accept": "Kabul Et",
+    "reject": "Reddet ve Çıkış Yap"
   }
 }

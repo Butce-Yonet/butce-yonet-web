@@ -1,49 +1,43 @@
 {
   "data": [
     {
-      "title": "menu.createNotebook",
-      "icon": "book-open",
-      "type": "createNotebookModal"
+      "title": "menu.home",
+      "icon": "home",
+      "type": "link",
+      "path": "/",
+      "active": false
     },
     {
-      "title": "menu.notebooks",
-      "icon": "book",
-      "type": "sub",
-      "badgeType": "light-primary",
-      "badgeValue": "0",
-      "active": false,
-      "children": [
-        {
-          "path": "/",
-          "title": "Default",
-          "type": "notebook",
-          "active":true
-        },
-        {
-          "path": "/dashboard/ecommerce",
-          "title": "Ecommerce",
-          "type": "notebook",
-          "active":false
-        },
-        {
-          "path": "/dashboard/online",
-          "title": "Online Course",
-          "type": "notebook",
-          "active":false
-        },
-        {
-          "path": "/dashboard/crypto",
-          "title": "Crypto",
-          "type": "notebook",
-          "active":false
-        },
-        {
-          "path": "/dashboard/social",
-          "title": "Social",
-          "type": "notebook",
-          "active":false
-        }
-      ]
+      "title": "menu.transactions",
+      "icon": "credit-card",
+      "type": "link",
+      "path": "/transactions",
+      "active": false
+    },
+    {
+      "title": "menu.reports",
+      "icon": "bar-chart-2",
+      "type": "link",
+      "path": "/reports",
+      "active": false
+    },
+    {
+      "title": "menu.goals",
+      "icon": "target",
+      "type": "comingSoon",
+      "active": false
+    },
+    {
+      "title": "menu.bills",
+      "icon": "file-text",
+      "type": "comingSoon",
+      "active": false
+    },
+    {
+      "title": "menu.calendar",
+      "icon": "calendar",
+      "type": "comingSoon",
+      "active": false
     }
   ]
 }

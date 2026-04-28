@@ -1,10 +1,7 @@
 <template>
     <div class="card border">
-        <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="card-header">
             <h5 class="mb-0">{{ $t('recurringTransactionList.title') }}</h5>
-            <button class="btn btn-success" id="openRecurringTransactionCreateModalButton" @click="openRecurringTransactionModal">
-                <i class="fa fa-plus"></i>
-            </button>
         </div>
 
         <div class="card-body">
@@ -82,8 +79,10 @@
             </div>
         </div>
     </div>
-    <recurring-transaction-modal :mode="modalMode" :transactionData="selectedTransaction"
-        :modal="modal"></recurring-transaction-modal>
+    <Teleport to="body">
+        <recurring-transaction-modal :mode="modalMode" :transactionData="selectedTransaction"
+            :modal="modal"></recurring-transaction-modal>
+    </Teleport>
 </template>
 
 <script>
@@ -134,6 +133,11 @@ export default {
         }
     },
     watch: {
+        '$store.state.dashboard.openRecurringTransactionModalTrigger'() {
+            this.modalMode = 'create';
+            this.selectedTransaction = {};
+            this.modal.show();
+        },
         '$store.state.notebook.selectedNotebook': {
             deep: true,
             async handler() {
@@ -242,7 +246,22 @@ export default {
         }
 
         if (this.$store.state.notebook.selectedNotebook.id > 0)
-            this.loadRecurringTransactions()
-    }
+            this.loadRecurringTransactions();
+
+        if (this.$store.state.dashboard.pendingOpenRecurringTransactionModal) {
+            this.$store.dispatch('dashboard/setPendingOpenRecurringTransactionModal', false);
+            this.$nextTick(() => {
+                this.modalMode = 'create';
+                this.selectedTransaction = {};
+                this.modal.show();
+            });
+        }
+    },
+    beforeUnmount() {
+        if (this.modal?.hide) {
+            this.modal.hide();
+            this.modal.dispose();
+        }
+    },
 }
 </script>

@@ -1,12 +1,21 @@
 {
   "menu": {
     "notebooks": "My Notebooks",
-    "createNotebook": "Create New Notebook"
+    "createNotebook": "Create New Notebook",
+    "home": "Home",
+    "transactions": "Transactions",
+    "reports": "Reports",
+    "goals": "Goals",
+    "bills": "Bills",
+    "calendar": "Calendar",
+    "comingSoon": "Coming Soon"
   },
   "header": {
     "activeNotebook": "Selected Notebook",
     "createNotebook": "Create New Notebook",
-    "editNotebook": "Edit Notebook"
+    "editNotebook": "Edit Notebook",
+    "newTransaction": "New Transaction",
+    "newRecurringTransaction": "New Recurring Transaction"
   },
   "createNotebookModal": {
     "createTitle": "Create Notebook",
@@ -36,7 +45,10 @@
     "all": "All",
     "clearFilters": "Clear Filters",
     "filter": "Filter",
+    "total": "Total",
+    "other": "Other",
     "noDataText": "No data available",
+    "defaultLabel": "Default",
     "tooltips": {
       "edit": "Edit",
       "delete": "Delete",
@@ -61,7 +73,7 @@
     "previous": "Previous",
     "done": "Done",
     "closeTour": "Close Tour",
-    "messages":{
+    "messages": {
       "currenciesLoadError": "Failed to load currencies",
       "notebookLabelsLoadError": "Failed to load labels"
     }
@@ -104,6 +116,12 @@
       "notebookLabelDeleteError": "An error occurred while deleting the notebook label.",
       "notebookLabelEditError": "An error occurred while editing the notebook label.",
       "notebookLabelEditSuccess": "Notebook label edited successfully."
+    }
+  },
+  "transactionsPage": {
+    "tabs": {
+      "transactions": "Transactions",
+      "recurring": "Recurring"
     }
   },
   "transactionList": {
@@ -218,6 +236,18 @@
     "tabs": {
       "transactions": "Transactions",
       "reports": "Reports"
+    },
+    "recentTransactions": {
+      "title": "Recent Transactions",
+      "empty": "No transactions yet.",
+      "viewAll": "View All"
+    },
+    "categoryChart": {
+      "title": "Category Breakdown",
+      "expense": "Expense",
+      "income": "Income",
+      "empty": "No data found for this period.",
+      "noLabel": "Uncategorized"
     }
   },
   "reports": {
@@ -249,6 +279,12 @@
       "categorizedTab": "Categorized",
       "nonCategorizedTab": "Uncategorized",
       "noData": "No data found for the selected filters.",
+      "tableView": "Table",
+      "chartView": "Chart",
+      "chartTypes": {
+        "bar": "Bar Chart",
+        "doughnut": "Pie Chart"
+      },
       "table": {
         "term": "Period",
         "label": "Category",
@@ -263,40 +299,30 @@
   },
   "dashboardTour": {
     "step1": {
-      "title": "Create Notebook Button",
-      "description": "Click here to create a new notebook."
+      "title": "Notebook Management",
+      "description": "Click here to view your notebooks, create a new one, or edit and delete existing notebooks."
     },
     "step2": {
-      "title": "My Notebooks",
-      "description": "You can view and manage all your notebooks from here."
-    },
-    "step3": {
-      "title": "Edit Notebook",
-      "description": "Click here to edit the details of the selected notebook."
-    },
-    "step4": {
-      "title": "Edit Notebook Details",
-      "description": "Use this section to manage notebook users and labels."
-    },
-    "step5": {
-      "title": "Delete Notebook",
-      "description": "Use this button to delete the selected notebook."
-    },
-    "step6": {
       "title": "Income & Expense Transactions",
       "description": "View and manage your income and expense transactions from here."
     },
-    "step7": {
+    "step3": {
       "title": "Add Income & Expense Transaction",
       "description": "Click here to add a new income or expense transaction."
     },
-    "step8": {
+    "step4": {
       "title": "Recurring Income & Expense Transactions",
       "description": "View and manage your recurring income and expense transactions here."
     },
-    "step9": {
+    "step5": {
       "title": "Add Recurring Income & Expense Transaction",
       "description": "Click here to add a new recurring income or expense transaction."
     }
+  },
+  "consent": {
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "accept": "Accept",
+    "reject": "Reject & Logout"
   }
 }

@@ -41,15 +41,6 @@
                     </div>
                 </a>
 
-                <a id="sidebarCreateNotebookButton" href="#" class="sidebar-link sidebar-title"
-                    :class="{ 'active': menuItem.active }" v-if="menuItem.type == 'createNotebookModal'"
-                    @click="openCreateNotebookModal">
-                    <vue-feather :type="menuItem.icon"></vue-feather>
-                    <span>
-                        {{ $t(menuItem.title) }}
-                    </span>
-                </a>
-
                 <router-link :to="menuItem.path" class="sidebar-link sidebar-title" v-if="menuItem.type == 'link'"
                     :class="{ 'active': menuItem.active }" v-on:click="hidesecondmenu()"
                     @click="setNavActive(menuItem, index)">
@@ -60,6 +51,13 @@
                     </span>
                     <i class="fa fa-angle-right pull-right" v-if="menuItem.children"></i>
                 </router-link>
+
+                <a href="javascript:void(0)" class="sidebar-link sidebar-title sidebar-coming-soon"
+                    v-if="menuItem.type == 'comingSoon'">
+                    <vue-feather :type="menuItem.icon"></vue-feather>
+                    <span>{{ $t(menuItem.title) }}</span>
+                    <span class="badge badge-light-warning coming-soon-badge">{{ $t('menu.comingSoon') }}</span>
+                </a>
 
                 <a :href="menuItem.path" class="sidebar-link sidebar-title" v-if="menuItem.type == 'extLink'"
                     @click="setNavActive(menuItem, index)">
@@ -103,30 +101,6 @@
                                 v-if="childrenItem.badgeType">{{ (childrenItem.badgeValue) }}</label>
                             <i class="fa fa-angle-right pull-right mt-1" v-if="childrenItem.children"></i>
                         </router-link>
-
-                        <a id="sidebar-my-notebooks" href="#" v-if="childrenItem.type == 'notebook'"
-                            class="submenu-title" :class="{ 'active': childrenItem.active }"
-                            @click="changeNotebook(childrenItem)">
-                            {{ $t(childrenItem.title) }}
-                            <div class="float-end">
-                                <button class="btn btn-warning btn-xs m-r-5 sidebar-my-notebook-edit"
-                                    v-tooltip="$t('common.tooltips.editNotebook')"
-                                    @click.stop="openEditNotebookModal(childrenItem)">
-                                    <i class="fa fa-pencil"></i>
-                                </button>
-                                <button class="btn btn-primary btn-xs m-r-5 sidebar-my-notebook-detail"
-                                    v-tooltip="$t('common.tooltips.editNotebookDetail')"
-                                    @click.stop="openEditNotebookDetailModal(childrenItem)">
-                                    <i class="fa fa-cogs"></i>
-                                </button>
-                                <button :disabled="childrenItem.data.isDefault"
-                                    class="btn btn-danger btn-xs sidebar-my-notebook-delete"
-                                    v-tooltip="$t('common.tooltips.deleteNotebook')"
-                                    @click.stop="deleteNotebook(childrenItem)">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </div>
-                        </a>
 
                         <a :href="childrenItem.path" v-if="childrenItem.type == 'extLink'" class="submenu-title">
                             {{ $t(childrenItem.title) }}
@@ -184,7 +158,6 @@ import {
 import {
     layoutClasses
 } from '../../constants/layout';
-import notebookService from '@/services/notebook.service';
 
 export default {
     name: 'Navmenu',
@@ -268,7 +241,6 @@ export default {
         }, 500);
         this.layoutobject = layoutClasses.find((item) => Object.keys(item).pop() === this.layout.settings.layout);
         this.layoutobject = JSON.parse(JSON.stringify(this.layoutobject))[this.layout.settings.layout];
-        this.getNotebooks();
     },
     destroyed() {
         window.removeEventListener('resize', this.handleResize);
@@ -315,7 +287,6 @@ export default {
         },
         togglePinnedName({ item }) {
             item.showPin = !item.showPin
-            // this.active = !this.active
             if (this.menuItems.length > 0) {
                 this.menuItems = 'show'
             } else {
@@ -363,60 +334,23 @@ export default {
         handleResize() {
             this.$store.state.menu.width = window.innerWidth - 450;
         },
-        getNotebooks() {
-            notebookService.mapNotebooksToMenu();
-        },
-        changeNotebook(menuItem) {
-            localStorage.setItem('selectedNotebookId', menuItem.data.id);
-            this.$store.dispatch('menu/setActiveRouteFromNotebook', menuItem);
-            this.$store.dispatch('notebook/setSelectedNotebook', menuItem.data);
-        },
-        openCreateNotebookModal() {
-            this.$store.dispatch('notebook/showCreateNotebookModal');
-            this.$store.dispatch('notebook/setModalMode', 'create');
-            this.$store.dispatch('notebook/setModalNotebook', {});
-        },
-        deleteNotebook(item) {
-            this.$swal({
-                title: this.$t('createNotebookModal.messages.areYouSureDelete'),
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: this.$t('common.yes'),
-                denyButtonText: this.$t('common.no'),
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    notebookService.deleteNotebook(item.data.id).then((response) => {
-                        if (response.status === 200) {
-                            this.$swal({
-                                title: this.$t('createNotebookModal.messages.deleteSuccess'),
-                                icon: "success"
-                            });
-
-                            notebookService.mapNotebooksToMenu();
-                        } else {
-                            this.$swal({
-                                title: this.$t('createNotebookModal.messages.deleteError'),
-                                icon: "error"
-                            });
-                        }
-                    }).catch(() => {
-                        this.$swal({
-                            title: this.$t('createNotebookModal.messages.deleteError'),
-                            icon: "error"
-                        });
-                    })
-                }
-            });
-        },
-        openEditNotebookModal(item) {
-            this.$store.dispatch('notebook/showCreateNotebookModal');
-            this.$store.dispatch('notebook/setModalMode', 'edit');
-            this.$store.dispatch('notebook/setModalNotebook', item.data);
-        },
-        openEditNotebookDetailModal(item) {
-            this.$store.dispatch('notebook/showEditNotebookDetailModal');
-            this.$store.dispatch('notebook/setModalNotebook', item.data);
-        }
     },
 };
 </script>
+
+<style scoped>
+.sidebar-coming-soon {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.coming-soon-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+</style>

@@ -20,9 +20,6 @@
                     >
                         <i class="fa fa-times"></i>
                     </button>
-                    <button class="btn btn-success" id="openTransactionCreateModalButton" @click="openTransactionModal">
-                        <i class="fa fa-plus"></i>
-                    </button>
                 </div>
             </div>
 
@@ -179,7 +176,9 @@
             </div>
         </div>
     </div>
-    <transaction-modal :mode="modalMode" :transactionData="selectedTransaction" :modal="modal"></transaction-modal>
+    <Teleport to="body">
+        <transaction-modal :mode="modalMode" :transactionData="selectedTransaction" :modal="modal"></transaction-modal>
+    </Teleport>
 </template>
 
 <script>
@@ -261,6 +260,11 @@ export default {
         }
     },
     watch: {
+        '$store.state.dashboard.openTransactionModalTrigger'() {
+            this.modalMode = 'create';
+            this.selectedTransaction = {};
+            this.modal.show();
+        },
         '$store.state.notebook.selectedNotebook': {
             deep: true,
             async handler() {
@@ -404,6 +408,21 @@ export default {
         }
         if (this.$store.state.notebook.selectedNotebook.id > 0)
             this.loadTransactions();
+
+        if (this.$store.state.dashboard.pendingOpenTransactionModal) {
+            this.$store.dispatch('dashboard/setPendingOpenTransactionModal', false);
+            this.$nextTick(() => {
+                this.modalMode = 'create';
+                this.selectedTransaction = {};
+                this.modal.show();
+            });
+        }
+    },
+    beforeUnmount() {
+        if (this.modal?.hide) {
+            this.modal.hide();
+            this.modal.dispose();
+        }
     },
 }
 </script>
