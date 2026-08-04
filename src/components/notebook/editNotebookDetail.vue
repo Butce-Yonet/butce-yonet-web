@@ -17,26 +17,8 @@
                 </div>
 
                 <div class="modal-body px-4 pt-3 pb-4">
-                    <ul class="nav nav-tabs detail-tabs mb-4" id="pills-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="notebook-users-tab" data-bs-toggle="pill"
-                                href="#notebook-users-tab-content" role="tab" aria-selected="true">
-                                <i class="fa fa-users me-2"></i>
-                                {{ $t('editNotebookDetail.users') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="notebook-categories-tab" data-bs-toggle="pill"
-                                href="#notebook-categories-tab-content" role="tab" aria-selected="false">
-                                <i class="fa fa-tags me-2"></i>
-                                {{ $t('editNotebookDetail.categories') }}
-                            </a>
-                        </li>
-                    </ul>
-
                     <div class="tab-content" id="pills-tabContent">
                         <notebook-user></notebook-user>
-                        <notebook-label></notebook-label>
                     </div>
                 </div>
 
@@ -47,11 +29,9 @@
 
 <script>
 import notebookUser from '@/components/notebook/notebookUser.vue';
-import notebookLabel from '@/components/notebook/notebookLabel.vue';
 export default {
     components: {
         'notebook-user': notebookUser,
-        'notebook-label': notebookLabel
     },
     computed: {
         getModalNotebook() {
@@ -61,7 +41,6 @@ export default {
     methods: {
         closeModal() {
             this.$store.dispatch('notebook/hideEditNotebookDetailModal');
-            document.getElementById('notebook-users-tab').click();
         }
     }
 }

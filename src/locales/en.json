@@ -5,6 +5,7 @@
     "home": "Home",
     "transactions": "Transactions",
     "reports": "Reports",
+    "labels": "Labels",
     "goals": "Goals",
     "bills": "Bills",
     "calendar": "Calendar",
@@ -15,7 +16,39 @@
     "createNotebook": "Create New Notebook",
     "editNotebook": "Edit Notebook",
     "newTransaction": "New Transaction",
-    "newRecurringTransaction": "New Recurring Transaction"
+    "newRecurringTransaction": "New Recurring Transaction",
+    "newLabel": "New Label"
+  },
+  "labelsPage": {
+    "title": "Labels",
+    "addButton": "New Label",
+    "emptyTitle": "No labels created yet",
+    "emptySub": "Add labels to categorize your transactions.",
+    "searchPlaceholder": "Search labels...",
+    "noSearchResults": "No labels matched your search.",
+    "table": {
+      "name": "Label",
+      "color": "Color Code"
+    },
+    "form": {
+      "namePlaceholder": "Label Name",
+      "colorPlaceholder": "Color",
+      "preview": "Preview"
+    },
+    "modal": {
+      "createSubtitle": "New Label",
+      "editSubtitle": "Edit Label"
+    },
+    "messages": {
+      "loadError": "Failed to load labels",
+      "createSuccess": "Label created successfully.",
+      "createError": "An error occurred while creating the label.",
+      "areYouSureDelete": "Are you sure you want to delete this label?",
+      "deleteSuccess": "Label deleted successfully.",
+      "deleteError": "An error occurred while deleting the label.",
+      "editError": "An error occurred while editing the label.",
+      "editSuccess": "Label edited successfully."
+    }
   },
   "createNotebookModal": {
     "createTitle": "Create Notebook",

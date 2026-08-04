@@ -17,6 +17,12 @@
         </div>
         <span>{{ $t('header.newRecurringTransaction') }}</span>
       </div>
+      <div class="add-item" @click="openLabelsPage">
+        <div class="add-item-icon icon-label">
+          <i class="fa fa-tag"></i>
+        </div>
+        <span>{{ $t('header.newLabel') }}</span>
+      </div>
     </div>
   </li>
 </template>
@@ -55,6 +61,15 @@ export default {
       } else {
         this.$store.dispatch('dashboard/setPendingOpenRecurringTransactionModal', true);
         this.$router.push('/transactions');
+      }
+    },
+    openLabelsPage() {
+      this.isOpen = false;
+      if (this.$route.path === '/labels') {
+        this.$store.dispatch('dashboard/setPendingOpenLabelModal', true);
+      } else {
+        this.$store.dispatch('dashboard/setPendingOpenLabelModal', true);
+        this.$router.push('/labels');
       }
     },
   },
@@ -140,4 +155,5 @@ export default {
 
 .icon-transaction { background: linear-gradient(135deg, #10b981, #059669); }
 .icon-recurring   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.icon-label       { background: linear-gradient(135deg, #f59e0b, #d97706); }
 </style>

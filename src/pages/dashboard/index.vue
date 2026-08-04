@@ -97,6 +97,7 @@
                 auto-apply
                 :placeholder="$t('reports.filters.dateRange')"
                 :enable-time-picker="false"
+                :locale="dateLocale"
               />
             </div>
           </div>
@@ -162,6 +163,7 @@ import transactionService from '@/services/transaction.service';
 import reportService from '@/services/report.service';
 import moment from 'moment';
 import * as bootstrap from 'bootstrap';
+import { useDateLocale } from '@/composables/useDateLocale';
 
 const PALETTE = [
   '#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6',
@@ -170,6 +172,10 @@ const PALETTE = [
 ];
 
 export default {
+  setup() {
+    const { dateLocale } = useDateLocale();
+    return { dateLocale };
+  },
   components: {
     'period-summary-report': periodSummaryReport,
     'create-notebook': createNotebookComponent,
@@ -242,6 +248,7 @@ export default {
           PageSize: 10,
           SortColumn: '',
           SortDirection: 'Descending',
+          LabelIds: [],
         });
         this.recentTransactions = res.status === 200 ? res.data.data.items : [];
       } catch {
@@ -281,12 +288,12 @@ export default {
       // Group by label + currency
       const groups = {};
       items.forEach((item, idx) => {
-        const name = item.notebookLabel?.name || this.$t('dashboard.categoryChart.noLabel');
+        const name = item.userLabel?.name || this.$t('dashboard.categoryChart.noLabel');
         const key  = name + '_' + (item.currency?.code || '');
         if (!groups[key]) {
           groups[key] = {
             label:        name,
-            color:        item.notebookLabel?.colorCode || PALETTE[idx % PALETTE.length],
+            color:        item.userLabel?.colorCode || PALETTE[idx % PALETTE.length],
             amount:       0,
             currencyCode: item.currency?.code || '',
           };
@@ -370,7 +377,7 @@ export default {
       this.refreshChart();
     },
     formatDate(date) {
-      return moment(date).format('DD.MM.YY');
+      return moment(date).locale(this.$i18n.locale).fromNow();
     },
     formatCurrency(amount, currencyCode) {
       if (amount == null) return '';

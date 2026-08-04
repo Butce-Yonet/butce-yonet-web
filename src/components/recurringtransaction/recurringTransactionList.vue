@@ -187,7 +187,7 @@ export default {
             }
         },
         formatDate(date) {
-            return moment(date).format('DD-MM-YYYY');
+            return moment(date).locale(this.$i18n.locale).format('D MMMM YYYY');
         },
         formatCurrency(amount, currencyCode) {
             if (amount == null) return '';

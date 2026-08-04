@@ -73,6 +73,7 @@
                                             :time-config="{ enableTimePicker: false }"
                                             auto-apply
                                             teleport
+                                            :locale="dateLocale"
                                         />
                                     </div>
 
@@ -87,6 +88,7 @@
                                             :time-config="{ enableTimePicker: false }"
                                             auto-apply
                                             teleport
+                                            :locale="dateLocale"
                                         />
                                     </div>
 
@@ -292,7 +294,12 @@
 import * as yup from 'yup';
 import { createYupValidator } from '@/services/validator.service';
 import recurringTransactionService from '@/services/recurring.transaction.service';
+import { useDateLocale } from '@/composables/useDateLocale';
 export default {
+    setup() {
+        const { dateLocale } = useDateLocale();
+        return { dateLocale };
+    },
     props: {
         modal: {
             type: Object,

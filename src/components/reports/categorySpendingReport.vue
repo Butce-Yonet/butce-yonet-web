@@ -9,6 +9,7 @@
                         range
                         auto-apply
                         :placeholder="$t('reports.filters.dateRange')"
+                        :locale="dateLocale"
                     />
                 </div>
                 <div class="report-currency">
@@ -56,12 +57,12 @@
                     >
                         <div class="spending-item-header">
                             <div class="spending-cat-name">
-                                <span class="cat-dot" :style="{ background: palette[index % palette.length] }"></span>
+                                <span class="cat-dot" :style="{ background: itemColor(item, index) }"></span>
                                 {{ item.categoryName || $t('transactionList.noLabel') }}
                             </div>
                             <div class="spending-item-right">
                                 <span class="spending-amount">{{ formatCurrency(item.amount) }}</span>
-                                <span class="spending-pct-badge" :style="{ background: palette[index % palette.length] + '22', color: palette[index % palette.length] }">
+                                <span class="spending-pct-badge" :style="{ background: itemColor(item, index) + '22', color: itemColor(item, index) }">
                                     {{ item.percentage.toFixed(1) }}%
                                 </span>
                             </div>
@@ -70,7 +71,7 @@
                         <div class="spending-bar-wrap">
                             <div
                                 class="spending-bar"
-                                :style="{ width: item.percentage + '%', background: palette[index % palette.length] }"
+                                :style="{ width: item.percentage + '%', background: itemColor(item, index) }"
                             ></div>
                         </div>
 
@@ -96,8 +97,13 @@
 <script>
 import reportService from '@/services/report.service';
 import moment from 'moment';
+import { useDateLocale } from '@/composables/useDateLocale';
 
 export default {
+    setup() {
+        const { dateLocale } = useDateLocale();
+        return { dateLocale };
+    },
     data() {
         return {
             dateRange: [
@@ -158,6 +164,9 @@ export default {
             } finally {
                 this.loading = false;
             }
+        },
+        itemColor(_item, index) {
+            return this.palette[index % this.palette.length];
         },
         formatCurrency(amount) {
             if (amount == null) return '—';
