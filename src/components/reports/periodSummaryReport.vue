@@ -9,6 +9,7 @@
                         range
                         auto-apply
                         :placeholder="$t('reports.filters.dateRange')"
+                        :locale="dateLocale"
                     />
                 </div>
                 <div class="report-currency">
@@ -134,8 +135,13 @@
 <script>
 import reportService from '@/services/report.service';
 import moment from 'moment';
+import { useDateLocale } from '@/composables/useDateLocale';
 
 export default {
+    setup() {
+        const { dateLocale } = useDateLocale();
+        return { dateLocale };
+    },
     data() {
         return {
             dateRange: [

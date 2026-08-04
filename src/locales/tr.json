@@ -5,6 +5,7 @@
     "home": "Ana Sayfa",
     "transactions": "İşlemler",
     "reports": "Raporlar",
+    "labels": "Etiketler",
     "goals": "Hedefler",
     "bills": "Faturalar",
     "calendar": "Takvim",
@@ -15,7 +16,39 @@
     "createNotebook": "Yeni Defter Oluştur",
     "editNotebook": "Defteri Düzenle",
     "newTransaction": "Yeni İşlem",
-    "newRecurringTransaction": "Yeni Tekrarlayan İşlem"
+    "newRecurringTransaction": "Yeni Tekrarlayan İşlem",
+    "newLabel": "Yeni Etiket"
+  },
+  "labelsPage": {
+    "title": "Etiketler",
+    "addButton": "Yeni Etiket",
+    "emptyTitle": "Henüz etiket oluşturulmadı",
+    "emptySub": "İşlemlerinizi kategorize etmek için etiket ekleyin.",
+    "searchPlaceholder": "Etiket ara...",
+    "noSearchResults": "Aramanızla eşleşen etiket bulunamadı.",
+    "table": {
+      "name": "Etiket",
+      "color": "Renk Kodu"
+    },
+    "form": {
+      "namePlaceholder": "Etiket Adı",
+      "colorPlaceholder": "Renk",
+      "preview": "Önizleme"
+    },
+    "modal": {
+      "createSubtitle": "Yeni Etiket",
+      "editSubtitle": "Etiketi Düzenle"
+    },
+    "messages": {
+      "loadError": "Etiketler yüklenemedi",
+      "createSuccess": "Etiket başarıyla oluşturuldu.",
+      "createError": "Etiket oluşturulurken bir hata oluştu.",
+      "areYouSureDelete": "Bu etiketi silmek istediğinize emin misiniz?",
+      "deleteSuccess": "Etiket başarıyla silindi.",
+      "deleteError": "Etiket silinirken bir hata oluştu.",
+      "editError": "Etiket düzenlenirken bir hata oluştu.",
+      "editSuccess": "Etiket başarıyla düzenlendi."
+    }
   },
   "createNotebookModal": {
     "createTitle": "Defter Oluştur",

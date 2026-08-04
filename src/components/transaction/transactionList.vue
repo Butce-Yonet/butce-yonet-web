@@ -64,6 +64,7 @@
                             :time-config="{ enableTimePicker: false }"
                             auto-apply
                             :placeholder="$t('common.all')"
+                            :locale="dateLocale"
                         />
                     </div>
                     <!-- Name -->
@@ -186,8 +187,13 @@ import transactionModal from '@/components/transaction/transactionModal.vue';
 import * as bootstrap from 'bootstrap';
 import transactionService from '@/services/transaction.service';
 import moment from 'moment'
+import { useDateLocale } from '@/composables/useDateLocale';
 
 export default {
+    setup() {
+        const { dateLocale } = useDateLocale();
+        return { dateLocale };
+    },
     components: {
         'transaction-modal': transactionModal
     },
@@ -323,7 +329,7 @@ export default {
                 Amount:          this.filters.amount !== ''   ? this.filters.amount : null,
                 CurrencyId:      this.filters.currencyId      ?? null,
                 TransactionType: this.filters.transactionType !== null ? this.filters.transactionType : null,
-                LabelIds:        this.filters.labelIds.length > 0 ? this.filters.labelIds : null,
+                LabelIds:        this.filters.labelIds.length > 0 ? this.filters.labelIds : [],
             };
 
             try {
@@ -352,7 +358,7 @@ export default {
             this.modal.show();
         },
         formatDate(date) {
-            return moment(date).format('DD-MM-YYYY');
+            return moment(date).locale(this.$i18n.locale).format('D MMMM YYYY');
         },
         deleteTransaction(item) {
             this.$swal({

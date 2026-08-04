@@ -51,7 +51,7 @@ import transactionList from '@/components/transaction/transactionList.vue';
 import recurringTransactionList from '@/components/recurringtransaction/recurringTransactionList.vue';
 import * as bootstrap from 'bootstrap';
 import currencyService from '@/services/currency.service';
-import notebookLabelService from '@/services/notebook.label.service';
+import userLabelService from '@/services/user.label.service';
 
 export default {
   components: {
@@ -105,9 +105,7 @@ export default {
     },
     async getNotebookLabels() {
       try {
-        const response = await notebookLabelService.getNotebookLabels(
-          this.$store.getters['notebook/getSelectedNotebook'].id
-        );
+        const response = await userLabelService.getUserLabels();
         this.$store.dispatch('dashboard/setLabels', response.data.data);
       } catch {
         this.$swal({ icon: 'error', title: this.$t('common.messages.notebookLabelsLoadError') });

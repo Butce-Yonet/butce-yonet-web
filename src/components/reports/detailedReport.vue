@@ -45,7 +45,7 @@
             <div class="row g-2">
                 <div class="col-12 col-sm-6 col-md-4">
                     <label class="filter-label">{{ $t('reports.filters.dateRange') }}</label>
-                    <VueDatePicker v-model="dateRange" range auto-apply :placeholder="$t('reports.filters.dateRange')" />
+                    <VueDatePicker v-model="dateRange" range auto-apply :placeholder="$t('reports.filters.dateRange')" :locale="dateLocale" />
                 </div>
                 <div class="col-12 col-sm-6 col-md-4">
                     <label class="filter-label">{{ $t('reports.filters.currency') }}</label>
@@ -135,9 +135,9 @@
                                     <tr v-for="(item, i) in categorizedItems" :key="i">
                                         <td class="td-term">{{ formatTerm(item.term) }}</td>
                                         <td>
-                                            <span v-if="item.notebookLabel" class="label-badge" :style="{ background: item.notebookLabel.colorCode + '22', color: item.notebookLabel.colorCode, borderColor: item.notebookLabel.colorCode }">
-                                                <span class="label-dot" :style="{ background: item.notebookLabel.colorCode }"></span>
-                                                {{ item.notebookLabel.name }}
+                                            <span v-if="item.userLabel" class="label-badge" :style="{ background: item.userLabel.colorCode + '22', color: item.userLabel.colorCode, borderColor: item.userLabel.colorCode }">
+                                                <span class="label-dot" :style="{ background: item.userLabel.colorCode }"></span>
+                                                {{ item.userLabel.name }}
                                             </span>
                                             <span v-else class="text-muted small">{{ $t('transactionList.noLabel') }}</span>
                                         </td>
@@ -208,6 +208,7 @@
 import { Chart } from 'chart.js/auto';
 import reportService from '@/services/report.service';
 import moment from 'moment';
+import { useDateLocale } from '@/composables/useDateLocale';
 
 const PALETTE = [
     '#10b981','#3b82f6','#f59e0b','#ef4444','#8b5cf6',
@@ -218,6 +219,10 @@ const PALETTE = [
 const SMALL_THRESHOLD = 3; // percent
 
 export default {
+    setup() {
+        const { dateLocale } = useDateLocale();
+        return { dateLocale };
+    },
     data() {
         return {
             activeTab: 'categorized',
@@ -456,8 +461,8 @@ export default {
 
             const { groups, grand } = this.buildGroups(
                 items,
-                (item, idx)  => item.notebookLabel?.name || this.$t('transactionList.noLabel'),
-                (item, rank) => item.notebookLabel?.colorCode || PALETTE[rank % PALETTE.length],
+                (item, idx)  => item.userLabel?.name || this.$t('transactionList.noLabel'),
+                (item, rank) => item.userLabel?.colorCode || PALETTE[rank % PALETTE.length],
                 (item)       => item.currency?.code || '',
             );
 
@@ -562,7 +567,7 @@ export default {
         },
         formatTerm(term) {
             if (!term) return '—';
-            return moment(term).format('MMM YYYY');
+            return moment(term).locale(this.$i18n.locale).format('MMMM YYYY');
         },
     },
     mounted() {

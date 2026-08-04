@@ -127,6 +127,7 @@
                                     v-model="form.transactionDate"
                                     :time-config="{ enableTimePicker: false }"
                                     auto-apply
+                                    :locale="dateLocale"
                                 />
                             </div>
 
@@ -190,7 +191,12 @@
 import transactionService from '@/services/transaction.service';
 import * as yup from 'yup';
 import { createYupValidator } from '@/services/validator.service';
+import { useDateLocale } from '@/composables/useDateLocale';
 export default {
+    setup() {
+        const { dateLocale } = useDateLocale();
+        return { dateLocale };
+    },
     props: {
         modal: {
             type: Object,
