@@ -44,9 +44,12 @@ export default {
     totalCount()     { return this.$store.getters['consent/totalCount']; },
     consentTitle() {
       if (!this.currentConsent) return '';
-      return this.currentConsent.type === 1
-        ? this.$t('consent.termsOfService')
-        : this.$t('consent.privacyPolicy');
+      const titles = {
+        1: 'consent.termsOfService',
+        2: 'consent.privacyPolicy',
+        4: 'consent.releaseNotes',
+      };
+      return this.$t(titles[this.currentConsent.type] || 'consent.privacyPolicy');
     },
   },
   methods: {

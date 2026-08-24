@@ -296,6 +296,7 @@
   "consent": {
     "termsOfService": "Kullanım Koşulları",
     "privacyPolicy": "Gizlilik Politikası",
+    "releaseNotes": "Yeni Sürüm Notları",
     "accept": "Kabul Et",
     "reject": "Reddet ve Çıkış Yap"
   }

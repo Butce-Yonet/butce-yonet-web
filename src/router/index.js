@@ -81,9 +81,10 @@ router.beforeEach(async (to, from, next) => {
       consentCheckInProgress = true;
       try {
         const language = localStorage.getItem('currentLanguage') || 'en';
-        const [res1, res2] = await Promise.all([
+        const [res1, res2, res4] = await Promise.all([
           authService.checkConsent(1, language),
           authService.checkConsent(2, language),
+          authService.checkConsent(4, language),
         ]);
 
         const outdated = [];
@@ -92,6 +93,9 @@ router.beforeEach(async (to, from, next) => {
         }
         if (res2?.isSuccess && res2.data && !res2.data.isUpToDate) {
           outdated.push({ type: 2, content: res2.data.content, language });
+        }
+        if (res4?.isSuccess && res4.data && !res4.data.isUpToDate) {
+          outdated.push({ type: 4, content: res4.data.content, language });
         }
 
         if (outdated.length > 0) {

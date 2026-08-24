@@ -296,6 +296,7 @@
   "consent": {
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
+    "releaseNotes": "New Release Notes",
     "accept": "Accept",
     "reject": "Reject & Logout"
   }
