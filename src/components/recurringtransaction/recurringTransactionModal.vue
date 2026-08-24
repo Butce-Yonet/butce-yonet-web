@@ -10,13 +10,10 @@
                             <i :class="mode === 'edit' ? 'fa fa-pencil' : 'fa fa-repeat'"></i>
                         </div>
                         <div>
-                            <p class="text-muted mb-0 small">
+                            <h5 class="modal-title mb-0 fw-semibold">
                                 {{ mode === 'create'
                                     ? $t('recurringTransactionList.transactionModal.createTitle')
                                     : $t('recurringTransactionList.transactionModal.editTitle') }}
-                            </p>
-                            <h5 class="modal-title mb-0 fw-semibold">
-                                {{ $store.state.notebook.selectedNotebook.name }}
                             </h5>
                         </div>
                     </div>
@@ -352,7 +349,7 @@ export default {
                 { value: 6, text: this.$t('common.frequency.lastBusinessDayOfTheMonth') },
                 { value: 7, text: this.$t('common.frequency.xTHOfTheMonth') }
             ],
-            labels: this.$store.getters['notebook/getNotebookLabels']
+            labels: this.$store.getters['dashboard/getLabels']
         }
     },
     watch: {
@@ -432,7 +429,6 @@ export default {
         async createRecurringTransaction() {
             this.submitting = true;
             var requestModel = {
-                NotebookId: this.$store.state.notebook.selectedNotebook.id,
                 Name: this.form.name,
                 Description: this.form.description,
                 StartDate: this.form.startDate,
@@ -451,7 +447,7 @@ export default {
             }
 
             try {
-                var response = await recurringTransactionService.createRecurringTransaction(this.$store.state.notebook.selectedNotebook.id, requestModel);
+                var response = await recurringTransactionService.createRecurringTransaction(requestModel);
                 if (response.status === 200) {
                     const key = this.form.transaction.transactionType === 0
                         ? 'recurringTransactionList.transactionModal.messages.incomeCreateSuccess'
@@ -471,7 +467,6 @@ export default {
         async editRecurringTransaction() {
             this.submitting = true;
             var requestModel = {
-                NotebookId: this.$store.state.notebook.selectedNotebook.id,
                 Name: this.form.name,
                 Description: this.form.description,
                 StartDate: this.form.startDate,
@@ -490,7 +485,7 @@ export default {
             }
 
             try {
-                var response = await recurringTransactionService.updateRecurringTransaction(this.$store.state.notebook.selectedNotebook.id, this.transactionData.id, requestModel);
+                var response = await recurringTransactionService.updateRecurringTransaction(this.transactionData.id, requestModel);
                 if (response.status === 200) {
                     const key = this.form.transaction.transactionType === 0
                         ? 'recurringTransactionList.transactionModal.messages.incomeEditSuccess'

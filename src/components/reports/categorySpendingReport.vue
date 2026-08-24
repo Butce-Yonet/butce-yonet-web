@@ -1,17 +1,8 @@
 <template>
     <div class="card border h-100">
-        <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <h5 class="mb-0">{{ $t('reports.categorySpending.title') }}</h5>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="report-datepicker">
-                    <VueDatePicker
-                        v-model="dateRange"
-                        range
-                        auto-apply
-                        :placeholder="$t('reports.filters.dateRange')"
-                        :locale="dateLocale"
-                    />
-                </div>
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                <h5 class="mb-0">{{ $t('reports.categorySpending.title') }}</h5>
                 <div class="report-currency">
                     <VSelect
                         v-model="currencyId"
@@ -29,16 +20,23 @@
                     </VSelect>
                 </div>
             </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <date-range-preset-picker v-model="dateRange" />
+                <div class="report-datepicker">
+                    <VueDatePicker
+                        v-model="dateRange"
+                        range
+                        auto-apply
+                        :placeholder="$t('reports.filters.dateRange')"
+                        :locale="dateLocale"
+                    />
+                </div>
+            </div>
         </div>
 
         <div class="card-body report-card-body">
             <div v-if="loading" class="report-loading">
                 <div class="spinner-border text-success"></div>
-            </div>
-
-            <div v-else-if="!notebookSelected" class="report-empty">
-                <i class="fa fa-book"></i>
-                <p>{{ $t('reports.selectNotebook') }}</p>
             </div>
 
             <div v-else-if="report && report.items && report.items.length > 0">
@@ -98,18 +96,20 @@
 import reportService from '@/services/report.service';
 import moment from 'moment';
 import { useDateLocale } from '@/composables/useDateLocale';
+import { getDefaultDateRange } from '@/composables/dateRangePresets';
+import DateRangePresetPicker from '@/components/common/DateRangePresetPicker.vue';
 
 export default {
+    components: {
+        'date-range-preset-picker': DateRangePresetPicker
+    },
     setup() {
         const { dateLocale } = useDateLocale();
         return { dateLocale };
     },
     data() {
         return {
-            dateRange: [
-                moment().startOf('month').toDate(),
-                moment().endOf('month').toDate()
-            ],
+            dateRange: getDefaultDateRange(),
             currencyId: null,
             report: null,
             loading: false,
@@ -125,19 +125,12 @@ export default {
         currencies() {
             return this.$store.getters['dashboard/getCurrencies'];
         },
-        notebookSelected() {
-            return this.$store.state.notebook.selectedNotebook?.id > 0;
-        },
-        notebookId() {
-            return this.$store.state.notebook.selectedNotebook?.id;
-        },
         sortedItems() {
             if (!this.report?.items) return [];
             return [...this.report.items].sort((a, b) => b.amount - a.amount);
         }
     },
     watch: {
-        notebookId(val) { if (val > 0) this.load(); },
         dateRange() { this.debouncedLoad(); },
         currencyId() { this.debouncedLoad(); }
     },
@@ -147,12 +140,10 @@ export default {
             this.debounce = setTimeout(() => this.load(), 400);
         },
         async load() {
-            if (!this.notebookSelected) return;
             this.loading = true;
             try {
                 const [start, end] = this.dateRange || [];
                 const params = {
-                    NotebookId: this.notebookId,
                     CurrencyId: this.currencyId ?? null,
                     StartDate: start ? moment(start).startOf('day').toISOString() : null,
                     EndDate: end ? moment(end).endOf('day').toISOString() : null
@@ -179,7 +170,7 @@ export default {
         }
     },
     mounted() {
-        if (this.notebookSelected) this.load();
+        this.load();
     }
 }
 </script>

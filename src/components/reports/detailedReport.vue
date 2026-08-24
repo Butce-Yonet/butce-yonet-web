@@ -42,6 +42,9 @@
 
         <!-- Shared filters -->
         <div class="detail-filters">
+            <div class="mb-2">
+                <date-range-preset-picker v-model="dateRange" />
+            </div>
             <div class="row g-2">
                 <div class="col-12 col-sm-6 col-md-4">
                     <label class="filter-label">{{ $t('reports.filters.dateRange') }}</label>
@@ -110,11 +113,6 @@
             <!-- Loading -->
             <div v-if="loading" class="report-loading">
                 <div class="spinner-border text-success"></div>
-            </div>
-
-            <div v-else-if="!notebookSelected" class="report-empty">
-                <i class="fa fa-book"></i>
-                <p>{{ $t('reports.selectNotebook') }}</p>
             </div>
 
             <template v-else>
@@ -209,6 +207,8 @@ import { Chart } from 'chart.js/auto';
 import reportService from '@/services/report.service';
 import moment from 'moment';
 import { useDateLocale } from '@/composables/useDateLocale';
+import { getDefaultDateRange } from '@/composables/dateRangePresets';
+import DateRangePresetPicker from '@/components/common/DateRangePresetPicker.vue';
 
 const PALETTE = [
     '#10b981','#3b82f6','#f59e0b','#ef4444','#8b5cf6',
@@ -219,6 +219,9 @@ const PALETTE = [
 const SMALL_THRESHOLD = 3; // percent
 
 export default {
+    components: {
+        'date-range-preset-picker': DateRangePresetPicker
+    },
     setup() {
         const { dateLocale } = useDateLocale();
         return { dateLocale };
@@ -228,10 +231,7 @@ export default {
             activeTab: 'categorized',
             viewMode: 'table',
             chartType: 'bar',
-            dateRange: [
-                moment().startOf('month').toDate(),
-                moment().endOf('month').toDate()
-            ],
+            dateRange: getDefaultDateRange(),
             currencyId: null,
             transactionType: 1,
             labelId: null,
@@ -251,14 +251,11 @@ export default {
                 { key: 'doughnut', icon: 'fa-pie-chart',  label: this.$t('reports.detailed.chartTypes.doughnut') },
             ];
         },
-        notebookSelected() { return this.$store.state.notebook.selectedNotebook?.id > 0; },
-        notebookId()       { return this.$store.state.notebook.selectedNotebook?.id; },
         currentItems() {
             return this.activeTab === 'categorized' ? this.categorizedItems : this.nonCategorizedItems;
         },
     },
     watch: {
-        notebookId(val)    { if (val > 0) this.load(); },
         activeTab()        { this.load(); },
         dateRange()        { this.debouncedLoad(); },
         currencyId()       { this.debouncedLoad(); },
@@ -285,7 +282,6 @@ export default {
             };
         },
         async load() {
-            if (!this.notebookSelected) return;
             this.loading = true;
             try {
                 if (this.activeTab === 'categorized') {
@@ -299,7 +295,6 @@ export default {
         },
         async loadCategorized() {
             const params = {
-                NotebookId:       this.notebookId,
                 CurrencyId:       this.currencyId ?? null,
                 TransactionTypes: this.transactionType,
                 NotebookLabelId:  this.labelId ?? null,
@@ -312,7 +307,6 @@ export default {
         },
         async loadNonCategorized() {
             const params = {
-                NotebookId:       this.notebookId,
                 CurrencyId:       this.currencyId ?? null,
                 TransactionTypes: this.transactionType,
                 ...this.buildDateParams()
@@ -571,7 +565,7 @@ export default {
         },
     },
     mounted() {
-        if (this.notebookSelected) this.load();
+        this.load();
     },
     unmounted() {
         if (this.chartInstance) { this.chartInstance.destroy(); this.chartInstance = null; }

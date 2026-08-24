@@ -1,7 +1,5 @@
 {
   "menu": {
-    "notebooks": "My Notebooks",
-    "createNotebook": "Create New Notebook",
     "home": "Home",
     "transactions": "Transactions",
     "reports": "Reports",
@@ -12,12 +10,16 @@
     "comingSoon": "Coming Soon"
   },
   "header": {
-    "activeNotebook": "Selected Notebook",
-    "createNotebook": "Create New Notebook",
-    "editNotebook": "Edit Notebook",
     "newTransaction": "New Transaction",
     "newRecurringTransaction": "New Recurring Transaction",
-    "newLabel": "New Label"
+    "newLabel": "New Label",
+    "dateRangePresets": {
+      "week": "Last 1 Week",
+      "month": "Last 1 Month",
+      "3months": "Last 3 Months",
+      "6months": "Last 6 Months",
+      "year": "Last 1 Year"
+    }
   },
   "labelsPage": {
     "title": "Labels",
@@ -50,24 +52,6 @@
       "editSuccess": "Label edited successfully."
     }
   },
-  "createNotebookModal": {
-    "createTitle": "Create Notebook",
-    "editTitle": "Edit Notebook",
-    "form": {
-      "placeholder": {
-        "name": "Notebook Name"
-      }
-    },
-    "messages": {
-      "createSuccess": "Notebook created successfully.",
-      "editSuccess": "Notebook updated successfully.",
-      "createError": "An error occurred while creating the notebook.",
-      "editError": "An error occurred while updating the notebook.",
-      "areYouSureDelete": "Are you sure you want to delete this notebook?",
-      "deleteSuccess": "Notebook deleted successfully.",
-      "deleteError": "An error occurred while deleting the notebook."
-    }
-  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
@@ -81,13 +65,9 @@
     "total": "Total",
     "other": "Other",
     "noDataText": "No data available",
-    "defaultLabel": "Default",
     "tooltips": {
       "edit": "Edit",
-      "delete": "Delete",
-      "editNotebook": "Edit Notebook",
-      "editNotebookDetail": "Edit Notebook Details",
-      "deleteNotebook": "Delete Notebook"
+      "delete": "Delete"
     },
     "email": "Email",
     "income": "Income",
@@ -115,40 +95,6 @@
     "message": {
       "required": "This field is required.",
       "email": "Please enter a valid email address."
-    }
-  },
-  "editNotebookDetail": {
-    "title": "Edit Notebook Details",
-    "users": "Users",
-    "categories": "Categories",
-    "usersTable": {
-      "headers": {
-        "name": "Name",
-        "surname": "Surname",
-        "username": "Username",
-        "email": "Email"
-      }
-    },
-    "labelsTable": {
-      "headers": {
-        "name": "Name",
-        "color": "Color"
-      }
-    },
-    "messages": {
-      "notebookUsersLoadError": "Failed to load user list",
-      "notebookUserCreateSuccess": "Notebook user added successfully.",
-      "notebookUserCreateError": "An error occurred while adding the notebook user.",
-      "notebookUserAreYouSureDelete": "Are you sure you want to delete this notebook user?",
-      "notebookUserDeleteSuccess": "Notebook user deleted successfully.",
-      "notebookUserDeleteError": "An error occurred while deleting the notebook user.",
-      "notebookLabelCreateSuccess": "Notebook label added successfully.",
-      "notebookLabelCreateError": "An error occurred while adding the notebook label.",
-      "notebookLabelAreYouSureDelete": "Are you sure you want to delete this notebook label?",
-      "notebookLabelDeleteSuccess": "Notebook label deleted successfully.",
-      "notebookLabelDeleteError": "An error occurred while deleting the notebook label.",
-      "notebookLabelEditError": "An error occurred while editing the notebook label.",
-      "notebookLabelEditSuccess": "Notebook label edited successfully."
     }
   },
   "transactionsPage": {
@@ -195,7 +141,6 @@
     "noLabel": "Uncategorized",
     "table": {
       "headers": {
-        "notebookName": "Notebook",
         "name": "Name",
         "description": "Description",
         "amount": "Amount",
@@ -253,11 +198,8 @@
     },
     "table": {
       "headers": {
-        "notebookName": "Notebook",
         "name": "Transaction Name",
-        "transactionType": "Transaction Type",
         "amount": "Amount",
-        "currency": "Currency",
         "labels": "Labels",
         "frequency": "Frequency",
         "interval": "Interval",
@@ -284,7 +226,6 @@
     }
   },
   "reports": {
-    "selectNotebook": "Please select a notebook to view reports.",
     "filters": {
       "dateRange": "Date Range",
       "currency": "Currency",

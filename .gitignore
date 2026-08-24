@@ -23,20 +23,3 @@ yarn-error.log
 # Environment Variables
 .env.local
 .env.*.local
-
-### Web ###
-*.asp
-*.cer
-*.csr
-*.css
-*.htm
-*.html
-*.js
-*.jsp
-*.php
-*.rss
-*.wasm
-*.wat
-*.xhtml
-
-# End of https://www.toptal.com/developers/gitignore/api/web,vue,vuejs

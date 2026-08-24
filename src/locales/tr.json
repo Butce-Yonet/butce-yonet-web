@@ -1,7 +1,5 @@
 {
   "menu": {
-    "notebooks": "Defterlerim",
-    "createNotebook": "Yeni Defter Oluştur",
     "home": "Ana Sayfa",
     "transactions": "İşlemler",
     "reports": "Raporlar",
@@ -12,12 +10,16 @@
     "comingSoon": "Yakında"
   },
   "header": {
-    "activeNotebook": "Seçili Defter",
-    "createNotebook": "Yeni Defter Oluştur",
-    "editNotebook": "Defteri Düzenle",
     "newTransaction": "Yeni İşlem",
     "newRecurringTransaction": "Yeni Tekrarlayan İşlem",
-    "newLabel": "Yeni Etiket"
+    "newLabel": "Yeni Etiket",
+    "dateRangePresets": {
+      "week": "Son 1 Hafta",
+      "month": "Son 1 Ay",
+      "3months": "Son 3 Ay",
+      "6months": "Son 6 Ay",
+      "year": "Son 1 Yıl"
+    }
   },
   "labelsPage": {
     "title": "Etiketler",
@@ -50,24 +52,6 @@
       "editSuccess": "Etiket başarıyla düzenlendi."
     }
   },
-  "createNotebookModal": {
-    "createTitle": "Defter Oluştur",
-    "editTitle": "Defteri Düzenle",
-    "form": {
-      "placeholder": {
-        "name": "Defter Adı"
-      }
-    },
-    "messages": {
-      "createSuccess": "Defter başarıyla oluşturuldu.",
-      "editSuccess": "Defter başarıyla güncellendi.",
-      "createError": "Defter oluşturulurken bir hata oluştu.",
-      "editError": "Defter güncellenirken bir hata oluştu.",
-      "areYouSureDelete": "Bu defteri silmek istediğinize emin misiniz?",
-      "deleteSuccess": "Defter başarıyla silindi.",
-      "deleteError": "Defter silinirken bir hata oluştu."
-    }
-  },
   "common": {
     "save": "Kaydet",
     "cancel": "İptal",
@@ -81,13 +65,9 @@
     "total": "Toplam",
     "other": "Diğer",
     "noDataText": "Kayıt bulunamadı",
-    "defaultLabel": "Varsayılan",
     "tooltips": {
       "edit": "Düzenle",
-      "delete": "Sil",
-      "editNotebook": "Defteri Düzenle",
-      "editNotebookDetail": "Defter Detaylarını Düzenle",
-      "deleteNotebook": "Defteri Sil"
+      "delete": "Sil"
     },
     "email": "E-posta",
     "income": "Gelir",
@@ -115,40 +95,6 @@
     "message": {
       "required": "Bu alan zorunludur.",
       "email": "Lütfen geçerli bir e-posta adresi giriniz."
-    }
-  },
-  "editNotebookDetail": {
-    "title": "Defter Detaylarını Düzenle",
-    "users": "Kullanıcılar",
-    "categories": "Kategoriler",
-    "usersTable": {
-      "headers": {
-        "name": "Ad",
-        "surname": "Soyad",
-        "username": "Kullanıcı Adı",
-        "email": "E-posta"
-      }
-    },
-    "labelsTable": {
-      "headers": {
-        "name": "Ad",
-        "color": "Renk"
-      }
-    },
-    "messages": {
-      "notebookUsersLoadError": "Kullanıcı listesi yüklenemedi",
-      "notebookUserCreateSuccess": "Defter kullanıcısı başarıyla eklendi.",
-      "notebookUserCreateError": "Defter kullanıcısı eklenirken bir hata oluştu.",
-      "notebookUserAreYouSureDelete": "Bu defter kullanıcısını silmek istediğinize emin misiniz?",
-      "notebookUserDeleteSuccess": "Defter kullanıcısı başarıyla silindi.",
-      "notebookUserDeleteError": "Defter kullanıcısı silinirken bir hata oluştu.",
-      "notebookLabelCreateSuccess": "Defter etiketi başarıyla eklendi.",
-      "notebookLabelCreateError": "Defter etiketi eklenirken bir hata oluştu.",
-      "notebookLabelAreYouSureDelete": "Bu defter etiketini silmek istediğinize emin misiniz?",
-      "notebookLabelDeleteSuccess": "Defter etiketi başarıyla silindi.",
-      "notebookLabelDeleteError": "Defter etiketi silinirken bir hata oluştu.",
-      "notebookLabelEditError": "Defter etiketi düzenlenirken bir hata oluştu.",
-      "notebookLabelEditSuccess": "Defter etiketi başarıyla düzenlendi."
     }
   },
   "transactionsPage": {
@@ -195,7 +141,6 @@
     "noLabel": "Kategorize Edilmeli",
     "table": {
       "headers": {
-        "notebookName": "Defter",
         "name": "Ad",
         "description": "Açıklama",
         "amount": "Tutar",
@@ -253,11 +198,8 @@
     },
     "table": {
       "headers": {
-        "notebookName": "Defter",
         "name": "İşlem Adı",
-        "transactionType": "İşlem Türü",
         "amount": "Tutar",
-        "currency": "Para Birimi",
         "labels": "Etiketler",
         "frequency": "Tekrarlama Sıklığı",
         "interval": "Aralık",
@@ -284,7 +226,6 @@
     }
   },
   "reports": {
-    "selectNotebook": "Rapor görüntülemek için bir defter seçin.",
     "filters": {
       "dateRange": "Tarih Aralığı",
       "currency": "Para Birimi",

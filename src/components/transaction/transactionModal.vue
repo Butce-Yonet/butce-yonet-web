@@ -10,11 +10,8 @@
                             <i :class="mode === 'edit' ? 'fa fa-pencil' : (form.transactionType === 1 ? 'fa fa-arrow-down' : 'fa fa-arrow-up')"></i>
                         </div>
                         <div>
-                            <p class="text-muted mb-0 small">
-                                {{ mode === 'create' ? $t('transactionList.transactionModal.createTitle') : $t('transactionList.transactionModal.editTitle') }}
-                            </p>
                             <h5 class="modal-title mb-0 fw-semibold">
-                                {{ getModalNotebook.name }}
+                                {{ mode === 'create' ? $t('transactionList.transactionModal.createTitle') : $t('transactionList.transactionModal.editTitle') }}
                             </h5>
                         </div>
                     </div>
@@ -234,11 +231,6 @@ export default {
             labels: this.$store.getters['dashboard/getLabels']
         }
     },
-    computed: {
-        getModalNotebook() {
-            return this.$store.state.notebook.selectedNotebook;
-        }
-    },
     watch: {
         modal: {
             deep: true,
@@ -281,14 +273,13 @@ export default {
         async saveTransaction() {
             this.submitting = true;
             var requestModel = {
-                NotebookId: this.getModalNotebook.id,
                 Transactions: []
             }
 
             requestModel.Transactions.push(this.form)
 
             try {
-                var response = await transactionService.createTransaction(this.getModalNotebook.id, requestModel)
+                var response = await transactionService.createTransaction(requestModel)
 
                 if (response.status === 200) {
                     const key = this.form.transactionType === 0
@@ -318,8 +309,7 @@ export default {
         async editTransaction() {
             this.submitting = true;
             var requestModel = {
-                NotebookId: this.getModalNotebook.id,
-                TransactionId: this.transactionData.id,
+                transactionId: this.transactionData.id,
                 name: this.form.name,
                 description: this.form.description,
                 amount: this.form.amount,
@@ -330,7 +320,7 @@ export default {
             }
 
             try {
-                var response = await transactionService.updateTransaction(this.getModalNotebook.id, this.transactionData.id, requestModel)
+                var response = await transactionService.updateTransaction(requestModel)
 
                 if (response.status === 200) {
                     const key = this.form.transactionType === 0

@@ -1,10 +1,5 @@
 <template>
   <div class="container-fluid pt-4">
-    <!-- Mobile notebook selector -->
-    <div class="d-flex d-md-none mb-3">
-      <notebook-selector></notebook-selector>
-    </div>
-
     <!-- Period Summary -->
     <div class="row mb-3">
       <div class="col-12">
@@ -27,10 +22,6 @@
           <div class="card-body p-0">
             <div v-if="transactionsLoading" class="dash-state">
               <div class="spinner-border spinner-border-sm text-success"></div>
-            </div>
-            <div v-else-if="!notebookSelected" class="dash-state">
-              <i class="fa fa-book text-muted" style="font-size:22px"></i>
-              <span class="text-muted small">{{ $t('reports.selectNotebook') }}</span>
             </div>
             <div v-else-if="recentTransactions.length === 0" class="dash-state">
               <i class="fa fa-inbox text-muted" style="font-size:22px"></i>
@@ -88,8 +79,8 @@
           </div>
 
           <!-- Date filter row -->
-          <div v-if="notebookSelected" class="chart-date-row">
-            <i class="fa fa-calendar text-muted me-1" style="font-size:11px"></i>
+          <div class="chart-date-row">
+            <date-range-preset-picker v-model="chartDateRange" />
             <div class="chart-datepicker">
               <VueDatePicker
                 v-model="chartDateRange"
@@ -105,10 +96,6 @@
           <div class="card-body d-flex flex-column">
             <div v-if="chartLoading" class="dash-state flex-grow-1">
               <div class="spinner-border spinner-border-sm text-success"></div>
-            </div>
-            <div v-else-if="!notebookSelected" class="dash-state flex-grow-1">
-              <i class="fa fa-book text-muted" style="font-size:22px"></i>
-              <span class="text-muted small">{{ $t('reports.selectNotebook') }}</span>
             </div>
             <div v-else-if="currentChartData.length === 0" class="dash-state flex-grow-1">
               <i class="fa fa-chart-pie text-muted" style="font-size:28px"></i>
@@ -148,22 +135,18 @@
       </div>
     </div>
 
-    <create-notebook></create-notebook>
-    <edit-notebook-detail></edit-notebook-detail>
   </div>
 </template>
 
 <script>
 import { Chart } from 'chart.js/auto';
 import periodSummaryReport from '@/components/reports/periodSummaryReport.vue';
-import createNotebookComponent from '@/components/notebook/createNotebook.vue';
-import editNotebookDetailComponent from '@/components/notebook/editNotebookDetail.vue';
-import NotebookSelector from '@/components/header/notebookSelector.vue';
 import transactionService from '@/services/transaction.service';
 import reportService from '@/services/report.service';
 import moment from 'moment';
-import * as bootstrap from 'bootstrap';
 import { useDateLocale } from '@/composables/useDateLocale';
+import { getDefaultDateRange } from '@/composables/dateRangePresets';
+import DateRangePresetPicker from '@/components/common/DateRangePresetPicker.vue';
 
 const PALETTE = [
   '#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6',
@@ -178,9 +161,7 @@ export default {
   },
   components: {
     'period-summary-report': periodSummaryReport,
-    'create-notebook': createNotebookComponent,
-    'edit-notebook-detail': editNotebookDetailComponent,
-    'notebook-selector': NotebookSelector,
+    'date-range-preset-picker': DateRangePresetPicker,
   },
   data() {
     return {
@@ -189,26 +170,14 @@ export default {
 
       chartPage: 0,
       chartLoading: false,
-      chartDateRange: [
-        moment().startOf('month').toDate(),
-        moment().endOf('month').toDate(),
-      ],
+      chartDateRange: getDefaultDateRange(),
       chartDebounce: null,
       expenseCategories: [],
       incomeCategories: [],
       chartInstance: null,
-
-      modal: {},
-      detailModal: {},
     };
   },
   computed: {
-    notebookSelected() {
-      return this.$store.state.notebook.selectedNotebook?.id > 0;
-    },
-    notebookId() {
-      return this.$store.state.notebook.selectedNotebook?.id;
-    },
     currentChartData() {
       return this.chartPage === 0 ? this.expenseCategories : this.incomeCategories;
     },
@@ -220,30 +189,16 @@ export default {
     },
   },
   watch: {
-    '$store.state.notebook.selectedNotebook': {
-      deep: true,
-      async handler(val) {
-        if (val?.id > 0) {
-          await Promise.all([this.loadRecentTransactions(), this.loadCategoryData()]);
-        }
-      },
-    },
     chartDateRange() {
       clearTimeout(this.chartDebounce);
       this.chartDebounce = setTimeout(() => this.loadCategoryData(), 400);
-    },
-    '$store.state.notebook.createNotebookModalVisible'(newVal) {
-      if (newVal) this.modal.show(); else this.modal.hide();
-    },
-    '$store.state.notebook.editNotebookDetailModalVisible'(newVal) {
-      if (newVal) this.detailModal.show(); else this.detailModal.hide();
     },
   },
   methods: {
     async loadRecentTransactions() {
       this.transactionsLoading = true;
       try {
-        const res = await transactionService.getAllTransactions(this.notebookId, {
+        const res = await transactionService.getAllTransactions({
           PageNumber: 1,
           PageSize: 10,
           SortColumn: '',
@@ -258,7 +213,6 @@ export default {
       }
     },
     async loadCategoryData() {
-      if (!this.notebookSelected) return;
       if (this.chartInstance) { this.chartInstance.destroy(); this.chartInstance = null; }
       this.chartLoading = true;
       try {
@@ -266,7 +220,7 @@ export default {
         const startDate = start ? moment(start).startOf('day').toISOString() : null;
         const endDate   = end   ? moment(end).endOf('day').toISOString()     : null;
 
-        const base = { NotebookId: this.notebookId, StartDate: startDate, EndDate: endDate };
+        const base = { StartDate: startDate, EndDate: endDate };
         const [expRes, incRes] = await Promise.all([
           reportService.getCategorizedTransactionReport({ ...base, TransactionTypes: 1 }),
           reportService.getCategorizedTransactionReport({ ...base, TransactionTypes: 0 }),
@@ -392,18 +346,7 @@ export default {
     },
   },
   mounted() {
-    const modalElement = document.getElementById('createNotebookModal');
-    if (modalElement) {
-      this.modal = new bootstrap.Modal(modalElement, { backdrop: 'static', keyboard: false });
-    }
-    const detailModalElement = document.getElementById('editNotebookDetailModal');
-    if (detailModalElement) {
-      this.detailModal = new bootstrap.Modal(detailModalElement, { backdrop: 'static', keyboard: false });
-    }
-
-    if (this.notebookSelected) {
-      Promise.all([this.loadRecentTransactions(), this.loadCategoryData()]);
-    }
+    Promise.all([this.loadRecentTransactions(), this.loadCategoryData()]);
   },
   unmounted() {
     if (this.chartInstance) { this.chartInstance.destroy(); this.chartInstance = null; }
@@ -552,10 +495,15 @@ export default {
 .chart-date-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   padding: 8px 16px;
   border-bottom: 1px solid #f3f4f6;
   background: #fafafa;
   gap: 6px;
+}
+.chart-date-row :deep(.date-preset-btn) {
+  padding: 3px 9px;
+  font-size: 11px;
 }
 .chart-datepicker {
   flex: 1;

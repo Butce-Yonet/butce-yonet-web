@@ -18,26 +18,10 @@
                         <span>{{ $t('common.noDataText') }}</span>
                     </template>
 
-                    <template #item-notebookName="item">
-                        <span class="badge badge-primary">
-                            {{ item.notebook.name }}
-                        </span>
-                    </template>
-
-                    <template #item-currencyCode="item">
-                        <span class="badge badge-success">
-                            {{ item.transaction.currency.code }} - {{ item.transaction.currency.name }}
-                        </span>
-                    </template>
-
-                    <template #item-transactionType="item">
-                        <span v-if="item.transaction.transactionType == 0" class="badge badge-success">{{
-                            $t('common.income') }}</span>
-                        <span v-else class="badge badge-danger">{{ $t('common.expense') }}</span>
-                    </template>
-
                     <template #item-amount="item">
-                        {{ formatCurrency(item.transaction.amount, item.transaction.currency.code) }}
+                        <span class="tx-amount" :class="item.transaction.transactionType === 0 ? 'amount-positive' : 'amount-negative'">
+                            {{ item.transaction.transactionType === 0 ? '+' : '-' }}{{ formatCurrency(item.transaction.amount, item.transaction.currency.code) }}
+                        </span>
                     </template>
 
                     <template #item-nextOccurrence="item">
@@ -98,9 +82,6 @@ export default {
         return {
             loading: false,
             headers: [
-                { text: this.$t('recurringTransactionList.table.headers.notebookName'), value: 'notebookName' },
-                { text: this.$t('recurringTransactionList.table.headers.currency'), value: 'currencyCode', width: 180 },
-                { text: this.$t('recurringTransactionList.table.headers.transactionType'), value: 'transactionType', width: 150 },
                 { text: this.$t('recurringTransactionList.table.headers.name'), value: 'name' },
                 { text: this.$t('recurringTransactionList.table.headers.amount'), value: 'amount' },
                 { text: this.$t('recurringTransactionList.table.headers.nextOccurrence'), value: 'nextOccurrence' },
@@ -138,13 +119,6 @@ export default {
             this.selectedTransaction = {};
             this.modal.show();
         },
-        '$store.state.notebook.selectedNotebook': {
-            deep: true,
-            async handler() {
-                this.serverOptions.page = 1;
-                await this.loadRecurringTransactions();
-            }
-        },
         serverOptions: {
             deep: true,
             async handler() {
@@ -168,10 +142,7 @@ export default {
             }
 
             try {
-                var response = await recurringTransactionService.getAllRecurringTransactions(
-                    this.$store.state.notebook.selectedNotebook.id,
-                    queryParams
-                );
+                var response = await recurringTransactionService.getAllRecurringTransactions(queryParams);
 
                 if (response.status !== 200) {
                     this.$swal('Error', this.$t('recurringTransactionList.messages.recurringTransactionsLoadError'), 'error');
@@ -214,10 +185,7 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        var response = await recurringTransactionService.deleteRecurringTransaction(
-                            this.$store.state.notebook.selectedNotebook.id,
-                            item.id
-                        );
+                        var response = await recurringTransactionService.deleteRecurringTransaction(item.id);
 
                         if (response.status !== 200) {
                             this.$swal({ icon: 'error', text: this.$t('recurringTransactionList.messages.recurringTransactionDeleteError') });
@@ -245,8 +213,7 @@ export default {
             });
         }
 
-        if (this.$store.state.notebook.selectedNotebook.id > 0)
-            this.loadRecurringTransactions();
+        this.loadRecurringTransactions();
 
         if (this.$store.state.dashboard.pendingOpenRecurringTransactionModal) {
             this.$store.dispatch('dashboard/setPendingOpenRecurringTransactionModal', false);
@@ -265,3 +232,12 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.tx-amount {
+    font-weight: 700;
+    white-space: nowrap;
+}
+.amount-positive { color: #10b981; }
+.amount-negative { color: #ef4444; }
+</style>

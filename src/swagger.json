@@ -161,423 +161,12 @@
         }
       }
     },
-    "/api/Notebooks": {
-      "post": {
-        "tags": [
-          "Notebooks"
-        ],
-        "summary": "Kullanıcı hesaplarını tutmak için yeni bir defter oluşturması amacıyla kullanılır",
-        "requestBody": {
-          "description": "",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateNotebookCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateNotebookCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateNotebookCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Notebooks"
-        ],
-        "summary": "Kullanıcının hesap defterinin adını güncellemek için kullanılır",
-        "requestBody": {
-          "description": "",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateNotebookCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateNotebookCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateNotebookCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Notebooks"
-        ],
-        "summary": "Kullanıcının hesap defterlerini getirmek için kullanılır",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotebookDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Notebooks/{id}": {
       "delete": {
         "tags": [
           "Notebooks"
         ],
-        "summary": "Kullanıcının hesap defterini silmek için kullanılır",
+        "summary": "Kullanıcının hesap defterini silmek için kullanılır (yalnızca işlemi olmayan defterler silinebilir)",
         "parameters": [
           {
             "name": "id",
@@ -814,41 +403,38 @@
         }
       }
     },
-    "/api/notebooks/{notebookId}/users": {
+    "/api/Notebooks": {
       "get": {
         "tags": [
-          "NotebookUsers"
+          "Notebooks"
         ],
-        "summary": "İstenilen deftere ait tüm kullanıcıları getirmek amacıyla kullanılır",
-        "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "İstenilen defterin id",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "summary": "Kullanıcının hesap defterlerini (aylık dönemlerini) getirmek için kullanılır",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/NotebookUserDtoIEnumerableBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NotebookUserDtoIEnumerableBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NotebookUserDtoIEnumerableBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               }
             }
@@ -858,17 +444,26 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               }
             }
@@ -878,17 +473,26 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               }
             }
@@ -898,17 +502,26 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               }
             }
@@ -918,157 +531,26 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "NotebookUsers"
-        ],
-        "summary": "İstenilen deftere ait kullanıcı eklemek için kullanılır",
-        "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateNotebookUserCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateNotebookUserCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateNotebookUserCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotebookDto"
+                  }
                 }
               }
             }
@@ -1076,295 +558,13 @@
         }
       }
     },
-    "/api/notebooks/{notebookId}/users/{notebookUserId}": {
-      "get": {
-        "tags": [
-          "NotebookUsers"
-        ],
-        "summary": "İstenilen deftere ait spesifik bir kullanıcıyı getirmek amacıyla kullanılır",
-        "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "notebookUserId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotebookUserDtoBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotebookUserDtoBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotebookUserDtoBaseResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/notebooks/{notebookId}/users/{userId}": {
-      "delete": {
-        "tags": [
-          "NotebookUsers"
-        ],
-        "summary": "İstenilen deftere ait kullanıcıyı silmek için kullanılır",
-        "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectBaseResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/notebooks/{notebookId}/recurringtransactions": {
+    "/api/recurringtransactions": {
       "get": {
         "tags": [
           "RecurringTransactions"
         ],
         "summary": "Zamanlanmış gelir-gider kayıtlarını getirmek için kullanılır",
         "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "NotebookId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "PageNumber",
             "in": "query",
@@ -1504,18 +704,6 @@
           "RecurringTransactions"
         ],
         "summary": "Zamanlanmış gelir-gider oluşturmak için kullanılır",
-        "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
         "requestBody": {
           "description": "",
           "content": {
@@ -1640,23 +828,13 @@
         }
       }
     },
-    "/api/notebooks/{notebookId}/recurringtransactions/{recurringTransactionId}": {
+    "/api/recurringtransactions/{recurringTransactionId}": {
       "get": {
         "tags": [
           "RecurringTransactions"
         ],
         "summary": "Zamanlamış gelir-gider kayıdını getirmek için kullanılır",
         "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "recurringTransactionId",
             "in": "path",
@@ -1777,16 +955,6 @@
         ],
         "summary": "Zamanlanmış gelir-gider güncellemek için kullanılır",
         "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "recurringTransactionId",
             "in": "path",
@@ -1928,16 +1096,6 @@
         "summary": "Zamanlanmış gelir-gider bilgisini silmek için kullanılır",
         "parameters": [
           {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
             "name": "recurringTransactionId",
             "in": "path",
             "description": "",
@@ -2059,14 +1217,6 @@
         ],
         "summary": "Belirli tarihler aralarında kategorize edilmiş şekilde gelir-giderleri rapor olarak almak için kullanılır.",
         "parameters": [
-          {
-            "name": "NotebookId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "NotebookLabelId",
             "in": "query",
@@ -2219,14 +1369,6 @@
         "summary": "Belirli tarihler aralarında kategorize edilmemiş şekilde gelir giderleri rapor olarak almak için kullanılır.",
         "parameters": [
           {
-            "name": "NotebookId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
             "name": "CurrencyId",
             "in": "query",
             "schema": {
@@ -2370,14 +1512,6 @@
         "summary": "Dönem özeti raporu: seçilen dönem (ay / hafta / özel aralık) için toplam gelir, toplam gider, net bakiye ve önceki dönemle kıyas (% artış/azalış).",
         "parameters": [
           {
-            "name": "NotebookId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
             "name": "StartDate",
             "in": "query",
             "schema": {
@@ -2514,14 +1648,6 @@
         "summary": "En çok neye para harcıyorum? Seçilen dönem için kategori bazlı gider dağılımı\n(toplam tutar, toplam harcama içindeki yüzdelik pay ve önceki dönem toplamı).",
         "parameters": [
           {
-            "name": "NotebookId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
             "name": "StartDate",
             "in": "query",
             "schema": {
@@ -2650,23 +1776,13 @@
         }
       }
     },
-    "/api/notebooks/{notebookId}/transactions": {
+    "/api/transactions": {
       "get": {
         "tags": [
           "Transactions"
         ],
-        "summary": "İstenilen deftere ait gelir-gider kalemlerini getirir",
+        "summary": "Mevcut kullanıcıya ait gelir-gider kalemlerini getirir",
         "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "NotebookId",
             "in": "query",
@@ -2869,19 +1985,7 @@
         "tags": [
           "Transactions"
         ],
-        "summary": "İstenilen deftere gelir-gider kalemi eklemek için kullanılır",
-        "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "summary": "Gelir-gider kalemi eklemek için kullanılır. İşlem tarihine göre ilgili aya ait defter otomatik bulunur/oluşturulur.",
         "requestBody": {
           "description": "",
           "content": {
@@ -3009,19 +2113,7 @@
         "tags": [
           "Transactions"
         ],
-        "summary": "İstenilen deftere ait spesifik bir gelir-gider kalemini güncellemek için kullanılır",
-        "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "summary": "Spesifik bir gelir-gider kalemini güncellemek için kullanılır",
         "requestBody": {
           "description": "",
           "content": {
@@ -3146,23 +2238,13 @@
         }
       }
     },
-    "/api/notebooks/{notebookId}/transactions/{transactionId}": {
+    "/api/transactions/{transactionId}": {
       "get": {
         "tags": [
           "Transactions"
         ],
-        "summary": "İstenilen deftere ait spesifik bir gelir-gider kalemini getirir",
+        "summary": "Spesifik bir gelir-gider kalemini getirir",
         "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "transactionId",
             "in": "path",
@@ -3281,18 +2363,8 @@
         "tags": [
           "Transactions"
         ],
-        "summary": "İstenilen deftere ait spesifik bir gelir-gider kalemini silmek için kullanılır",
+        "summary": "Spesifik bir gelir-gider kalemini silmek için kullanılır",
         "parameters": [
-          {
-            "name": "notebookId",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           {
             "name": "transactionId",
             "in": "path",
@@ -3914,10 +2986,6 @@
       "CategorySpendingReportDto": {
         "type": "object",
         "properties": {
-          "notebookId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "startDate": {
             "type": "string",
             "format": "date-time"
@@ -3979,37 +3047,9 @@
         },
         "additionalProperties": false
       },
-      "CreateNotebookCommand": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreateNotebookUserCommand": {
-        "type": "object",
-        "properties": {
-          "notebookId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "CreateRecurringTransactionCommand": {
         "type": "object",
         "properties": {
-          "notebookId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "name": {
             "type": "string",
             "nullable": true
@@ -4081,10 +3121,6 @@
       "CreateTransactionCommand": {
         "type": "object",
         "properties": {
-          "notebookId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "transactions": {
             "type": "array",
             "items": {
@@ -4324,71 +3360,13 @@
             "type": "string",
             "nullable": true
           },
-          "isDefault": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "NotebookUserDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
+          "termStart": {
+            "type": "string",
+            "format": "date-time"
           },
-          "userId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "notebookId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "isDefault": {
-            "type": "boolean"
-          },
-          "user": {
-            "$ref": "#/components/schemas/UserDto"
-          }
-        },
-        "additionalProperties": false
-      },
-      "NotebookUserDtoBaseResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "$ref": "#/components/schemas/NotebookUserDto"
-          },
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "readOnly": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "NotebookUserDtoIEnumerableBaseResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/NotebookUserDto"
-            },
-            "nullable": true,
-            "readOnly": true
-          },
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "readOnly": true
+          "termEnd": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -4414,10 +3392,6 @@
       "PeriodSummaryReportDto": {
         "type": "object",
         "properties": {
-          "notebookId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "startDate": {
             "type": "string",
             "format": "date-time"
@@ -4551,9 +3525,6 @@
           "id": {
             "type": "integer",
             "format": "int32"
-          },
-          "notebook": {
-            "$ref": "#/components/schemas/NotebookDto"
           },
           "name": {
             "type": "string",
@@ -4805,28 +3776,10 @@
         "type": "integer",
         "format": "int32"
       },
-      "UpdateNotebookCommand": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "UpdateRecurringTransactionCommand": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "notebookId": {
             "type": "integer",
             "format": "int32"
           },
@@ -4866,10 +3819,6 @@
       "UpdateTransactionCommand": {
         "type": "object",
         "properties": {
-          "notebookId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "transactionId": {
             "type": "integer",
             "format": "int32"
@@ -4920,32 +3869,6 @@
             "nullable": true
           },
           "colorCode": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "surname": {
-            "type": "string",
-            "nullable": true
-          },
-          "username": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
             "type": "string",
             "nullable": true
           }
@@ -5020,9 +3943,6 @@
     },
     {
       "name": "Notebooks"
-    },
-    {
-      "name": "NotebookUsers"
     },
     {
       "name": "RecurringTransactions"

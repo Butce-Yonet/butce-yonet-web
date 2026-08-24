@@ -25,6 +25,9 @@
 
             <!-- Filter Panel -->
             <div class="filter-panel" v-show="showFilters">
+                <div class="mb-2">
+                    <date-range-preset-picker v-model="filters.transactionDate" />
+                </div>
                 <div class="row g-2">
                     <!-- Currency -->
                     <div class="col-12 col-sm-6 col-md-4">
@@ -124,30 +127,14 @@
                             <span>{{ $t('common.noDataText') }}</span>
                         </template>
 
-                        <template #item-notebookName="item">
-                            <span class="badge badge-primary">
-                                {{ item.notebook.name }}
-                            </span>
-                        </template>
-
-                        <template #item-currencyCode="item">
-                            <span class="badge badge-success">
-                                {{ item.currency.code }} - {{ item.currency.name }}
-                            </span>
-                        </template>
-
-                        <template #item-transactionType="item">
-                            <span v-if="item.transactionType == 0" class="badge badge-success">{{
-                                $t('common.income') }}</span>
-                            <span v-else class="badge badge-danger">{{ $t('common.expense') }}</span>
-                        </template>
-
                         <template #item-transactionDate="item">
                             <span>{{ formatDate(item.transactionDate) }}</span>
                         </template>
 
                         <template #item-amount="item">
-                            {{ formatCurrency(item.amount, item.currency.code) }}
+                            <span class="tx-amount" :class="item.transactionType === 0 ? 'amount-positive' : 'amount-negative'">
+                                {{ item.transactionType === 0 ? '+' : '-' }}{{ formatCurrency(item.amount, item.currency.code) }}
+                            </span>
                         </template>
 
                         <template #item-labels="item">
@@ -188,6 +175,8 @@ import * as bootstrap from 'bootstrap';
 import transactionService from '@/services/transaction.service';
 import moment from 'moment'
 import { useDateLocale } from '@/composables/useDateLocale';
+import { getDefaultDateRange, isDefaultDateRange } from '@/composables/dateRangePresets';
+import DateRangePresetPicker from '@/components/common/DateRangePresetPicker.vue';
 
 export default {
     setup() {
@@ -195,7 +184,8 @@ export default {
         return { dateLocale };
     },
     components: {
-        'transaction-modal': transactionModal
+        'transaction-modal': transactionModal,
+        'date-range-preset-picker': DateRangePresetPicker
     },
     data() {
         return {
@@ -206,15 +196,12 @@ export default {
                 name: '',
                 description: '',
                 amount: '',
-                transactionDate: [null, null],
+                transactionDate: getDefaultDateRange(),
                 labelIds: []
             },
             filterDebounce: null,
             loading: false,
             headers: [
-                { text: this.$t('transactionList.table.headers.notebookName'), value: 'notebookName' },
-                { text: this.$t('transactionList.table.headers.currency'), value: 'currencyCode' },
-                { text: this.$t('transactionList.table.headers.transactionType'), value: 'transactionType' },
                 { text: this.$t('transactionList.table.headers.name'), value: 'name' },
                 { text: this.$t('transactionList.table.headers.description'), value: 'description' },
                 { text: this.$t('transactionList.table.headers.amount'), value: 'amount' },
@@ -249,7 +236,7 @@ export default {
                 this.filters.name ||
                 this.filters.description ||
                 this.filters.amount !== '' ||
-                this.filters.transactionDate[0] !== null ||
+                !isDefaultDateRange(this.filters.transactionDate) ||
                 this.filters.labelIds.length > 0
             );
         },
@@ -260,7 +247,7 @@ export default {
             if (this.filters.name)                       count++;
             if (this.filters.description)                count++;
             if (this.filters.amount !== '')              count++;
-            if (this.filters.transactionDate[0] !== null) count++;
+            if (!isDefaultDateRange(this.filters.transactionDate)) count++;
             if (this.filters.labelIds.length > 0)        count++;
             return count;
         }
@@ -270,13 +257,6 @@ export default {
             this.modalMode = 'create';
             this.selectedTransaction = {};
             this.modal.show();
-        },
-        '$store.state.notebook.selectedNotebook': {
-            deep: true,
-            async handler() {
-                this.serverOptions.page = 1;
-                await this.loadTransactions();
-            }
         },
         serverOptions: {
             deep: true,
@@ -303,7 +283,7 @@ export default {
                 name: '',
                 description: '',
                 amount: '',
-                transactionDate: [null, null],
+                transactionDate: getDefaultDateRange(),
                 labelIds: []
             };
         },
@@ -333,10 +313,7 @@ export default {
             };
 
             try {
-                var response = await transactionService.getAllTransactions(
-                    this.$store.state.notebook.selectedNotebook.id,
-                    queryParams
-                );
+                var response = await transactionService.getAllTransactions(queryParams);
 
                 if (response.status !== 200) {
                     this.$swal('Error', this.$t('transactionList.messages.transactionsLoadError'), 'error');
@@ -370,10 +347,7 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        var response = await transactionService.deleteTransaction(
-                            this.$store.state.notebook.selectedNotebook.id,
-                            item.id
-                        );
+                        var response = await transactionService.deleteTransaction(item.id);
                         if (response.status === 200) {
                             const key = item.transactionType === 0
                                 ? 'transactionList.messages.incomeDeleteSuccess'
@@ -412,8 +386,7 @@ export default {
                 keyboard: false
             });
         }
-        if (this.$store.state.notebook.selectedNotebook.id > 0)
-            this.loadTransactions();
+        this.loadTransactions();
 
         if (this.$store.state.dashboard.pendingOpenTransactionModal) {
             this.$store.dispatch('dashboard/setPendingOpenTransactionModal', false);
@@ -434,6 +407,13 @@ export default {
 </script>
 
 <style scoped>
+.tx-amount {
+    font-weight: 700;
+    white-space: nowrap;
+}
+.amount-positive { color: #10b981; }
+.amount-negative { color: #ef4444; }
+
 /* Filter panel */
 .filter-panel {
     padding: 14px 20px;
