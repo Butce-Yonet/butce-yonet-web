@@ -2,35 +2,39 @@
   <div class="container-fluid pt-4">
 
     <!-- Card wrapper -->
-    <div class="card border mt-3">
+    <div class="card border-0 labels-card">
 
-      <!-- Card Header -->
-      <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <div class="d-flex align-items-center gap-2">
-          <h5 class="mb-0">
-            <i class="fa fa-tags me-2 text-success"></i>
-            {{ $t('labelsPage.title') }}
-          </h5>
-          <span v-if="!labelsLoading" class="badge badge-light-success">{{ labels.length }}</span>
+      <!-- Header -->
+      <div class="labels-header">
+        <div class="labels-header-left">
+          <div class="labels-header-icon">
+            <i class="fa fa-tags"></i>
+          </div>
+          <div>
+            <h5 class="labels-title">
+              {{ $t('labelsPage.title') }}
+              <span v-if="!labelsLoading" class="labels-count">{{ labels.length }}</span>
+            </h5>
+          </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="labels-header-right">
           <div class="search-wrap">
             <i class="fa fa-search search-icon"></i>
             <input
-              class="form-control form-control-sm search-input"
+              class="search-input"
               v-model="searchQuery"
               :placeholder="$t('labelsPage.searchPlaceholder')"
             />
           </div>
-          <button class="btn btn-success btn-sm" @click="openCreateModal">
-            <i class="fa fa-plus me-1"></i>
+          <button class="labels-add-btn" @click="openCreateModal">
+            <i class="fa fa-plus"></i>
             {{ $t('labelsPage.addButton') }}
           </button>
         </div>
       </div>
 
-      <!-- Table -->
-      <div class="card-body p-0">
+      <!-- Body -->
+      <div class="card-body labels-body">
 
         <!-- Loading -->
         <div v-if="labelsLoading" class="state-box">
@@ -53,54 +57,39 @@
           <span class="state-text">{{ $t('labelsPage.noSearchResults') }}</span>
         </div>
 
-        <div v-else class="table-responsive">
-          <table class="table table-hover mb-0 label-table">
-            <thead>
-              <tr>
-                <th>{{ $t('labelsPage.table.name') }}</th>
-                <th>{{ $t('labelsPage.table.color') }}</th>
-                <th class="text-end">{{ $t('common.actions') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="label in filteredLabels" :key="label.id">
-                <td>
-                  <div class="d-flex align-items-center gap-2">
-                    <span class="label-dot" :style="{ background: label.colorCode }"></span>
-                    <span class="label-chip"
-                      :style="{
-                        background: label.colorCode + '1a',
-                        color: label.colorCode,
-                        borderColor: label.colorCode + '55'
-                      }"
-                    >{{ label.name }}</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center gap-2">
-                    <span class="color-swatch" :style="{ background: label.colorCode }"></span>
-                    <code class="color-code">{{ label.colorCode }}</code>
-                  </div>
-                </td>
-                <td class="text-end">
-                  <button
-                    class="btn btn-sm btn-outline-warning me-1"
-                    v-tooltip="$t('common.tooltips.edit')"
-                    @click="openEditModal(label)"
-                  >
-                    <i class="fa fa-pencil"></i>
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    v-tooltip="$t('common.tooltips.delete')"
-                    @click="deleteLabel(label)"
-                  >
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Label grid -->
+        <div v-else class="label-grid">
+          <div
+            v-for="label in filteredLabels"
+            :key="label.id"
+            class="label-card"
+            :style="{ '--label-color': label.colorCode }"
+          >
+            <div class="label-card-actions">
+              <button
+                class="label-icon-btn"
+                v-tooltip="$t('common.tooltips.edit')"
+                @click="openEditModal(label)"
+              >
+                <i class="fa fa-pencil"></i>
+              </button>
+              <button
+                class="label-icon-btn danger"
+                v-tooltip="$t('common.tooltips.delete')"
+                @click="deleteLabel(label)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+            <span class="label-card-swatch"></span>
+            <div class="label-card-name" :title="label.name">{{ label.name }}</div>
+            <code class="label-card-code">{{ label.colorCode }}</code>
+          </div>
+
+          <button type="button" class="label-card label-card-add" @click="openCreateModal">
+            <i class="fa fa-plus"></i>
+            <span>{{ $t('labelsPage.addButton') }}</span>
+          </button>
         </div>
 
       </div>
@@ -359,6 +348,68 @@ export default {
 </script>
 
 <style scoped>
+.labels-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.labels-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.labels-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.labels-header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.28);
+}
+
+.labels-title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.labels-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.labels-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* ── Search ──────────────────────────────────────────────────────── */
 .search-wrap {
   position: relative;
@@ -366,7 +417,7 @@ export default {
 
 .search-icon {
   position: absolute;
-  left: 9px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 12px;
@@ -375,69 +426,184 @@ export default {
 }
 
 .search-input {
-  padding-left: 28px;
-  min-width: 200px;
+  padding: 9px 14px 9px 34px;
+  min-width: 220px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-/* ── Table ───────────────────────────────────────────────────────── */
-.label-table th {
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #6b7280;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 10px 16px;
+.search-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
 }
 
-.label-table td {
-  padding: 12px 16px;
-  vertical-align: middle;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.label-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.label-table tbody tr:hover td {
-  background: #f9fafb;
-}
-
-.label-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: inline-block;
-}
-
-.label-chip {
+.labels-add-btn {
   display: inline-flex;
   align-items: center;
-  padding: 3px 12px;
-  border-radius: 20px;
-  border: 1px solid;
-  font-size: 13px;
+  gap: 6px;
+  border: none;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
   font-weight: 600;
+  font-size: 13.5px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(16, 185, 129, 0.28);
+  transition: transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
 }
 
-.color-swatch {
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
-  border: 1px solid rgba(0,0,0,0.08);
-  display: inline-block;
-  flex-shrink: 0;
+.labels-add-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(16, 185, 129, 0.35);
 }
 
-.color-code {
-  font-size: 12px;
-  color: #6b7280;
+.labels-body {
+  padding: 20px 24px;
+}
+
+/* ── Label grid ──────────────────────────────────────────────────── */
+.label-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.label-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #eef0f2;
+  border-left: 4px solid var(--label-color, #10b981);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.label-card:hover {
+  box-shadow: 0 6px 16px rgba(16, 24, 40, 0.08);
+  transform: translateY(-2px);
+}
+
+.label-card-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--label-color);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+}
+
+.label-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.label-card-code {
+  font-size: 11px;
+  color: #9ca3af;
+  background: #f9fafb;
+  padding: 2px 7px;
+  border-radius: 5px;
+  align-self: flex-start;
+  letter-spacing: 0.02em;
+}
+
+.label-card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.label-card:hover .label-card-actions,
+.label-card:focus-within .label-card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.label-icon-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: none;
   background: #f3f4f6;
-  padding: 2px 6px;
-  border-radius: 4px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.label-icon-btn:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.label-icon-btn.danger:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.label-card-add {
+  border: 1.5px dashed #d1d5db;
+  background: #fafafa;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  gap: 6px;
+  min-height: 96px;
+}
+
+.label-card-add i {
+  font-size: 16px;
+}
+
+.label-card-add:hover {
+  border-color: #10b981;
+  color: #059669;
+  background: #ecfdf5;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .labels-header {
+    padding: 16px 18px;
+  }
+  .labels-body {
+    padding: 16px 18px;
+  }
+  .search-input {
+    min-width: 0;
+    width: 100%;
+  }
+  .labels-header-right {
+    width: 100%;
+  }
+  .search-wrap {
+    flex: 1;
+  }
+  .label-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
 
 /* ── State boxes ─────────────────────────────────────────────────── */

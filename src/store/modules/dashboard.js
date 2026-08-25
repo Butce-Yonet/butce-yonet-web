@@ -3,9 +3,13 @@ const state = {
     labels: [],
     openTransactionModalTrigger: 0,
     openRecurringTransactionModalTrigger: 0,
+    openSubscriptionModalTrigger: 0,
+    openGoalModalTrigger: 0,
     pendingOpenTransactionModal: false,
     pendingOpenRecurringTransactionModal: false,
     pendingOpenLabelModal: false,
+    pendingOpenSubscriptionModal: false,
+    pendingOpenGoalModal: false,
 }
 
 const getters = {
@@ -30,6 +34,12 @@ const mutations = {
     triggerOpenRecurringTransactionModal: (state) => {
         state.openRecurringTransactionModalTrigger++;
     },
+    triggerOpenSubscriptionModal: (state) => {
+        state.openSubscriptionModalTrigger++;
+    },
+    triggerOpenGoalModal: (state) => {
+        state.openGoalModalTrigger++;
+    },
     setPendingOpenTransactionModal: (state, val) => {
         state.pendingOpenTransactionModal = val;
     },
@@ -38,6 +48,12 @@ const mutations = {
     },
     setPendingOpenLabelModal: (state, val) => {
         state.pendingOpenLabelModal = val;
+    },
+    setPendingOpenSubscriptionModal: (state, val) => {
+        state.pendingOpenSubscriptionModal = val;
+    },
+    setPendingOpenGoalModal: (state, val) => {
+        state.pendingOpenGoalModal = val;
     },
 }
 
@@ -54,6 +70,12 @@ const actions = {
     triggerOpenRecurringTransactionModal: (context) => {
         context.commit('triggerOpenRecurringTransactionModal');
     },
+    triggerOpenSubscriptionModal: (context) => {
+        context.commit('triggerOpenSubscriptionModal');
+    },
+    triggerOpenGoalModal: (context) => {
+        context.commit('triggerOpenGoalModal');
+    },
     setPendingOpenTransactionModal: (context, val) => {
         context.commit('setPendingOpenTransactionModal', val);
     },
@@ -62,6 +84,12 @@ const actions = {
     },
     setPendingOpenLabelModal: (context, val) => {
         context.commit('setPendingOpenLabelModal', val);
+    },
+    setPendingOpenSubscriptionModal: (context, val) => {
+        context.commit('setPendingOpenSubscriptionModal', val);
+    },
+    setPendingOpenGoalModal: (context, val) => {
+        context.commit('setPendingOpenGoalModal', val);
     },
 }
 

@@ -23,6 +23,18 @@
         </div>
         <span>{{ $t('header.newLabel') }}</span>
       </div>
+      <div class="add-item" @click="openSubscriptionModal">
+        <div class="add-item-icon icon-subscription">
+          <i class="fa fa-refresh"></i>
+        </div>
+        <span>{{ $t('header.newSubscription') }}</span>
+      </div>
+      <div class="add-item" @click="openGoalModal">
+        <div class="add-item-icon icon-goal">
+          <i class="fa fa-bullseye"></i>
+        </div>
+        <span>{{ $t('header.newGoal') }}</span>
+      </div>
     </div>
   </li>
 </template>
@@ -70,6 +82,24 @@ export default {
       } else {
         this.$store.dispatch('dashboard/setPendingOpenLabelModal', true);
         this.$router.push('/labels');
+      }
+    },
+    openSubscriptionModal() {
+      this.isOpen = false;
+      if (this.$route.path === '/subscriptions') {
+        this.$store.dispatch('dashboard/triggerOpenSubscriptionModal');
+      } else {
+        this.$store.dispatch('dashboard/setPendingOpenSubscriptionModal', true);
+        this.$router.push('/subscriptions');
+      }
+    },
+    openGoalModal() {
+      this.isOpen = false;
+      if (this.$route.path === '/goals') {
+        this.$store.dispatch('dashboard/triggerOpenGoalModal');
+      } else {
+        this.$store.dispatch('dashboard/setPendingOpenGoalModal', true);
+        this.$router.push('/goals');
       }
     },
   },
@@ -153,7 +183,9 @@ export default {
   flex-shrink: 0;
 }
 
-.icon-transaction { background: linear-gradient(135deg, #10b981, #059669); }
-.icon-recurring   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-.icon-label       { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.icon-transaction  { background: linear-gradient(135deg, #10b981, #059669); }
+.icon-recurring    { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.icon-label        { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.icon-subscription { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+.icon-goal          { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
 </style>

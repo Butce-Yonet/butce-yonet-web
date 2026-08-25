@@ -28,6 +28,7 @@
                         range
                         auto-apply
                         :placeholder="$t('reports.filters.dateRange')"
+                        :time-config="{ enableTimePicker: false }"
                         :locale="dateLocale"
                     />
                 </div>
@@ -224,7 +225,7 @@ export default {
 .report-empty p { margin: 0; font-size: 13px; }
 
 /* Filters */
-.report-datepicker { width: 220px; }
+.report-datepicker { width: 245px; flex-shrink: 0; }
 .report-datepicker :deep(.dp__input) {
     font-size: 13px;
     height: 30px;

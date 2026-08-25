@@ -29,8 +29,8 @@
             </div>
             <ul v-else class="tx-feed">
               <li v-for="tx in recentTransactions" :key="tx.id" class="tx-item">
-                <div class="tx-icon" :class="tx.transactionType === 0 ? 'tx-income' : 'tx-expense'">
-                  <i :class="tx.transactionType === 0 ? 'fa fa-arrow-up' : 'fa fa-arrow-down'"></i>
+                <div class="tx-icon" :class="txIconClass(tx)">
+                  <i :class="txIconGlyph(tx)"></i>
                 </div>
                 <div class="tx-body">
                   <div class="tx-name">{{ tx.name }}</div>
@@ -46,8 +46,8 @@
                     </span>
                   </div>
                 </div>
-                <div class="tx-amount" :class="tx.transactionType === 0 ? 'amount-up' : 'amount-down'">
-                  {{ tx.transactionType === 0 ? '+' : '-' }}{{ formatCurrency(tx.amount, tx.currency?.code) }}
+                <div class="tx-amount" :class="txAmountClass(tx)">
+                  {{ txAmountSign(tx) }}{{ formatCurrency(tx.amount, tx.currency?.code) }}
                 </div>
               </li>
             </ul>
@@ -87,7 +87,7 @@
                 range
                 auto-apply
                 :placeholder="$t('reports.filters.dateRange')"
-                :enable-time-picker="false"
+                :time-config="{ enableTimePicker: false }"
                 :locale="dateLocale"
               />
             </div>
@@ -344,6 +344,25 @@ export default {
         minimumFractionDigits: 2, maximumFractionDigits: 2,
       }).format(amount);
     },
+    txIconClass(tx) {
+      if (tx.transactionType === 0) return 'tx-income';
+      if (tx.transactionType === 2) return 'tx-saving';
+      return 'tx-expense';
+    },
+    txIconGlyph(tx) {
+      if (tx.transactionType === 0) return 'fa fa-arrow-up';
+      if (tx.transactionType === 2) return 'fa fa-bullseye';
+      return 'fa fa-arrow-down';
+    },
+    txAmountClass(tx) {
+      if (tx.transactionType === 0) return 'amount-up';
+      if (tx.transactionType === 2) return 'amount-saving';
+      return 'amount-down';
+    },
+    txAmountSign(tx) {
+      if (tx.transactionType === 1) return '-';
+      return '+';
+    },
   },
   mounted() {
     Promise.all([this.loadRecentTransactions(), this.loadCategoryData()]);
@@ -415,6 +434,7 @@ export default {
 }
 .tx-income  { background: linear-gradient(135deg, #10b981, #059669); }
 .tx-expense { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.tx-saving  { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
 
 .tx-body {
   flex: 1;
@@ -462,6 +482,7 @@ export default {
 }
 .amount-up   { color: #10b981; }
 .amount-down { color: #ef4444; }
+.amount-saving { color: #3b82f6; }
 
 /* ── Category chart ─────────────────────────────────────────────── */
 .chart-tabs {
@@ -507,7 +528,8 @@ export default {
 }
 .chart-datepicker {
   flex: 1;
-  max-width: 240px;
+  min-width: 220px;
+  max-width: 270px;
 }
 .chart-datepicker :deep(.dp__input) {
   font-size: 12px;

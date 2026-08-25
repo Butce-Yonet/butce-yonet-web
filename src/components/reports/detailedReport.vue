@@ -45,11 +45,13 @@
             <div class="mb-2">
                 <date-range-preset-picker v-model="dateRange" />
             </div>
-            <div class="row g-2">
-                <div class="col-12 col-sm-6 col-md-4">
+            <div class="row g-2 mb-2">
+                <div class="col-12 col-sm-6">
                     <label class="filter-label">{{ $t('reports.filters.dateRange') }}</label>
-                    <VueDatePicker v-model="dateRange" range auto-apply :placeholder="$t('reports.filters.dateRange')" :locale="dateLocale" />
+                    <VueDatePicker v-model="dateRange" range auto-apply :placeholder="$t('reports.filters.dateRange')" :time-config="{ enableTimePicker: false }" :locale="dateLocale" />
                 </div>
+            </div>
+            <div class="row g-2">
                 <div class="col-12 col-sm-6 col-md-4">
                     <label class="filter-label">{{ $t('reports.filters.currency') }}</label>
                     <VSelect
@@ -72,6 +74,7 @@
                     <select v-model="transactionType" class="form-select form-select-sm">
                         <option :value="0">{{ $t('common.income') }}</option>
                         <option :value="1">{{ $t('common.expense') }}</option>
+                        <option :value="2">{{ $t('common.saving') }}</option>
                     </select>
                 </div>
                 <div v-if="activeTab === 'categorized'" class="col-12 col-sm-6 col-md-4">
@@ -141,6 +144,7 @@
                                         </td>
                                         <td>
                                             <span v-if="item.transactionType === 0" class="badge badge-success">{{ $t('common.income') }}</span>
+                                            <span v-else-if="item.transactionType === 2" class="badge badge-primary">{{ $t('common.saving') }}</span>
                                             <span v-else class="badge badge-danger">{{ $t('common.expense') }}</span>
                                         </td>
                                         <td class="text-end td-amount">{{ formatCurrency(item.amount, item.currency?.code) }}</td>
@@ -170,6 +174,7 @@
                                         <td class="td-term">{{ formatTerm(item.term) }}</td>
                                         <td>
                                             <span v-if="item.transactionTypes === 0" class="badge badge-success">{{ $t('common.income') }}</span>
+                                            <span v-else-if="item.transactionTypes === 2" class="badge badge-primary">{{ $t('common.saving') }}</span>
                                             <span v-else class="badge badge-danger">{{ $t('common.expense') }}</span>
                                         </td>
                                         <td>

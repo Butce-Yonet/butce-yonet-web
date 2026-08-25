@@ -56,6 +56,7 @@
                             <option :value="null">{{ $t('common.all') }}</option>
                             <option :value="0">{{ $t('common.income') }}</option>
                             <option :value="1">{{ $t('common.expense') }}</option>
+                            <option :value="2">{{ $t('common.saving') }}</option>
                         </select>
                     </div>
                     <!-- Date -->
@@ -132,8 +133,8 @@
                         </template>
 
                         <template #item-amount="item">
-                            <span class="tx-amount" :class="item.transactionType === 0 ? 'amount-positive' : 'amount-negative'">
-                                {{ item.transactionType === 0 ? '+' : '-' }}{{ formatCurrency(item.amount, item.currency.code) }}
+                            <span class="tx-amount" :class="amountClass(item)">
+                                {{ amountSign(item) }}{{ formatCurrency(item.amount, item.currency.code) }}
                             </span>
                         </template>
 
@@ -151,12 +152,19 @@
                         </template>
 
                         <template #item-actions="item">
-                            <button class="btn btn-warning btn-xs" v-tooltip="$t('common.tooltips.edit')" @click="openEditModal(item)">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-xs m-l-5" v-tooltip="$t('common.tooltips.delete')" @click="deleteTransaction(item)">
-                                <i class="fa fa-trash"></i>
-                            </button>
+                            <template v-if="item.transactionType === 2">
+                                <span class="badge badge-light-secondary" v-tooltip="$t('transactionList.savingLocked')">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                            </template>
+                            <template v-else>
+                                <button class="btn btn-warning btn-xs" v-tooltip="$t('common.tooltips.edit')" @click="openEditModal(item)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-xs m-l-5" v-tooltip="$t('common.tooltips.delete')" @click="deleteTransaction(item)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </template>
                         </template>
 
                     </EasyDataTable>
@@ -377,6 +385,15 @@ export default {
                 maximumFractionDigits: 2
             }).format(amount);
         },
+        amountClass(item) {
+            if (item.transactionType === 0) return 'amount-positive';
+            if (item.transactionType === 2) return 'amount-saving';
+            return 'amount-negative';
+        },
+        amountSign(item) {
+            if (item.transactionType === 1) return '-';
+            return '+';
+        },
     },
     mounted() {
         const modalElement = document.getElementById('transactionModal');
@@ -413,6 +430,7 @@ export default {
 }
 .amount-positive { color: #10b981; }
 .amount-negative { color: #ef4444; }
+.amount-saving { color: #3b82f6; }
 
 /* Filter panel */
 .filter-panel {
