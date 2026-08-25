@@ -13,6 +13,8 @@
     "newTransaction": "Yeni İşlem",
     "newRecurringTransaction": "Yeni Tekrarlayan İşlem",
     "newLabel": "Yeni Etiket",
+    "newSubscription": "Yeni Abonelik",
+    "newGoal": "Yeni Hedef",
     "dateRangePresets": {
       "week": "Son 1 Hafta",
       "month": "Son 1 Ay",
@@ -72,6 +74,7 @@
     "email": "E-posta",
     "income": "Gelir",
     "expense": "Gider",
+    "saving": "Birikim",
     "frequency": {
       "daily": "Günlük",
       "weekly": "Haftalık",
@@ -139,6 +142,7 @@
       "transactionDeleteError": "Gelir - Gider kaydı silinirken bir hata oluştu."
     },
     "noLabel": "Kategorize Edilmeli",
+    "savingLocked": "Hedef katkısı — düzenlenemez",
     "table": {
       "headers": {
         "name": "Ad",
@@ -205,6 +209,137 @@
         "interval": "Aralık",
         "nextOccurrence": "Bir Sonraki Tarih"
       }
+    }
+  },
+  "subscriptionList": {
+    "title": "Abonelikler / Değişken Faturalar",
+    "addButton": "Yeni Abonelik",
+    "amountUndetermined": "—",
+    "tabs": {
+      "all": "Tümü",
+      "upcoming": "Yaklaşan",
+      "paid": "Ödendi",
+      "overdue": "Gecikmiş"
+    },
+    "tooltips": {
+      "pay": "Ödendi olarak işaretle"
+    },
+    "messages": {
+      "loadError": "Abonelikler yüklenemedi",
+      "areYouSureDelete": "Bu aboneliği silmek istediğinize emin misiniz?",
+      "deleteSuccess": "Abonelik başarıyla silindi.",
+      "deleteError": "Abonelik silinirken bir hata oluştu."
+    },
+    "modal": {
+      "createTitle": "Abonelik Oluştur",
+      "editTitle": "Aboneliği Düzenle",
+      "form": {
+        "name": "Ad",
+        "startDate": "Başlangıç Tarihi",
+        "amount": "Tutar",
+        "amountOptionalHint": "(opsiyonel — tutar belirsizse boş bırakın)",
+        "amountPlaceholder": "Belirsiz",
+        "currency": "Para Birimi",
+        "frequency": "Tekrarlama Sıklığı",
+        "labels": "Etiketler",
+        "intervalDaily": "Kaç Günde Bir",
+        "intervalWeekly": "Kaç Haftada Bir",
+        "intervalMonthly": "Kaç Ayda Bir",
+        "intervalYearly": "Kaç Yılda Bir",
+        "intervalDayOfMonth": "Ayın Kaçıncı Günü"
+      },
+      "messages": {
+        "createSuccess": "Abonelik başarıyla oluşturuldu.",
+        "createError": "Abonelik oluşturulurken bir hata oluştu.",
+        "editSuccess": "Abonelik başarıyla güncellendi.",
+        "editError": "Abonelik güncellenirken bir hata oluştu."
+      }
+    },
+    "payModal": {
+      "title": "Ödendi Olarak İşaretle",
+      "confirm": "Ödendi İşaretle",
+      "form": {
+        "amount": "Ödenen Tutar",
+        "currency": "Para Birimi",
+        "paidDate": "Ödeme Tarihi"
+      },
+      "messages": {
+        "paySuccess": "Abonelik ödendi olarak işaretlendi.",
+        "payError": "Abonelik ödendi olarak işaretlenirken bir hata oluştu."
+      }
+    }
+  },
+  "goalList": {
+    "title": "Hedefler",
+    "addButton": "Yeni Hedef",
+    "completedBadge": "Tamamlandı 🎉",
+    "noDeadline": "Süresiz",
+    "tabs": {
+      "all": "Tümü",
+      "active": "Aktif",
+      "completed": "Tamamlanan"
+    },
+    "metrics": {
+      "activeCount": "Aktif Hedef",
+      "completedCount": "Tamamlanan Hedef",
+      "totalTarget": "Toplam Hedef Tutarı",
+      "totalSaved": "Toplam Biriken Tutar"
+    },
+    "card": {
+      "saved": "Biriken",
+      "remaining": "Kalan",
+      "target": "Hedef",
+      "deadline": "Son Tarih"
+    },
+    "tooltips": {
+      "contribute": "Katkı ekle"
+    },
+    "messages": {
+      "loadError": "Hedefler yüklenemedi",
+      "metricsLoadError": "Hedef metrikleri yüklenemedi",
+      "areYouSureDelete": "Bu hedefi silmek istediğinize emin misiniz?",
+      "deleteSuccess": "Hedef başarıyla silindi.",
+      "deleteError": "Hedef silinirken bir hata oluştu."
+    },
+    "modal": {
+      "createTitle": "Hedef Oluştur",
+      "editTitle": "Hedefi Düzenle",
+      "form": {
+        "name": "Hedef Adı",
+        "targetAmount": "Hedef Tutarı",
+        "currency": "Para Birimi",
+        "deadline": "Son Tarih",
+        "deadlineOptionalHint": "(opsiyonel — süresiz hedef için boş bırakın)",
+        "labels": "Etiketler"
+      },
+      "messages": {
+        "createSuccess": "Hedef başarıyla oluşturuldu.",
+        "createError": "Hedef oluşturulurken bir hata oluştu.",
+        "editSuccess": "Hedef başarıyla güncellendi.",
+        "editError": "Hedef güncellenirken bir hata oluştu."
+      }
+    },
+    "contributeModal": {
+      "title": "Katkı Ekle",
+      "confirm": "Katkıyı Ekle",
+      "form": {
+        "amount": "Katkı Tutarı",
+        "contributionDate": "Katkı Tarihi"
+      },
+      "messages": {
+        "contributeSuccess": "Katkı başarıyla eklendi.",
+        "contributeError": "Katkı eklenirken bir hata oluştu."
+      }
+    }
+  },
+  "calendarPage": {
+    "title": "Takvim",
+    "today": "Bugün",
+    "noTransactions": "Bu tarihte kayıt bulunmuyor.",
+    "more": "+{count} daha",
+    "messages": {
+      "calendarLoadError": "Takvim yüklenemedi",
+      "dayTransactionsLoadError": "Bu tarihe ait gelir - gider kayıtları yüklenemedi"
     }
   },
   "dashboard": {

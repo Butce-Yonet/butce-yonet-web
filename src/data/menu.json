@@ -31,19 +31,22 @@
     {
       "title": "menu.goals",
       "icon": "target",
-      "type": "comingSoon",
+      "type": "link",
+      "path": "/goals",
       "active": false
     },
     {
       "title": "menu.bills",
       "icon": "file-text",
-      "type": "comingSoon",
+      "type": "link",
+      "path": "/subscriptions",
       "active": false
     },
     {
       "title": "menu.calendar",
       "icon": "calendar",
-      "type": "comingSoon",
+      "type": "link",
+      "path": "/calendar",
       "active": false
     }
   ]

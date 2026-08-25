@@ -9,6 +9,9 @@ import Default from '@/pages/dashboard/index.vue';
 import Reports from '@/pages/reports/index.vue';
 import Transactions from '@/pages/transactions/index.vue';
 import Labels from '@/pages/labels/index.vue';
+import Subscriptions from '@/pages/subscriptions/index.vue';
+import Goals from '@/pages/goals/index.vue';
+import Calendar from '@/pages/calendar/index.vue';
 import Callback from '@/pages/auth/callback.vue';
 import Error401 from '@/pages/error/error401.vue';
 import Error404 from '@/pages/error/error404.vue';
@@ -38,6 +41,21 @@ const routes = [
         path: '/labels',
         name: 'labels',
         component: Labels,
+      },
+      {
+        path: '/calendar',
+        name: 'calendar',
+        component: Calendar,
+      },
+      {
+        path: '/subscriptions',
+        name: 'subscriptions',
+        component: Subscriptions,
+      },
+      {
+        path: '/goals',
+        name: 'goals',
+        component: Goals,
       },
       {
         path: '/auth/callback',

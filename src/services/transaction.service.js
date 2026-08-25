@@ -6,6 +6,11 @@ class TransactionService{
         return response;
     }
 
+    async getCalendar(queryParams = {}){
+        const response = await httpService.get('/transactions/calendar', { params: queryParams });
+        return response;
+    }
+
     async getTransaction(transactionId){
         const response = await httpService.get(`/transactions/${transactionId}`);
         return response;
