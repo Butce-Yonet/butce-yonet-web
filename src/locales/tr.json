@@ -7,7 +7,10 @@
     "goals": "Hedefler",
     "bills": "Faturalar",
     "calendar": "Takvim",
-    "comingSoon": "Yakında"
+    "comingSoon": "Yakında",
+    "main": "Ana menü",
+    "more": "Daha Fazla",
+    "profile": "Profil"
   },
   "header": {
     "newTransaction": "Yeni İşlem",
@@ -16,6 +19,7 @@
     "newSubscription": "Yeni Abonelik",
     "newGoal": "Yeni Hedef",
     "dateRangePresets": {
+      "thisMonth": "Bu Ay",
       "week": "Son 1 Hafta",
       "month": "Son 1 Ay",
       "3months": "Son 3 Ay",
@@ -92,12 +96,22 @@
     "messages": {
       "currenciesLoadError": "Para birimleri yüklenemedi",
       "notebookLabelsLoadError": "Etiketler yüklenemedi"
-    }
+    },
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "tomorrow": "Yarın",
+    "delete": "Sil",
+    "close": "Kapat",
+    "optional": "opsiyonel",
+    "noResults": "Sonuç bulunamadı",
+    "remove": "Kaldır",
+    "cannotUndo": "Bu işlem geri alınamaz."
   },
   "validation": {
     "message": {
       "required": "Bu alan zorunludur.",
-      "email": "Lütfen geçerli bir e-posta adresi giriniz."
+      "email": "Lütfen geçerli bir e-posta adresi giriniz.",
+      "positive": "Tutar 0'dan büyük olmalıdır."
     }
   },
   "transactionsPage": {
@@ -109,8 +123,8 @@
   "transactionList": {
     "title": "Gelir - Gider kayıtları",
     "transactionModal": {
-      "createTitle": "Gelir - Gider Kaydı Oluştur",
-      "editTitle": "Gelir - Gider Kaydını Düzenle",
+      "createTitle": "Yeni İşlem",
+      "editTitle": "İşlemi Düzenle",
       "messages": {
         "transactionCreateSuccess": "Gelir - Gider kaydı başarıyla oluşturuldu.",
         "incomeCreateSuccess": "Gelir kaydı başarıyla oluşturuldu.",
@@ -141,7 +155,7 @@
       "expenseDeleteSuccess": "Gider kaydı başarıyla silindi.",
       "transactionDeleteError": "Gelir - Gider kaydı silinirken bir hata oluştu."
     },
-    "noLabel": "Kategorize Edilmeli",
+    "noLabel": "Etiketsiz",
     "savingLocked": "Hedef katkısı — düzenlenemez",
     "table": {
       "headers": {
@@ -158,8 +172,8 @@
   "recurringTransactionList": {
     "title": "Tekrarlayan Gelir - Gider Kayıtları",
     "transactionModal": {
-      "createTitle": "Tekrarlayan Gelir - Gider Kaydı Oluştur",
-      "editTitle": "Tekrarlayan Gelir - Gider Kaydını Düzenle",
+      "createTitle": "Yeni Tekrarlayan İşlem",
+      "editTitle": "Tekrarlayan İşlemi Düzenle",
       "messages": {
         "transactionCreateSuccess": "Tekrarlayan gelir - gider kaydı başarıyla oluşturuldu.",
         "incomeCreateSuccess": "Tekrarlayan gelir kaydı başarıyla oluşturuldu.",
@@ -170,7 +184,7 @@
         "expenseEditSuccess": "Tekrarlayan gider kaydı başarıyla güncellendi.",
         "transactionEditError": "Tekrarlayan gelir - gider kaydı güncellenirken bir hata oluştu."
       },
-      "recurringInfo": "Tekrarlama Bilgileri",
+      "recurringInfo": "Tekrarlama",
       "transactionInfo": "Gelir-Gider Bilgileri",
       "form": {
         "placeholder": {
@@ -212,7 +226,7 @@
     }
   },
   "subscriptionList": {
-    "title": "Abonelikler / Değişken Faturalar",
+    "title": "Faturalar ve Abonelikler",
     "addButton": "Yeni Abonelik",
     "amountUndetermined": "—",
     "tabs": {
@@ -403,36 +417,261 @@
       }
     }
   },
-  "upcommingRecurringTransactionList": {
-    "title": "Yaklaşan Tekrarlayan Gelir - Gider Kayıtları"
-  },
-  "dashboardTour": {
-    "step1": {
-      "title": "Defter Yönetimi",
-      "description": "Buraya tıklayarak defterlerinizi görüntüleyebilir, yeni defter oluşturabilir, mevcut defterlerinizi düzenleyebilir veya silebilirsiniz."
-    },
-    "step2": {
-      "title": "Gelir-Gider Kayıtları",
-      "description": "Gelir ve gider kayıtlarınızı buradan görüntüleyebilir ve yönetebilirsiniz."
-    },
-    "step3": {
-      "title": "Gelir-Gider Kaydı Ekleme",
-      "description": "Yeni bir gelir veya gider kaydı eklemek için buraya tıklayın."
-    },
-    "step4": {
-      "title": "Tekrarlayan Gelir-Gider Kayıtları",
-      "description": "Tekrarlayan gelir ve gider kayıtlarınızı buradan görüntüleyebilir ve yönetebilirsiniz."
-    },
-    "step5": {
-      "title": "Tekrarlayan Gelir-Gider Kaydı Ekleme",
-      "description": "Yeni bir tekrarlayan gelir veya gider kaydı eklemek için buraya tıklayın."
-    }
-  },
   "consent": {
     "termsOfService": "Kullanım Koşulları",
     "privacyPolicy": "Gizlilik Politikası",
     "releaseNotes": "Yeni Sürüm Notları",
     "accept": "Kabul Et",
     "reject": "Reddet ve Çıkış Yap"
+  },
+  "pagination": {
+    "perPage": "Sayfa başına kayıt",
+    "perPageOption": "{n} / sayfa",
+    "range": "{start}–{end} / {total} kayıt"
+  },
+  "period": {
+    "quick": "Hızlı seçim",
+    "custom": "Özel aralık",
+    "select": "Tarih seçin"
+  },
+  "quickAdd": {
+    "title": "Hızlı Ekle",
+    "more": "Diğer ekleme seçenekleri",
+    "transactionDesc": "Gelir veya gider kaydı",
+    "recurringDesc": "Maaş, kira gibi düzenli kayıtlar",
+    "subscriptionDesc": "Fatura ve abonelik takibi",
+    "goalDesc": "Birikim hedefi belirle",
+    "labelDesc": "İşlemleri kategorize et"
+  },
+  "settings": {
+    "theme": "Tema",
+    "light": "Açık",
+    "dark": "Koyu",
+    "system": "Sistem",
+    "language": "Dil",
+    "toggleTheme": "Temayı değiştir",
+    "changeLanguage": "Dili değiştir"
+  },
+  "transactionModalExtra": {
+    "namePlaceholder": "ör. Market alışverişi",
+    "descriptionPlaceholder": "Kısa bir not ekleyin",
+    "saveAndNew": "Kaydet ve yeni ekle"
+  },
+  "transactionsExtra": {
+    "searchPlaceholder": "İşlem ara…",
+    "moreFilters": "Filtreler",
+    "exactAmount": "Tam tutar",
+    "noMatchTitle": "Eşleşen işlem yok",
+    "noMatchText": "Filtreleri değiştirmeyi veya temizlemeyi deneyin.",
+    "emptyTitle": "Bu dönemde işlem yok",
+    "emptyText": "İlk gelir veya giderinizi ekleyerek başlayın."
+  },
+  "recurringExtra": {
+    "amountLocked": "Tutar ve tür sonradan değiştirilemez.",
+    "namePlaceholder": "ör. Maaş, Kira",
+    "preview": "{start} tarihinden itibaren {freq} tekrarlanacak.",
+    "emptyTitle": "Tekrarlayan işlem yok",
+    "emptyText": "Maaş, kira gibi düzenli gelir ve giderlerinizi bir kez tanımlayın, otomatik eklensin.",
+    "next": "Sonraki",
+    "until": "{date} tarihine kadar",
+    "steps": {
+      "label": "Adımlar",
+      "details": "Bilgiler",
+      "preview": "Önizleme",
+      "next": "Önizle",
+      "confirm": "Onayla ve kaydet"
+    },
+    "count": "Kaç kez tekrarlansın",
+    "summaryLine": "{freq}, {n} kalem: {start} – {end}",
+    "review": {
+      "items": "Kalem sayısı",
+      "first": "İlk kalem",
+      "last": "Son kalem",
+      "total": "Toplam tutar",
+      "listTitle": "Oluşacak kalemler",
+      "more": "… ve {n} kalem daha"
+    },
+    "validation": {
+      "positiveInt": "0'dan büyük bir tam sayı girin.",
+      "dayOfMonth": "1 ile 31 arasında bir gün girin.",
+      "maxCount": "En fazla {max} kalem oluşturulabilir."
+    }
+  },
+  "frequencyText": {
+    "everyNDays": "{n} günde bir",
+    "everyNWeeks": "{n} haftada bir",
+    "everyNMonths": "{n} ayda bir",
+    "everyNYears": "{n} yılda bir",
+    "dayOfMonth": "Her ayın {n}. günü"
+  },
+  "subscriptionExtra": {
+    "namePlaceholder": "ör. Elektrik, Netflix",
+    "fixedAmount": "Sabit tutar",
+    "variableAmount": "Değişken tutar",
+    "variableHint": "Tutar her dönem değişiyorsa (ör. elektrik faturası) ödeme sırasında girersiniz.",
+    "emptyTitle": "Henüz fatura veya abonelik yok",
+    "emptyFilteredTitle": "Bu durumda kayıt yok",
+    "emptyText": "Düzenli ödemelerinizi ekleyin; yaklaşan ve geciken ödemeleri kaçırmayın.",
+    "variable": "Değişken tutar",
+    "markPaid": "Ödendi",
+    "daysLate": "{n} gün gecikti",
+    "inDays": "{n} gün sonra"
+  },
+  "goalExtra": {
+    "namePlaceholder": "ör. Tatil fonu",
+    "monthlyHint": "Hedefe ulaşmak için {months} ay boyunca aylık yaklaşık {amount} biriktirmelisiniz.",
+    "fillRemaining": "Kalanı tamamla",
+    "ofTarget": "Toplam hedef: {target}",
+    "emptyTitle": "Henüz hedef yok",
+    "emptyFilteredTitle": "Bu sekmede hedef yok",
+    "emptyText": "Bir birikim hedefi belirleyin ve katkı ekledikçe ilerlemenizi takip edin.",
+    "overdue": "süresi geçti",
+    "daysLeft": "{n} gün kaldı"
+  },
+  "labelExtra": {
+    "namePlaceholder": "ör. Market, Ulaşım",
+    "customColor": "Özel renk",
+    "subtitle": "İşlemlerinizi etiketleyerek harcamalarınızı kategorilere göre görün."
+  },
+  "summaryExtra": {
+    "vsPrevious": "önceki dönem {amount}"
+  },
+  "reportsExtra": {
+    "allLabels": "Tüm etiketler",
+    "defaultCurrency": "Ana para birimi"
+  },
+  "dashExtra": {
+    "firstTransactionHint": "Gelir ve giderlerinizi ekledikçe burada görünecek.",
+    "upcomingBills": "Yaklaşan Ödemeler",
+    "noUpcomingBills": "Önümüzdeki 7 gün için bekleyen ödeme yok.",
+    "goalsInProgress": "Hedefler",
+    "noGoals": "Aktif hedefiniz yok.",
+    "greeting": {
+      "night": "İyi geceler, {name}",
+      "morning": "Günaydın, {name}",
+      "afternoon": "İyi günler, {name}",
+      "evening": "İyi akşamlar, {name}"
+    },
+    "greetingNoName": {
+      "night": "İyi geceler",
+      "morning": "Günaydın",
+      "afternoon": "İyi günler",
+      "evening": "İyi akşamlar"
+    }
+  },
+  "calendarExtra": {
+    "addForDay": "Bu güne ekle",
+    "recordCount": "{n} kayıt"
+  },
+  "consentExtra": {
+    "step": "Adım {current} / {total}",
+    "acceptError": "Onay kaydedilemedi, lütfen tekrar deneyin."
+  },
+  "errorPage": {
+    "backHome": "Ana sayfaya dön",
+    "notFoundTitle": "Sayfa bulunamadı",
+    "notFoundText": "Aradığınız sayfa taşınmış veya hiç var olmamış olabilir.",
+    "authFailedTitle": "Giriş yapılamadı",
+    "authFailedText": "Oturumunuz doğrulanamadı. Lütfen tekrar giriş yapın.",
+    "tryAgain": "Tekrar giriş yap"
+  },
+  "auth": {
+    "signingIn": "Giriş yapılıyor…"
+  },
+  "profile": {
+    "tabs": {
+      "general": "Genel",
+      "password": "Şifre Yenileme",
+      "notifications": "Bildirim Tercihleri",
+      "short": {
+        "general": "Genel",
+        "password": "Şifre",
+        "notifications": "Bildirimler"
+      }
+    },
+    "general": {
+      "name": "Ad",
+      "surname": "Soyad",
+      "username": "Kullanıcı adı",
+      "email": "E-posta",
+      "preferences": "Tercihler",
+      "preferencesHint": "Uygulamanın görünümünü ve dilini ayarlayın.",
+      "languageHint": "Arayüz dili; son seçiminiz hesabınıza kaydedilir.",
+      "themeHint": "Açık, koyu veya cihazınızın ayarını kullanın.",
+      "logoutHint": "Bu cihazdaki oturumunuzu kapatın."
+    },
+    "password": {
+      "title": "Şifre Yenileme",
+      "subtitle": "Hesabınızın güvenliği için güçlü bir şifre kullanın.",
+      "current": "Mevcut şifre",
+      "new": "Yeni şifre",
+      "confirm": "Yeni şifre (tekrar)",
+      "toggleVisibility": "Şifreyi göster/gizle",
+      "submit": "Şifreyi güncelle",
+      "success": "Şifreniz başarıyla güncellendi.",
+      "externalAccount": "Hesabınız harici bir sağlayıcı (ör. Google) ile oluşturulduğu için şifre değiştirilemez.",
+      "rules": {
+        "length": "En az {n} karakter",
+        "letterDigit": "Harf ve rakam içermeli",
+        "different": "Mevcut şifreden farklı olmalı"
+      },
+      "errors": {
+        "weak": "Yeni şifre gereksinimleri karşılamıyor.",
+        "mismatch": "Şifreler eşleşmiyor.",
+        "incorrect": "Mevcut şifre hatalı.",
+        "generic": "Şifre güncellenemedi, lütfen tekrar deneyin."
+      }
+    },
+    "notifications": {
+      "title": "Bildirim Tercihleri",
+      "subtitle": "Hangi kanallardan bildirim almak istediğinizi seçin.",
+      "loadError": "Bildirim tercihleri yüklenemedi.",
+      "retry": "Tekrar dene",
+      "empty": "Tanımlı bildirim kanalı bulunmuyor.",
+      "saved": "Bildirim tercihiniz kaydedildi.",
+      "saveError": "Tercih kaydedilemedi, lütfen tekrar deneyin.",
+      "defaultDesc": "Bu kanaldan bildirim al.",
+      "channels": {
+        "Email": {
+          "title": "E-posta",
+          "desc": "Önemli hatırlatmalar ve hesap bildirimleri e-posta adresinize gönderilir."
+        },
+        "MobileNotification": {
+          "title": "Mobil Bildirim",
+          "desc": "Mobil uygulama üzerinden anlık bildirim alın."
+        }
+      },
+      "browser": {
+        "title": "Bu tarayıcıda bildirimler",
+        "default": "Uygulama kapalıyken de bu tarayıcıya bildirim gönderilebilmesi için izin verin.",
+        "granted": "Bu tarayıcı bildirim almaya açık.",
+        "denied": "Bildirimler tarayıcı ayarlarından engellenmiş; adres çubuğundaki site ayarlarından izin verebilirsiniz.",
+        "enable": "İzin ver",
+        "grantedBadge": "Açık",
+        "deniedBadge": "Engelli",
+        "enabledToast": "Tarayıcı bildirimleri açıldı.",
+        "error": "Bildirim izni alınamadı, lütfen tekrar deneyin."
+      }
+    }
+  },
+  "notificationNudge": {
+    "title": "Önemli hatırlatmaları kaçırmayın",
+    "text": {
+      "email": "E-posta bildirimleriniz kapalı.",
+      "mobile": "Mobil bildirimleriniz kapalı.",
+      "emailMobile": "E-posta ve mobil bildirimleriniz kapalı.",
+      "emailBrowser": "E-posta bildirimleriniz kapalı ve bu tarayıcıya henüz bildirim izni verilmedi.",
+      "browser": "Bu tarayıcıya henüz bildirim izni verilmedi."
+    },
+    "benefit": "Yaklaşan ödemeler, abonelik yenilemeleri ve hedefleriniz için zamanında haber alın.",
+    "enable": "Bildirimleri aç",
+    "settings": "Ayarlar",
+    "later": "Daha sonra",
+    "enabledToast": "Bildirimler açıldı.",
+    "error": "Bildirimler açılamadı, lütfen tekrar deneyin."
+  },
+  "inAppNotification": {
+    "label": "Yeni bildirim",
+    "open": "Görüntüle"
   }
 }

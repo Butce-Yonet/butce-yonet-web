@@ -2,29 +2,34 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import 'bootstrap/dist/js/bootstrap.bundle'
-import '@/assets/scss/app.scss'
-import VueFeather from 'vue-feather'
 import i18n from './locales'
+import VueFeather from 'vue-feather'
 import VueSweetalert2 from 'vue-sweetalert2'
-import 'sweetalert2/dist/sweetalert2.min.css'
-import Vue3EasyDataTable from 'vue3-easy-data-table'
-import 'vue3-easy-data-table/dist/style.css'
 import { VueDatePicker } from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
 import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css'
-import { tooltipDirective } from '@/directives/tooltip.js'
 import 'moment/locale/tr'
+import '@/services/firebase.service'
+
+import 'sweetalert2/dist/sweetalert2.min.css'
+import '@vuepic/vue-datepicker/dist/main.css'
+import 'vue-select/dist/vue-select.css'
+import '@/assets/styles/main.scss'
+
+import toast from '@/plugins/toast'
+import { tooltipDirective, clickOutsideDirective } from '@/directives/tooltip.js'
+import { applyTheme } from '@/store/modules/ui'
+
+applyTheme(store.state.ui.theme)
 
 createApp(App)
     .use(router)
     .use(store)
     .use(i18n)
     .use(VueSweetalert2)
-    .component('EasyDataTable', Vue3EasyDataTable)
+    .use(toast)
     .component('VueDatePicker', VueDatePicker)
     .component('VSelect', vSelect)
     .component(VueFeather.name, VueFeather)
     .directive('tooltip', tooltipDirective)
+    .directive('click-outside', clickOutsideDirective)
     .mount('#app')

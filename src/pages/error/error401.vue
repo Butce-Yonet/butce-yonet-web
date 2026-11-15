@@ -1,18 +1,23 @@
 <template>
-  <div class="page-wrapper compact-wrapper" id="pageWrapper">
-
-    <div class="error-wrapper">
-      <div class="container"><img class="img-100" src="@/assets/images/other-images/sad.png" alt="">
-        <div class="error-heading">
-          <h2 class="headline font-warning">401</h2>
-        </div>
-        <div class="col-md-8 offset-md-2">
-          <p class="sub-content">The page you are attempting to reach is currently not available. This may be because the
-            page does not exist or has been moved.</p>
-        </div>
-        <div><router-link class="btn btn-warning-gradien btn-lg" to="/">BACK TO HOME PAGE</router-link></div>
-      </div>
-    </div>
-
-  </div>
+  <error-view code="401" :title="$t('errorPage.authFailedTitle')" :text="$t('errorPage.authFailedText')">
+    <button type="button" class="btn btn-primary btn-lg" @click="login">
+      <vue-feather type="log-in" size="16"></vue-feather>
+      {{ $t('errorPage.tryAgain') }}
+    </button>
+  </error-view>
 </template>
+
+<script>
+import ErrorView from './ErrorView.vue';
+import authService from '@/services/auth.service';
+
+export default {
+  name: 'Error401',
+  components: { ErrorView },
+  methods: {
+    login() {
+      authService.redirectToLogin();
+    },
+  },
+};
+</script>

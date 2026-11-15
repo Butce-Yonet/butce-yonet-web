@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router"
 import authService from "@/services/auth.service";
 import state from '@/store'
+import i18n from '@/locales'
 
 let consentCheckInProgress = false;
 
-import Body from '@/components/body.vue';
+import AppLayout from '@/components/layout/AppLayout.vue';
 import Default from '@/pages/dashboard/index.vue';
 import Reports from '@/pages/reports/index.vue';
 import Transactions from '@/pages/transactions/index.vue';
@@ -12,6 +13,7 @@ import Labels from '@/pages/labels/index.vue';
 import Subscriptions from '@/pages/subscriptions/index.vue';
 import Goals from '@/pages/goals/index.vue';
 import Calendar from '@/pages/calendar/index.vue';
+import Profile from '@/pages/profile/index.vue';
 import Callback from '@/pages/auth/callback.vue';
 import Error401 from '@/pages/error/error401.vue';
 import Error404 from '@/pages/error/error404.vue';
@@ -19,50 +21,22 @@ import Error404 from '@/pages/error/error404.vue';
 const routes = [
   {
     path: '/',
-    component: Body,
-
+    component: AppLayout,
     children: [
-      {
-        path: '',
-        name: 'dashboard',
-        component: Default,
-      },
-      {
-        path: '/transactions',
-        name: 'transactions',
-        component: Transactions,
-      },
-      {
-        path: '/reports',
-        name: 'reports',
-        component: Reports,
-      },
-      {
-        path: '/labels',
-        name: 'labels',
-        component: Labels,
-      },
-      {
-        path: '/calendar',
-        name: 'calendar',
-        component: Calendar,
-      },
-      {
-        path: '/subscriptions',
-        name: 'subscriptions',
-        component: Subscriptions,
-      },
-      {
-        path: '/goals',
-        name: 'goals',
-        component: Goals,
-      },
-      {
-        path: '/auth/callback',
-        name: 'auth-callback',
-        component: Callback
-      },
+      { path: '', name: 'dashboard', component: Default, meta: { title: 'menu.home' } },
+      { path: '/transactions', name: 'transactions', component: Transactions, meta: { title: 'menu.transactions' } },
+      { path: '/reports', name: 'reports', component: Reports, meta: { title: 'menu.reports' } },
+      { path: '/labels', name: 'labels', component: Labels, meta: { title: 'menu.labels' } },
+      { path: '/calendar', name: 'calendar', component: Calendar, meta: { title: 'menu.calendar' } },
+      { path: '/subscriptions', name: 'subscriptions', component: Subscriptions, meta: { title: 'menu.bills' } },
+      { path: '/goals', name: 'goals', component: Goals, meta: { title: 'menu.goals' } },
+      { path: '/profile', name: 'profile', component: Profile, meta: { title: 'menu.profile' } },
     ]
+  },
+  {
+    path: '/auth/callback',
+    name: 'auth-callback',
+    component: Callback
   },
   {
     path: '/auth/failed',
@@ -130,5 +104,11 @@ router.beforeEach(async (to, from, next) => {
   next();
 });
 
+
+router.afterEach((to) => {
+  const key = to.meta?.title;
+  const appName = 'Bütçe Yönet';
+  document.title = key ? `${i18n.global.t(key)} · ${appName}` : appName;
+});
 
 export default router

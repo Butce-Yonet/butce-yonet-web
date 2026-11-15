@@ -1,0 +1,298 @@
+// ─────────────────────────────────────────────────────────────
+//  Third-party component theming
+// ─────────────────────────────────────────────────────────────
+
+// ── vue-select ───────────────────────────────────────────────
+// Variables live on :root because dropdowns are appended to <body>
+// (see utils/selectPosition.js) and would not inherit them from .v-select.
+:root {
+  --vs-font-size: 14px;
+  --vs-line-height: 1.4;
+  --vs-border-color: var(--border-strong);
+  --vs-border-radius: var(--radius-sm);
+  --vs-search-input-color: var(--text);
+  --vs-search-input-placeholder-color: var(--text-3);
+  --vs-dropdown-bg: var(--surface);
+  --vs-dropdown-color: var(--text);
+  --vs-dropdown-option-color: var(--text);
+  --vs-dropdown-option--active-bg: var(--surface-3);
+  --vs-dropdown-option--active-color: var(--text);
+  --vs-dropdown-box-shadow: var(--shadow-lg);
+  --vs-dropdown-z-index: 1150;
+  --vs-dropdown-max-height: 304px;
+  --vs-selected-bg: var(--surface-3);
+  --vs-selected-color: var(--text);
+  --vs-selected-border-color: transparent;
+  --vs-controls-color: var(--text-3);
+  --vs-disabled-bg: var(--surface-3);
+  --vs-state-disabled-bg: var(--surface-3);
+  --vs-actions-padding: 0 8px 0 4px;
+}
+
+.v-select {
+  .vs__dropdown-toggle {
+    min-height: 40px;
+    padding: 0 0 0 4px;
+    background: var(--surface);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  &:hover .vs__dropdown-toggle {
+    border-color: var(--text-3);
+  }
+
+  &.vs--open .vs__dropdown-toggle {
+    border-color: var(--primary);
+    box-shadow: var(--focus-ring);
+    border-bottom-left-radius: var(--radius-sm);
+    border-bottom-right-radius: var(--radius-sm);
+  }
+
+  .vs__selected-options {
+    padding: 2px 4px;
+    gap: 4px;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .vs__selected {
+    margin: 2px 0;
+    padding: 0 6px;
+    min-height: 26px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    gap: 4px;
+  }
+
+  &.vs--single .vs__selected {
+    background: transparent;
+    padding: 0 4px;
+    margin: 0;
+  }
+
+  .vs__search,
+  .vs__search:focus {
+    margin: 2px 0;
+    padding: 0 4px;
+    font-size: 14px;
+    min-height: 26px;
+  }
+
+  .vs__deselect {
+    fill: var(--text-3);
+    margin-left: 2px;
+  }
+
+  &.vs--disabled .vs__dropdown-toggle,
+  &.vs--disabled .vs__search,
+  &.vs--disabled .vs__clear,
+  &.vs--disabled .vs__open-indicator {
+    background: var(--surface-3);
+  }
+
+  &.sm .vs__dropdown-toggle {
+    min-height: 34px;
+  }
+
+  &.sm .vs__selected,
+  &.sm .vs__search {
+    font-size: 13px;
+    min-height: 22px;
+  }
+}
+
+// Dropdown list (may be rendered inside .v-select or directly in <body>)
+.vs__dropdown-menu {
+  margin: 0;
+  padding: 6px;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font);
+
+  .vs__dropdown-option {
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: normal;
+  }
+
+  .vs__dropdown-option--selected {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .vs__no-options {
+    padding: 10px;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+}
+
+.label-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+// ── @vuepic/vue-datepicker ───────────────────────────────────
+.dp__theme_light,
+.dp__theme_dark {
+  --dp-background-color: var(--surface);
+  --dp-text-color: var(--text);
+  --dp-hover-color: var(--surface-3);
+  --dp-hover-text-color: var(--text);
+  --dp-hover-icon-color: var(--text-2);
+  --dp-primary-color: var(--primary);
+  --dp-primary-disabled-color: var(--brand-200);
+  --dp-primary-text-color: #fff;
+  --dp-secondary-color: var(--text-3);
+  --dp-border-color: var(--border-strong);
+  --dp-menu-border-color: var(--border);
+  --dp-border-color-hover: var(--text-3);
+  --dp-border-color-focus: var(--primary);
+  --dp-disabled-color: var(--surface-3);
+  --dp-disabled-color-text: var(--text-3);
+  --dp-scroll-bar-background: var(--surface-3);
+  --dp-scroll-bar-color: var(--border-strong);
+  --dp-success-color: var(--primary);
+  --dp-icon-color: var(--text-3);
+  --dp-danger-color: var(--danger);
+  --dp-marker-color: var(--danger);
+  --dp-tooltip-color: var(--surface-2);
+  --dp-highlight-color: var(--primary-soft);
+  --dp-range-between-dates-background-color: var(--primary-soft);
+  --dp-range-between-dates-text-color: var(--text);
+  --dp-range-between-border-color: var(--primary-soft);
+}
+
+:root {
+  --dp-font-family: var(--font);
+  --dp-border-radius: 8px;
+  --dp-cell-border-radius: 8px;
+  --dp-font-size: 14px;
+  --dp-input-padding: 8px 30px 8px 12px;
+  --dp-menu-min-width: 280px;
+}
+
+.dp__input {
+  height: 40px;
+  font-size: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.dp__input_focus,
+.dp__input:focus {
+  box-shadow: var(--focus-ring);
+}
+
+.dp__menu {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.dp__menu_inner {
+  padding: 8px;
+}
+
+.dp--menu-wrapper {
+  z-index: 1150 !important;
+}
+
+.dp__outer_menu_wrap {
+  z-index: 1150;
+}
+
+.dp-sm .dp__input {
+  height: 34px;
+  font-size: 13px;
+}
+
+// ── SweetAlert2 ──────────────────────────────────────────────
+.swal2-container {
+  z-index: 2000 !important;
+  padding: 16px !important;
+
+  &.swal2-backdrop-show {
+    background: var(--overlay) !important;
+    backdrop-filter: blur(2px);
+  }
+}
+
+.swal2-popup {
+  width: 400px !important;
+  max-width: 100% !important;
+  padding: 24px !important;
+  border-radius: var(--radius-xl) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.swal2-icon {
+  margin: 4px auto 16px !important;
+  transform: scale(0.75);
+}
+
+.swal2-title {
+  padding: 0 !important;
+  font-size: 17px !important;
+  font-weight: 650 !important;
+  color: var(--text) !important;
+  line-height: 1.35 !important;
+}
+
+.swal2-html-container {
+  margin: 8px 0 0 !important;
+  font-size: 14px !important;
+  color: var(--text-2) !important;
+}
+
+.swal2-actions {
+  width: 100%;
+  margin: 22px 0 0 !important;
+  gap: 8px;
+  flex-wrap: nowrap !important;
+
+  button {
+    flex: 1;
+    margin: 0 !important;
+  }
+}
+
+.swal2-styled {
+  height: 40px;
+  padding: 0 18px !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.swal2-styled.swal2-confirm {
+  background: var(--primary) !important;
+}
+
+.swal2-styled.swal2-cancel {
+  background: var(--surface-3) !important;
+  color: var(--text) !important;
+}
+
+.swal-danger .swal2-styled.swal2-confirm {
+  background: var(--danger) !important;
+}
+
+// ── Chart.js canvas helpers ──────────────────────────────────
+.chart-box {
+  position: relative;
+  width: 100%;
+}

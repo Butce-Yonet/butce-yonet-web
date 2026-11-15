@@ -1,293 +1,166 @@
 <template>
-    <div class="card border h-100">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
-                <h5 class="mb-0">{{ $t('reports.categorySpending.title') }}</h5>
-                <div class="report-currency">
-                    <VSelect
-                        v-model="currencyId"
-                        :options="currencies"
-                        label="code"
-                        :reduce="c => c.id"
-                        :placeholder="$t('reports.filters.currency')"
-                        :clearable="true"
-                    >
-                        <template #option="c">
-                            <span class="fw-semibold">{{ c.code }}</span>
-                            <span class="text-muted ms-1 small">{{ c.name }}</span>
-                        </template>
-                        <template #selected-option="c">{{ c.code }}</template>
-                    </VSelect>
-                </div>
-            </div>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <date-range-preset-picker v-model="dateRange" />
-                <div class="report-datepicker">
-                    <VueDatePicker
-                        v-model="dateRange"
-                        range
-                        auto-apply
-                        :placeholder="$t('reports.filters.dateRange')"
-                        :time-config="{ enableTimePicker: false }"
-                        :locale="dateLocale"
-                    />
-                </div>
-            </div>
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">{{ $t('reports.categorySpending.title') }}</div>
+        <div v-if="report && report.items?.length" class="card-subtitle">
+          {{ $t('reports.categorySpending.total') }}:
+          <strong class="tabular text-2">{{ money(report.generalTotalAmount) }}</strong>
         </div>
-
-        <div class="card-body report-card-body">
-            <div v-if="loading" class="report-loading">
-                <div class="spinner-border text-success"></div>
-            </div>
-
-            <div v-else-if="report && report.items && report.items.length > 0">
-                <!-- Total -->
-                <div class="spending-total mb-3">
-                    <span class="spending-total-label">{{ $t('reports.categorySpending.total') }}</span>
-                    <span class="spending-total-value">{{ formatCurrency(report.generalTotalAmount) }}</span>
-                </div>
-
-                <!-- Category list -->
-                <div class="spending-list">
-                    <div
-                        v-for="(item, index) in sortedItems"
-                        :key="index"
-                        class="spending-item"
-                    >
-                        <div class="spending-item-header">
-                            <div class="spending-cat-name">
-                                <span class="cat-dot" :style="{ background: itemColor(item, index) }"></span>
-                                {{ item.categoryName || $t('transactionList.noLabel') }}
-                            </div>
-                            <div class="spending-item-right">
-                                <span class="spending-amount">{{ formatCurrency(item.amount) }}</span>
-                                <span class="spending-pct-badge" :style="{ background: itemColor(item, index) + '22', color: itemColor(item, index) }">
-                                    {{ item.percentage.toFixed(1) }}%
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="spending-bar-wrap">
-                            <div
-                                class="spending-bar"
-                                :style="{ width: item.percentage + '%', background: itemColor(item, index) }"
-                            ></div>
-                        </div>
-
-                        <div v-if="item.previousAmount != null" class="spending-prev">
-                            {{ $t('reports.categorySpending.previousPeriod') }}: {{ formatCurrency(item.previousAmount) }}
-                            <span v-if="item.previousAmount > 0" class="spending-diff" :class="item.amount <= item.previousAmount ? 'diff-good' : 'diff-bad'">
-                                <i :class="item.amount <= item.previousAmount ? 'fa fa-arrow-down' : 'fa fa-arrow-up'"></i>
-                                {{ Math.abs(((item.amount - item.previousAmount) / item.previousAmount) * 100).toFixed(1) }}%
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div v-else class="report-empty">
-                <i class="fa fa-tags"></i>
-                <p>{{ $t('reports.categorySpending.noData') }}</p>
-            </div>
-        </div>
+      </div>
     </div>
+
+    <div v-if="loading && !report" class="loading-box"><span class="spinner lg"></span></div>
+
+    <div v-else-if="report && report.items && report.items.length" class="card-body cs-list" :class="{ 'is-loading': loading }">
+      <div v-for="(item, index) in sortedItems" :key="index" class="cs-item">
+        <div class="cs-top">
+          <span class="cs-name">
+            <span class="label-dot" :style="{ background: color(index) }"></span>
+            <span class="truncate">{{ item.categoryName || $t('transactionList.noLabel') }}</span>
+          </span>
+          <span class="cs-amount tabular">{{ money(item.amount) }}</span>
+        </div>
+        <div class="cs-bar">
+          <div class="cs-fill" :style="{ width: Math.max(2, item.percentage) + '%', background: color(index) }"></div>
+        </div>
+        <div class="cs-meta">
+          <span class="tabular">%{{ item.percentage.toFixed(1) }}</span>
+          <span v-if="item.previousAmount != null && item.previousAmount > 0" class="trend" :class="item.amount <= item.previousAmount ? 'good' : 'bad'">
+            <vue-feather :type="item.amount <= item.previousAmount ? 'trending-down' : 'trending-up'" size="11"></vue-feather>
+            {{ Math.abs(((item.amount - item.previousAmount) / item.previousAmount) * 100).toFixed(0) }}%
+          </span>
+          <span v-if="item.previousAmount != null" class="muted truncate">
+            {{ $t('reports.categorySpending.previousPeriod') }}: {{ money(item.previousAmount) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <empty-state v-else icon="pie-chart" :text="$t('reports.categorySpending.noData')" compact />
+  </div>
 </template>
 
 <script>
+import EmptyState from '@/components/ui/EmptyState.vue';
 import reportService from '@/services/report.service';
-import moment from 'moment';
-import { useDateLocale } from '@/composables/useDateLocale';
-import { getDefaultDateRange } from '@/composables/dateRangePresets';
-import DateRangePresetPicker from '@/components/common/DateRangePresetPicker.vue';
+import { formatMoney, toStartOfDayISO, toEndOfDayISO } from '@/utils/format';
+import { CHART_PALETTE } from '@/utils/chart';
 
 export default {
-    components: {
-        'date-range-preset-picker': DateRangePresetPicker
+  name: 'CategorySpendingReport',
+  components: { EmptyState },
+  props: {
+    range: { type: Array, default: () => [null, null] },
+    currencyId: { type: [Number, String], default: null },
+  },
+  data() {
+    return { report: null, loading: false, debounce: null, reqId: 0 };
+  },
+  computed: {
+    sortedItems() {
+      return [...(this.report?.items || [])].sort((a, b) => b.amount - a.amount);
     },
-    setup() {
-        const { dateLocale } = useDateLocale();
-        return { dateLocale };
+  },
+  watch: {
+    range() { this.queue(); },
+    currencyId() { this.queue(); },
+  },
+  mounted() {
+    this.load();
+  },
+  methods: {
+    color(i) {
+      // Prefer the user's own label color so categories look the same everywhere.
+      const name = this.sortedItems[i]?.categoryName;
+      const label = name && this.$store.getters['dashboard/getLabels'].find((l) => l.name === name);
+      return label?.colorCode || CHART_PALETTE[i % CHART_PALETTE.length];
     },
-    data() {
-        return {
-            dateRange: getDefaultDateRange(),
-            currencyId: null,
-            report: null,
-            loading: false,
-            debounce: null,
-            palette: [
-                '#10b981', '#3b82f6', '#f59e0b', '#ef4444',
-                '#8b5cf6', '#06b6d4', '#f97316', '#ec4899',
-                '#84cc16', '#6366f1'
-            ]
-        };
+    money(v) {
+      return formatMoney(v, this.report?.currency?.code);
     },
-    computed: {
-        currencies() {
-            return this.$store.getters['dashboard/getCurrencies'];
-        },
-        sortedItems() {
-            if (!this.report?.items) return [];
-            return [...this.report.items].sort((a, b) => b.amount - a.amount);
-        }
+    queue() {
+      clearTimeout(this.debounce);
+      this.debounce = setTimeout(() => this.load(), 250);
     },
-    watch: {
-        dateRange() { this.debouncedLoad(); },
-        currencyId() { this.debouncedLoad(); }
+    async load() {
+      const id = ++this.reqId;
+      this.loading = true;
+      try {
+        const [start, end] = this.range || [];
+        const res = await reportService.getCategorySpending({
+          CurrencyId: this.currencyId ?? null,
+          StartDate: toStartOfDayISO(start),
+          EndDate: toEndOfDayISO(end),
+        });
+        if (id !== this.reqId) return;
+        this.report = res.status === 200 ? res.data.data : null;
+      } catch {
+        if (id === this.reqId) this.report = null;
+      } finally {
+        if (id === this.reqId) this.loading = false;
+      }
     },
-    methods: {
-        debouncedLoad() {
-            clearTimeout(this.debounce);
-            this.debounce = setTimeout(() => this.load(), 400);
-        },
-        async load() {
-            this.loading = true;
-            try {
-                const [start, end] = this.dateRange || [];
-                const params = {
-                    CurrencyId: this.currencyId ?? null,
-                    StartDate: start ? moment(start).startOf('day').toISOString() : null,
-                    EndDate: end ? moment(end).endOf('day').toISOString() : null
-                };
-                const res = await reportService.getCategorySpending(params);
-                this.report = res.status === 200 ? res.data.data : null;
-            } catch {
-                this.report = null;
-            } finally {
-                this.loading = false;
-            }
-        },
-        itemColor(_item, index) {
-            return this.palette[index % this.palette.length];
-        },
-        formatCurrency(amount) {
-            if (amount == null) return '—';
-            const code = this.report?.currency?.code || null;
-            if (!code) return new Intl.NumberFormat(this.$i18n?.locale || 'tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
-            return new Intl.NumberFormat(this.$i18n?.locale || 'tr-TR', {
-                style: 'currency', currency: code,
-                minimumFractionDigits: 2, maximumFractionDigits: 2
-            }).format(amount);
-        }
-    },
-    mounted() {
-        this.load();
-    }
-}
+  },
+};
 </script>
 
 <style scoped>
-.report-card-body {
-    max-height: 400px;
-    overflow-y: auto;
+.cs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 520px;
+  overflow-y: auto;
+  transition: opacity 0.15s;
 }
 
-.report-loading,
-.report-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    color: #9ca3af;
-    gap: 6px;
-}
-.report-empty i { font-size: 22px; }
-.report-empty p { margin: 0; font-size: 13px; }
-
-.report-datepicker { width: 235px; flex-shrink: 0; }
-.report-datepicker :deep(.dp__input) {
-    font-size: 13px;
-    height: 30px;
-    min-height: unset;
-    padding-top: 3px;
-    padding-bottom: 3px;
-}
-.report-currency { width: 130px; }
-:deep(.vs__dropdown-menu) { min-width: 200px; }
-
-/* Total row */
-.spending-total {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 7px 12px;
-    background: #f0fdf4;
-    border-radius: 8px;
-    border: 1px solid #6ee7b7;
-}
-.spending-total-label { font-size: 11px; font-weight: 600; color: #059669; text-transform: uppercase; letter-spacing: 0.04em; }
-.spending-total-value { font-size: 14px; font-weight: 700; color: #065f46; }
-
-/* List */
-.spending-list { display: flex; flex-direction: column; gap: 8px; }
-
-.spending-item { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 8px 12px; }
-
-.spending-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-
-.spending-cat-name {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #1f2937;
+.cs-list.is-loading {
+  opacity: 0.55;
 }
 
-.cat-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
+.cs-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.spending-item-right { display: flex; align-items: center; gap: 8px; }
-
-.spending-amount { font-size: 13px; font-weight: 700; color: #374151; }
-
-.spending-pct-badge {
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
+.cs-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 600;
 }
 
-/* Progress bar */
-.spending-bar-wrap {
-    height: 6px;
-    background: #e5e7eb;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 6px;
-}
-.spending-bar {
-    height: 100%;
-    border-radius: 10px;
-    transition: width 0.4s ease;
-    min-width: 2px;
+.cs-amount {
+  font-size: 13.5px;
+  font-weight: 650;
+  white-space: nowrap;
 }
 
-/* Previous period */
-.spending-prev {
-    font-size: 11px;
-    color: #9ca3af;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+.cs-bar {
+  height: 6px;
+  margin: 8px 0 6px;
+  border-radius: 6px;
+  background: var(--surface-3);
+  overflow: hidden;
 }
-.spending-diff {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    font-weight: 600;
-    font-size: 11px;
-}
-.diff-good { color: #10b981; }
-.diff-bad  { color: #ef4444; }
 
-@media (max-width: 576px) {
-    .report-datepicker { width: 100%; }
-    .report-currency { width: 100%; }
+.cs-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s var(--ease);
+}
+
+.cs-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-2);
+  min-width: 0;
 }
 </style>

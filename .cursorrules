@@ -4,34 +4,34 @@
 - **Framework**: Vue 3 (Composition API veya Options API)
 - **Router**: Vue Router 4
 - **State Management**: Vuex 4
-- **Styling**: SCSS, Bootstrap 5
-- **Icons**: Vue Feather
+- **Styling**: SCSS, kendi tasarım sistemi (CSS değişkenleri, açık/koyu tema) — Bootstrap kullanılmıyor
+- **Icons**: Vue Feather (`<vue-feather type="..." size="16">`) — Font Awesome kullanılmıyor
 - **Internationalization**: Vue i18n (Türkçe ve İngilizce)
 - **Build Tool**: Vue CLI
 - **Path Alias**: `@/` → `src/` (jsconfig.json)
 
 ## Bağımlılıklar
 - **HTTP**: axios (httpClient.js üzerinden)
-- **UI**: Bootstrap 5, vue-select, vue3-easy-data-table, VueDatePicker (@vuepic/vue-datepicker)
+- **UI**: vue-select, VueDatePicker (@vuepic/vue-datepicker), chart.js; ortak bileşenler `src/components/ui/` (AppModal, PeriodPicker, CurrencySelect, LabelSelect, LabelChips, EmptyState, AppPagination, ToastHost)
 - **Form/Validasyon**: yup
 - **Diğer**: vue-sweetalert2, moment, chart.js, driver.js
 
 ## Ortam Yapısı
 - **development**, **staging**, **production** ortamları mevcut
-- Environment değişkenleri `.env.development`, `.env.staging`, `.env.production` dosyalarında
+- Environment değişkenleri `.env.development`, `.env.staging`, `.env.production` dosyalarında (git dışı; şablon `.env.example`)
 - `VUE_APP_` prefix'i ile tanımlanmalı
 - API URL, auth URL vb. `src/constants/config.js` üzerinden kullanılır
 
 ## Dosya Organizasyonu
 - **Servisler**: `src/services/` (auth.service.js, httpClient.js, notebook.service.js, transaction.service.js, vb.)
 - **API çağrıları**: httpClient (`src/services/httpClient.js`) kullanılmalı
-- **Componentler**: `src/components/` (header/, sidebar/, notebook/, transaction/, recurringtransaction/, vb.)
+- **Componentler**: `src/components/` (layout/, ui/, transaction/, recurringtransaction/, subscription/, goal/, label/, reports/, calendar/, consent/)
 - **Sayfalar**: `src/pages/` (dashboard/, auth/, error/)
 - **Router**: `src/router/index.js`
-- **Store**: `src/store/index.js`, modüller `src/store/modules/` (layout, menu, user, notebook, dashboard)
+- **Store**: `src/store/index.js`, modüller `src/store/modules/` (ui, user, dashboard, consent)
 - **Sabitler**: `src/constants/` (config.js, layout.js)
 - **Locale**: `src/locales/` (tr.json, en.json), `src/locales/index.js` i18n kurulumu
-- **Statik veri**: `src/data/` (menu.json, layout.json, bonusui.json)
+- **Navigasyon**: `src/constants/navigation.js` (menü öğeleri + hızlı ekleme aksiyonları)
 
 ## Kod Stili ve Standartları
 
@@ -65,7 +65,11 @@
 - Beyaz liste: `/auth/callback`, `/auth/failed`
 
 ### Vuex
-- Modüller: layout, menu, user, notebook, dashboard
+- Modüller: ui (aktif modal, veri yenileme sayaçları `versions`, tema), user, dashboard (para birimleri + etiketler), consent
+- Modallar global: `this.$store.dispatch('ui/openModal', { type, mode, data })` — `GlobalModals.vue` render eder
+- Kayıt sonrası sayfa yenilenmez; `ui/bump` ile ilgili listeler yeniden yüklenir
+- Bildirimler: `this.$toast.success/error/info`; silme onayı: `confirmDelete` (`src/utils/confirm.js`)
+- Biçimlendirme: `src/utils/format.js` (formatMoney, formatDate, txTone...)
 - Namespaced modules kullanılıyor
 - Mutations, actions, getters modül dosyalarında
 
@@ -75,9 +79,9 @@
 - Varsayılan dil ve seçenekler `src/constants/config.js` (defaultLocale, localeOptions)
 
 ### Styling
-- SCSS: `src/assets/scss/`
+- SCSS: `src/assets/styles/` (_tokens, _base, _components, _vendors)
 - Component stilleri: `<style scoped>`
-- Bootstrap 5 utility class'ları tercih edilmeli
+- Renkler için her zaman token kullanılmalı (`var(--text)`, `var(--primary)`...) — koyu tema bunlara bağlı
 
 ### Import Sıralaması
 1. Vue / core
@@ -96,7 +100,7 @@
 ## Domain / Özel Notlar
 - **Bütçe yönetimi** uygulaması; notebook (defter), transaction (işlem), recurring transaction, label, raporlama
 - **Auth**: auth.service.js (login, logout, getToken, getRefreshToken, refreshToken), callback sayfası
-- **Menü**: menu.json + store menu modülü; Defterlerim menüsü notebook listesi ile dinamik
+- **Menü**: `src/constants/navigation.js`; masaüstünde sol menü, mobilde alt sekme çubuğu + hızlı ekleme (FAB)
 - **Servisler**: notebook.service, transaction.service, recurring.transaction.service, transaction.label.service, notebook.label.service, notebook.users.service, report.service, currency.service, validator.service
 
 ## Git
