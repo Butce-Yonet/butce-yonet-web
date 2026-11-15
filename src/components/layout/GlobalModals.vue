@@ -40,6 +40,13 @@
       @close="close"
       @saved="saved(['goals', 'transactions'])"
     />
+    <budget-modal
+      :open="modal.type === 'budget'"
+      :mode="modal.mode"
+      :data="modal.data"
+      @close="close"
+      @saved="saved(['budgets'])"
+    />
     <label-modal
       :open="modal.type === 'label'"
       :mode="modal.mode"
@@ -58,6 +65,7 @@ import SubscriptionPayModal from '@/components/subscription/subscriptionPayModal
 import GoalModal from '@/components/goal/goalModal.vue';
 import GoalContributeModal from '@/components/goal/goalContributeModal.vue';
 import LabelModal from '@/components/label/labelModal.vue';
+import BudgetModal from '@/components/budget/budgetModal.vue';
 
 export default {
   name: 'GlobalModals',
@@ -69,6 +77,7 @@ export default {
     GoalModal,
     GoalContributeModal,
     LabelModal,
+    BudgetModal,
   },
   computed: {
     modal() {

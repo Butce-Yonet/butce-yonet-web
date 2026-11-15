@@ -166,7 +166,7 @@ export default {
       }
     },
     async remove() {
-      const ok = await confirmDelete(this.$t('labelsPage.messages.areYouSureDelete'));
+      const ok = await confirmDelete(this.$t('labelsPage.messages.areYouSureDelete'), this.$t('labelsPage.messages.deleteBudgetWarning'));
       if (!ok) return;
       this.submitting = true;
       try {

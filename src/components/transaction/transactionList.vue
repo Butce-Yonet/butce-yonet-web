@@ -166,6 +166,22 @@ import { getDefaultDateRange, isDefaultDateRange } from '@/composables/dateRange
 import { formatMoney, formatDayHeading, txTone, txIcon, txSign } from '@/utils/format';
 import { confirmDelete } from '@/utils/confirm';
 
+// Filters passed in the URL (e.g. "View transactions" on a budget):
+// ?type=1&currencyId=1&labelIds=12,13&start=2026-11-01&end=2026-11-30
+function filtersFromQuery(query = {}) {
+  const f = defaultFilters();
+  const num = (v) => (v !== undefined && v !== '' && /^\d+$/.test(String(v)) ? Number(v) : null);
+  if (num(query.type) !== null && [0, 1, 2].includes(num(query.type))) f.transactionType = num(query.type);
+  if (num(query.currencyId) !== null) f.currencyId = num(query.currencyId);
+  if (query.labelIds) f.labelIds = String(query.labelIds).split(',').map(num).filter((v) => v !== null);
+  const start = moment(query.start, 'YYYY-MM-DD', true);
+  const end = moment(query.end, 'YYYY-MM-DD', true);
+  if (start.isValid() && end.isValid() && !end.isBefore(start)) {
+    f.transactionDate = [start.startOf('day').toDate(), end.endOf('day').toDate()];
+  }
+  return f;
+}
+
 function defaultFilters() {
   return {
     currencyId: null,
@@ -183,7 +199,7 @@ export default {
   components: { AppPagination, EmptyState, PeriodPicker, CurrencySelect, LabelSelect, LabelChips },
   data() {
     return {
-      filters: defaultFilters(),
+      filters: filtersFromQuery(this.$route.query),
       showAdvanced: false,
       debounce: null,
       loading: false,
