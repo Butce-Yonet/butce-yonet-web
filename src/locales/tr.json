@@ -10,7 +10,8 @@
     "comingSoon": "Yakında",
     "main": "Ana menü",
     "more": "Daha Fazla",
-    "profile": "Profil"
+    "profile": "Profil",
+    "budgets": "Bütçeler"
   },
   "header": {
     "newTransaction": "Yeni İşlem",
@@ -25,7 +26,8 @@
       "3months": "Son 3 Ay",
       "6months": "Son 6 Ay",
       "year": "Son 1 Yıl"
-    }
+    },
+    "newBudget": "Yeni Bütçe"
   },
   "labelsPage": {
     "title": "Etiketler",
@@ -55,7 +57,8 @@
       "deleteSuccess": "Etiket başarıyla silindi.",
       "deleteError": "Etiket silinirken bir hata oluştu.",
       "editError": "Etiket düzenlenirken bir hata oluştu.",
-      "editSuccess": "Etiket başarıyla düzenlendi."
+      "editSuccess": "Etiket başarıyla düzenlendi.",
+      "deleteBudgetWarning": "Bu etikete bağlı bütçe varsa o da silinecek. Bu işlem geri alınamaz."
     }
   },
   "common": {
@@ -441,7 +444,8 @@
     "recurringDesc": "Maaş, kira gibi düzenli kayıtlar",
     "subscriptionDesc": "Fatura ve abonelik takibi",
     "goalDesc": "Birikim hedefi belirle",
-    "labelDesc": "İşlemleri kategorize et"
+    "labelDesc": "İşlemleri kategorize et",
+    "budgetDesc": "Aylık harcama limiti belirle"
   },
   "settings": {
     "theme": "Tema",
@@ -673,5 +677,79 @@
   "inAppNotification": {
     "label": "Yeni bildirim",
     "open": "Görüntüle"
+  },
+  "budgets": {
+    "general": "Genel bütçe",
+    "dashboardTitle": "Bütçeler",
+    "addButton": "Yeni Bütçe",
+    "createButton": "Bütçe oluştur",
+    "emptyTitle": "Henüz bütçen yok",
+    "emptyText": "Aylık harcamalarını kontrol altında tutmak için ilk bütçeni oluştur.",
+    "remaining": "{amount} kaldı",
+    "dailyAllowance": "Günde {amount} harcayabilirsin",
+    "overBy": "Limiti {amount} aştın",
+    "reachedLimit": "Limitine ulaştın",
+    "daysLeft": "{n} gün kaldı",
+    "lastDay": "Bugün son gün",
+    "retry": "Tekrar dene",
+    "backToList": "Bütçeler",
+    "notFoundText": "Bu bütçe silinmiş ya da sana ait olmayabilir.",
+    "status": {
+      "onTrack": "Yolunda",
+      "warning": "Uyarı",
+      "exceeded": "Aşıldı"
+    },
+    "summary": {
+      "budgetCount": "{n} bütçe",
+      "onTrack": "{n} yolunda",
+      "warning": "{n} uyarıda",
+      "exceeded": "{n} aşıldı"
+    },
+    "limitations": {
+      "labeledOnly": "Yalnızca etiketli giderler hesaba katılır.",
+      "noConversion": "Para birimi dönüştürülmez; yalnızca bu para birimindeki giderler sayılır.",
+      "currentLimit": "Tüm dönemler güncel limitle karşılaştırılır."
+    },
+    "modal": {
+      "createTitle": "Yeni Bütçe",
+      "editTitle": "Bütçeyi Düzenle",
+      "scope": "Kapsam",
+      "scopePlaceholder": "Genel bütçe veya etiket seç",
+      "taken": "bütçesi var",
+      "currency": "Para birimi",
+      "amount": "Aylık limit",
+      "maxDecimals": "En fazla 2 ondalık basamak girilebilir.",
+      "periodStartDay": "Dönem başlangıç günü",
+      "dayOption": "Ayın {n}. günü",
+      "periodHelp": "Bütçen her ay bu günde yenilenir. Örneğin maaşın ayın 15'inde yatıyorsa 15'i seç; dönemin 15'inden bir sonraki ayın 14'üne kadar sürer.",
+      "periodPreview": "Şu anki dönem: {range}",
+      "readonlyNote": "Kapsam ve para birimi değiştirilemez. Değiştirmek için bütçeyi silip yeniden oluştur."
+    },
+    "detail": {
+      "historyTitle": "Dönem geçmişi",
+      "periods": "{n} dönem",
+      "legendSpent": "Harcanan",
+      "legendOver": "Limit aşıldı",
+      "legendActive": "Devam ediyor",
+      "currentLimit": "Güncel limit",
+      "periodStartsOn": "Dönem her ayın {n}. günü başlar.",
+      "viewTransactions": "İşlemleri gör"
+    },
+    "messages": {
+      "createSuccess": "Bütçe oluşturuldu.",
+      "editSuccess": "Bütçe güncellendi.",
+      "deleteSuccess": "Bütçe silindi.",
+      "areYouSureDelete": "\"{name}\" bütçesini silmek istediğine emin misin?"
+    },
+    "errors": {
+      "loadTitle": "Bütçeler yüklenemedi",
+      "alreadyExists": "Bu etiket ve para birimi için zaten bir bütçen var.",
+      "notFound": "Bütçe bulunamadı",
+      "optionNotFound": "Seçilen etiket veya para birimi bulunamadı. Listeyi yenileyip tekrar dene.",
+      "forbidden": "Bu işlem için yetkin yok.",
+      "validation": "Girilen bilgiler geçersiz. Lütfen kontrol edip tekrar dene.",
+      "network": "Sunucuya ulaşılamadı. İnternet bağlantını kontrol et.",
+      "generic": "Bir hata oluştu. Lütfen tekrar dene."
+    }
   }
 }

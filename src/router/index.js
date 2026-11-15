@@ -12,6 +12,8 @@ import Transactions from '@/pages/transactions/index.vue';
 import Labels from '@/pages/labels/index.vue';
 import Subscriptions from '@/pages/subscriptions/index.vue';
 import Goals from '@/pages/goals/index.vue';
+import Budgets from '@/pages/budgets/index.vue';
+import BudgetDetail from '@/pages/budgets/detail.vue';
 import Calendar from '@/pages/calendar/index.vue';
 import Profile from '@/pages/profile/index.vue';
 import Callback from '@/pages/auth/callback.vue';
@@ -30,6 +32,8 @@ const routes = [
       { path: '/calendar', name: 'calendar', component: Calendar, meta: { title: 'menu.calendar' } },
       { path: '/subscriptions', name: 'subscriptions', component: Subscriptions, meta: { title: 'menu.bills' } },
       { path: '/goals', name: 'goals', component: Goals, meta: { title: 'menu.goals' } },
+      { path: '/budgets', name: 'budgets', component: Budgets, meta: { title: 'menu.budgets' } },
+      { path: '/budgets/:id(\\d+)', name: 'budget-detail', component: BudgetDetail, meta: { title: 'menu.budgets' } },
       { path: '/profile', name: 'profile', component: Profile, meta: { title: 'menu.profile' } },
     ]
   },

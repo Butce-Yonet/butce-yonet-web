@@ -104,6 +104,25 @@
         </div>
       </div>
 
+      <!-- Budgets -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">{{ $t('budgets.dashboardTitle') }}</div>
+          <router-link to="/budgets" class="link-btn">
+            {{ $t('dashboard.recentTransactions.viewAll') }}
+            <vue-feather type="arrow-right" size="14"></vue-feather>
+          </router-link>
+        </div>
+        <div v-if="budgetsLoading && !budgetSummary.length" class="loading-box"><span class="spinner lg"></span></div>
+        <empty-state v-else-if="!budgetSummary.length" icon="sliders" :text="$t('budgets.emptyText')" compact>
+          <button type="button" class="btn btn-secondary btn-sm" @click="$store.dispatch('ui/openModal', { type: 'budget' })">
+            <vue-feather type="plus" size="14"></vue-feather>
+            {{ $t('budgets.createButton') }}
+          </button>
+        </empty-state>
+        <budget-summary v-else :items="budgetSummary" link="/budgets" />
+      </div>
+
       <div class="grid grid-2">
         <!-- Upcoming bills -->
         <div class="card">
@@ -180,6 +199,8 @@ import PeriodPicker from '@/components/ui/PeriodPicker.vue';
 import EmptyState from '@/components/ui/EmptyState.vue';
 import LabelChips from '@/components/ui/LabelChips.vue';
 import PeriodSummaryReport from '@/components/reports/periodSummaryReport.vue';
+import BudgetSummary from '@/components/budget/budgetSummary.vue';
+import budgetService from '@/services/budget.service';
 import transactionService from '@/services/transaction.service';
 import reportService from '@/services/report.service';
 import subscriptionService from '@/services/subscription.service';
@@ -193,7 +214,7 @@ import { CHART_PALETTE, OTHER_COLOR, themeColors, baseTooltip } from '@/utils/ch
 
 export default {
   name: 'DashboardPage',
-  components: { PeriodPicker, EmptyState, LabelChips, PeriodSummaryReport },
+  components: { PeriodPicker, EmptyState, LabelChips, PeriodSummaryReport, BudgetSummary },
   data() {
     return {
       range: getDefaultDateRange(),
@@ -209,6 +230,8 @@ export default {
       billsLoading: false,
       goals: [],
       goalsLoading: false,
+      budgetSummary: [],
+      budgetsLoading: false,
     };
   },
   computed: {
@@ -255,6 +278,9 @@ export default {
     'versions.goals'() {
       this.loadGoals();
     },
+    'versions.budgets'() {
+      this.loadBudgets();
+    },
     theme() {
       this.$nextTick(() => this.refreshChart());
     },
@@ -264,6 +290,7 @@ export default {
     this.loadCategoryData();
     this.loadBills();
     this.loadGoals();
+    this.loadBudgets();
   },
   beforeUnmount() {
     clearTimeout(this.chartDebounce);
@@ -332,6 +359,16 @@ export default {
         this.bills = [];
       } finally {
         this.billsLoading = false;
+      }
+    },
+    async loadBudgets() {
+      this.budgetsLoading = true;
+      try {
+        this.budgetSummary = (await budgetService.summary()) || [];
+      } catch {
+        // keep the last known summary; the budgets page shows the error in detail
+      } finally {
+        this.budgetsLoading = false;
       }
     },
     async loadGoals() {

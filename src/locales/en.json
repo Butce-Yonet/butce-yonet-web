@@ -10,7 +10,8 @@
     "comingSoon": "Coming Soon",
     "main": "Main menu",
     "more": "More",
-    "profile": "Profile"
+    "profile": "Profile",
+    "budgets": "Budgets"
   },
   "header": {
     "newTransaction": "New Transaction",
@@ -25,7 +26,8 @@
       "3months": "Last 3 Months",
       "6months": "Last 6 Months",
       "year": "Last 1 Year"
-    }
+    },
+    "newBudget": "New Budget"
   },
   "labelsPage": {
     "title": "Labels",
@@ -55,7 +57,8 @@
       "deleteSuccess": "Label deleted successfully.",
       "deleteError": "An error occurred while deleting the label.",
       "editError": "An error occurred while editing the label.",
-      "editSuccess": "Label edited successfully."
+      "editSuccess": "Label edited successfully.",
+      "deleteBudgetWarning": "Any budget linked to this label will also be deleted. This cannot be undone."
     }
   },
   "common": {
@@ -441,7 +444,8 @@
     "recurringDesc": "Regular items like salary or rent",
     "subscriptionDesc": "Track bills and subscriptions",
     "goalDesc": "Set a savings goal",
-    "labelDesc": "Categorize transactions"
+    "labelDesc": "Categorize transactions",
+    "budgetDesc": "Set a monthly spending limit"
   },
   "settings": {
     "theme": "Theme",
@@ -673,5 +677,79 @@
   "inAppNotification": {
     "label": "New notification",
     "open": "View"
+  },
+  "budgets": {
+    "general": "Overall budget",
+    "dashboardTitle": "Budgets",
+    "addButton": "New Budget",
+    "createButton": "Create budget",
+    "emptyTitle": "No budgets yet",
+    "emptyText": "Create your first budget to keep your monthly spending under control.",
+    "remaining": "{amount} left",
+    "dailyAllowance": "You can spend {amount} a day",
+    "overBy": "Over the limit by {amount}",
+    "reachedLimit": "You've reached your limit",
+    "daysLeft": "{n} day left | {n} days left",
+    "lastDay": "Last day today",
+    "retry": "Try again",
+    "backToList": "Budgets",
+    "notFoundText": "This budget may have been deleted or may not belong to you.",
+    "status": {
+      "onTrack": "On track",
+      "warning": "Warning",
+      "exceeded": "Exceeded"
+    },
+    "summary": {
+      "budgetCount": "{n} budget | {n} budgets",
+      "onTrack": "{n} on track",
+      "warning": "{n} warning",
+      "exceeded": "{n} exceeded"
+    },
+    "limitations": {
+      "labeledOnly": "Only labeled expenses are counted.",
+      "noConversion": "Currencies are not converted; only expenses in this currency count.",
+      "currentLimit": "All periods are compared with the current limit."
+    },
+    "modal": {
+      "createTitle": "New Budget",
+      "editTitle": "Edit Budget",
+      "scope": "Scope",
+      "scopePlaceholder": "Choose overall budget or a label",
+      "taken": "has a budget",
+      "currency": "Currency",
+      "amount": "Monthly limit",
+      "maxDecimals": "Use at most 2 decimal places.",
+      "periodStartDay": "Period start day",
+      "dayOption": "Day {n} of the month",
+      "periodHelp": "Your budget renews on this day every month. If your salary arrives on the 15th, pick 15; the period runs from the 15th to the 14th of the next month.",
+      "periodPreview": "Current period: {range}",
+      "readonlyNote": "Scope and currency can't be changed. Delete the budget and create a new one to change them."
+    },
+    "detail": {
+      "historyTitle": "Period history",
+      "periods": "{n} periods",
+      "legendSpent": "Spent",
+      "legendOver": "Over limit",
+      "legendActive": "In progress",
+      "currentLimit": "Current limit",
+      "periodStartsOn": "The period starts on day {n} of each month.",
+      "viewTransactions": "View transactions"
+    },
+    "messages": {
+      "createSuccess": "Budget created.",
+      "editSuccess": "Budget updated.",
+      "deleteSuccess": "Budget deleted.",
+      "areYouSureDelete": "Are you sure you want to delete the \"{name}\" budget?"
+    },
+    "errors": {
+      "loadTitle": "Couldn't load budgets",
+      "alreadyExists": "You already have a budget for this label and currency.",
+      "notFound": "Budget not found",
+      "optionNotFound": "The selected label or currency was not found. Refresh and try again.",
+      "forbidden": "You don't have permission for this action.",
+      "validation": "Some of the details are invalid. Please check and try again.",
+      "network": "Couldn't reach the server. Check your internet connection.",
+      "generic": "Something went wrong. Please try again."
+    }
   }
 }

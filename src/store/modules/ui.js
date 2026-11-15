@@ -14,6 +14,16 @@ export function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
 }
 
+// Budget spending is read from report tables that the API updates asynchronously (message queue)
+// after a transaction changes, so budgets are refreshed again a little later.
+const BUDGET_REFRESH_DELAYS = [1500, 4000];
+let budgetRefreshTimers = [];
+
+function scheduleBudgetRefresh(commit) {
+    budgetRefreshTimers.forEach(clearTimeout);
+    budgetRefreshTimers = BUDGET_REFRESH_DELAYS.map((ms) => setTimeout(() => commit('BUMP', 'budgets'), ms));
+}
+
 const state = {
     modal: { type: null, mode: 'create', data: null },
     // Incremented after writes so lists can reload without a full page refresh.
@@ -23,6 +33,7 @@ const state = {
         subscriptions: 0,
         goals: 0,
         labels: 0,
+        budgets: 0,
     },
     theme: readTheme(),
 };
@@ -62,7 +73,10 @@ const actions = {
         commit('CLOSE_MODAL');
     },
     bump({ commit }, scopes) {
-        commit('BUMP', scopes);
+        const list = Array.isArray(scopes) ? scopes : [scopes];
+        // Deleting a label also deletes its budgets (synchronously on the server).
+        commit('BUMP', list.includes('labels') && !list.includes('budgets') ? [...list, 'budgets'] : list);
+        if (list.includes('transactions')) scheduleBudgetRefresh(commit);
     },
     setTheme({ commit }, theme) {
         commit('SET_THEME', theme);

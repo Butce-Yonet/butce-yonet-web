@@ -26,6 +26,18 @@ export function clearInAppNotifications() {
     inAppNotificationState.items.splice(0);
 }
 
+export const BUDGET_NOTIFICATION_TYPES = ['BudgetThresholdReached', 'BudgetExceeded'];
+
+export function isBudgetNotification(payload = {}) {
+    return BUDGET_NOTIFICATION_TYPES.includes(payload.data?.type);
+}
+
+// In-app link for typed notifications (all FCM data values are strings).
+function linkFromData(d) {
+    if (BUDGET_NOTIFICATION_TYPES.includes(d.type) && /^\d+$/.test(d.budgetId || '')) return `/budgets/${d.budgetId}`;
+    return null;
+}
+
 // Normalises an FCM payload: "notification" messages and data-only messages carry the same fields.
 export function fromFcmPayload(payload = {}) {
     const n = payload.notification || {};
@@ -33,6 +45,6 @@ export function fromFcmPayload(payload = {}) {
     return {
         title: n.title || d.title || '',
         body: n.body || d.body || '',
-        link: payload.fcmOptions?.link || d.link || null,
+        link: linkFromData(d) || payload.fcmOptions?.link || d.link || null,
     };
 }

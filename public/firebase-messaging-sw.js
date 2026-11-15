@@ -16,6 +16,37 @@ firebase.initializeApp({
   appId: params.get('appId'),
 });
 
+const BUDGET_TYPES = ['BudgetThresholdReached', 'BudgetExceeded'];
+
+// Bütçe bildirimleri tıklanınca ilgili bütçenin detay sayfasına gider.
+function linkFromData(data) {
+  if (data && BUDGET_TYPES.includes(data.type) && /^\d+$/.test(data.budgetId || '')) return '/budgets/' + data.budgetId;
+  return (data && data.link) || null;
+}
+
+function openLink(link) {
+  return self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+    const target = new URL(link, self.location.origin).href;
+    const existing = clientList.find((client) => client.url === target);
+    return existing ? existing.focus() : self.clients.openWindow(target);
+  });
+}
+
+// FCM'in kendi gösterdiği ("notification" alanlı) bildirimlerde veri FCM_MSG altındadır ve tıklamayı
+// Firebase'in dinleyicisi yakalayıp yayılımı durdurur. Bütçe bildirimleri için bu dinleyici
+// Firebase'den ÖNCE kaydedilir ki tıklama bütçe detayına gitsin.
+self.addEventListener('notificationclick', (event) => {
+  const fcmMsg = event.notification.data && event.notification.data.FCM_MSG;
+  const data = fcmMsg && fcmMsg.data;
+  if (event.action || !data || !BUDGET_TYPES.includes(data.type)) return;
+  const link = linkFromData(data);
+  if (!link) return;
+
+  event.stopImmediatePropagation();
+  event.notification.close();
+  event.waitUntil(openLink(link));
+});
+
 const messaging = firebase.messaging();
 
 // "notification" alanı olan mesajları FCM kendisi gösterir.
@@ -27,7 +58,7 @@ messaging.onBackgroundMessage((payload) => {
   self.registration.showNotification(data.title || 'Bütçe Yönet', {
     body: data.body,
     icon: data.icon || '/favicon.png',
-    data: { link: data.link || '/' },
+    data: { link: linkFromData(data) || '/' },
   });
 });
 
@@ -36,11 +67,5 @@ self.addEventListener('notificationclick', (event) => {
   if (!link) return;
 
   event.notification.close();
-  event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      const target = new URL(link, self.location.origin).href;
-      const existing = clientList.find((client) => client.url === target);
-      return existing ? existing.focus() : self.clients.openWindow(target);
-    })
-  );
+  event.waitUntil(openLink(link));
 });

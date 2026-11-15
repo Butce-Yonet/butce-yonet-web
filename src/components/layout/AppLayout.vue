@@ -27,7 +27,7 @@ import NotificationNudge from '@/components/notifications/NotificationNudge.vue'
 import InAppNotificationHost from '@/components/notifications/InAppNotificationHost.vue';
 import authService from '@/services/auth.service';
 import { refreshPushToken, onForegroundMessage, showSystemNotification } from '@/services/firebase.service';
-import { pushInAppNotification, fromFcmPayload } from '@/plugins/inAppNotifications';
+import { pushInAppNotification, fromFcmPayload, isBudgetNotification } from '@/plugins/inAppNotifications';
 
 export default {
   name: 'AppLayout',
@@ -50,6 +50,8 @@ export default {
     async setupPush() {
       refreshPushToken().catch(() => {});
       this.unsubscribePush = await onForegroundMessage((payload) => {
+        // Budget alerts mean spending changed: refresh any budget views that are open.
+        if (isBudgetNotification(payload)) this.$store.dispatch('ui/bump', 'budgets');
         const notification = fromFcmPayload(payload);
         if (!notification.title && !notification.body) return;
         // Stays on screen until closed, so it is still there when the user returns to the tab.
