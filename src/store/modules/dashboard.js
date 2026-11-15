@@ -1,102 +1,57 @@
+// Reference data shared across the app (currencies + user labels).
+import currencyService from '@/services/currency.service';
+import userLabelService from '@/services/user.label.service';
+
 const state = {
     currencies: [],
     labels: [],
-    openTransactionModalTrigger: 0,
-    openRecurringTransactionModalTrigger: 0,
-    openSubscriptionModalTrigger: 0,
-    openGoalModalTrigger: 0,
-    pendingOpenTransactionModal: false,
-    pendingOpenRecurringTransactionModal: false,
-    pendingOpenLabelModal: false,
-    pendingOpenSubscriptionModal: false,
-    pendingOpenGoalModal: false,
-}
+    labelsLoaded: false,
+    currenciesLoaded: false,
+};
 
 const getters = {
-    getCurrencies : state => {
-        return state.currencies;
-    },
-    getLabels : state => {
-        return state.labels;
-    }
-}
+    getCurrencies: (state) => state.currencies,
+    getLabels: (state) => state.labels,
+};
 
 const mutations = {
     setCurrencies: (state, currencies) => {
-        state.currencies = currencies;
+        state.currencies = currencies || [];
+        state.currenciesLoaded = true;
     },
     setLabels: (state, labels) => {
-        state.labels = labels;
+        state.labels = labels || [];
+        state.labelsLoaded = true;
     },
-    triggerOpenTransactionModal: (state) => {
-        state.openTransactionModalTrigger++;
-    },
-    triggerOpenRecurringTransactionModal: (state) => {
-        state.openRecurringTransactionModalTrigger++;
-    },
-    triggerOpenSubscriptionModal: (state) => {
-        state.openSubscriptionModalTrigger++;
-    },
-    triggerOpenGoalModal: (state) => {
-        state.openGoalModalTrigger++;
-    },
-    setPendingOpenTransactionModal: (state, val) => {
-        state.pendingOpenTransactionModal = val;
-    },
-    setPendingOpenRecurringTransactionModal: (state, val) => {
-        state.pendingOpenRecurringTransactionModal = val;
-    },
-    setPendingOpenLabelModal: (state, val) => {
-        state.pendingOpenLabelModal = val;
-    },
-    setPendingOpenSubscriptionModal: (state, val) => {
-        state.pendingOpenSubscriptionModal = val;
-    },
-    setPendingOpenGoalModal: (state, val) => {
-        state.pendingOpenGoalModal = val;
-    },
-}
+};
 
 const actions = {
-    setCurrencies: (context, currencies) => {
-        context.commit('setCurrencies', currencies);
+    setCurrencies: ({ commit }, currencies) => commit('setCurrencies', currencies),
+    setLabels: ({ commit }, labels) => commit('setLabels', labels),
+
+    async loadCurrencies({ commit, state }, { force = false } = {}) {
+        if (state.currenciesLoaded && !force) return state.currencies;
+        const response = await currencyService.getCurrencies();
+        commit('setCurrencies', response.data);
+        return response.data;
     },
-    setLabels: (context, labels) => {
-        context.commit('setLabels', labels);
+
+    async loadLabels({ commit, state }, { force = false } = {}) {
+        if (state.labelsLoaded && !force) return state.labels;
+        const response = await userLabelService.getUserLabels();
+        const labels = (response.data?.data || []).map((item) => ({
+            ...item,
+            colorCode: item.colorCode || '#10b981',
+        }));
+        commit('setLabels', labels);
+        return labels;
     },
-    triggerOpenTransactionModal: (context) => {
-        context.commit('triggerOpenTransactionModal');
-    },
-    triggerOpenRecurringTransactionModal: (context) => {
-        context.commit('triggerOpenRecurringTransactionModal');
-    },
-    triggerOpenSubscriptionModal: (context) => {
-        context.commit('triggerOpenSubscriptionModal');
-    },
-    triggerOpenGoalModal: (context) => {
-        context.commit('triggerOpenGoalModal');
-    },
-    setPendingOpenTransactionModal: (context, val) => {
-        context.commit('setPendingOpenTransactionModal', val);
-    },
-    setPendingOpenRecurringTransactionModal: (context, val) => {
-        context.commit('setPendingOpenRecurringTransactionModal', val);
-    },
-    setPendingOpenLabelModal: (context, val) => {
-        context.commit('setPendingOpenLabelModal', val);
-    },
-    setPendingOpenSubscriptionModal: (context, val) => {
-        context.commit('setPendingOpenSubscriptionModal', val);
-    },
-    setPendingOpenGoalModal: (context, val) => {
-        context.commit('setPendingOpenGoalModal', val);
-    },
-}
+};
 
 export default {
     namespaced: true,
     state,
     getters,
     mutations,
-    actions
+    actions,
 };

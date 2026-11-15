@@ -141,7 +141,126 @@ class AuthService {
         }
     }
 
-    logout() {
+    // Persists the user's last selected UI language on the auth server.
+    async setActiveLanguage(language) {
+        try {
+            const response = await this._fetchWithAuth(
+                `${authServerUrl}/app/active-language`,
+                {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ Language: language }),
+                }
+            );
+            const ok = response?.ok ?? false;
+            if (ok) this._markLanguageSynced(language);
+            return ok;
+        } catch {
+            return false;
+        }
+    }
+
+    // Calls an authenticated auth-server JSON endpoint.
+    // Resolves to { ok, status, data, messages } and never throws.
+    async _authJson(path, method = 'GET', body) {
+        try {
+            const response = await this._fetchWithAuth(`${authServerUrl}${path}`, {
+                method,
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: body === undefined ? undefined : JSON.stringify(body),
+            });
+            if (!response) return { ok: false, status: 0, data: null, messages: [] };
+            let json = null;
+            try {
+                json = await response.json();
+            } catch {
+                // empty or non-JSON body
+            }
+            return {
+                ok: response.ok,
+                status: response.status,
+                data: json?.data ?? json?.Data ?? null,
+                messages: json?.messages ?? json?.Messages ?? [],
+            };
+        } catch {
+            return { ok: false, status: 0, data: null, messages: [] };
+        }
+    }
+
+    changePassword(currentPassword, newPassword) {
+        return this._authJson('/app/change-password', 'POST', {
+            CurrentPassword: currentPassword,
+            NewPassword: newPassword,
+        });
+    }
+
+    getNotificationSettings() {
+        return this._authJson('/app/notification-settings', 'GET');
+    }
+
+    // settings: [{ name, isEnabled }]
+    updateNotificationSettings(settings) {
+        return this._authJson('/app/notification-settings', 'PUT', {
+            Settings: settings.map((s) => ({ Name: s.name, IsEnabled: s.isEnabled })),
+        });
+    }
+
+    // FCM device tokens (DotBoil.FCM module on the auth server).
+    // platform: DevicePlatform enum — 1: Android, 2: iOS, 3: Web
+    registerFcmToken(token, deviceId, platform = 3) {
+        return this._authJson('/api/fcm/tokens', 'POST', {
+            Token: token,
+            Platform: platform,
+            DeviceId: deviceId,
+        });
+    }
+
+    unregisterFcmToken(token) {
+        return this._authJson('/api/fcm/tokens/unregister', 'POST', { Token: token });
+    }
+
+    // Sends the current language once per user/device so existing users whose
+    // ActiveLanguage is still NULL get their real selection stored.
+    async syncActiveLanguageOnce(language) {
+        if (!language || this._syncedLanguage() === language) return true;
+        return this.setActiveLanguage(language);
+    }
+
+    _languageSyncKey() {
+        try {
+            const user = JSON.parse(window.localStorage.getItem('current_user') || '{}');
+            const id = user.sub || user.preferred_username || user.email || 'anonymous';
+            return `active_language_synced:${id}`;
+        } catch {
+            return 'active_language_synced:anonymous';
+        }
+    }
+
+    _syncedLanguage() {
+        try {
+            return window.localStorage.getItem(this._languageSyncKey());
+        } catch {
+            return null;
+        }
+    }
+
+    _markLanguageSynced(language) {
+        try {
+            window.localStorage.setItem(this._languageSyncKey(), language);
+        } catch {
+            // storage unavailable — we'll simply sync again next time
+        }
+    }
+
+    async logout() {
+        try {
+            // Unregister the push token while the auth token is still valid.
+            // Dynamic import avoids a circular dependency (firebase.service imports this file).
+            const { unregisterPushToken } = await import('@/services/firebase.service');
+            await unregisterPushToken();
+        } catch (e) {
+            console.error("Error unregistering push token:", e);
+        }
         try {
             window.localStorage.removeItem('auth_token');
             window.localStorage.removeItem('refresh_token');

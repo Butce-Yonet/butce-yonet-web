@@ -1,704 +1,797 @@
 <template>
-    <div class="modal fade modal-bookmark" id="recurringTransactionModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-            <div class="modal-content border-0 shadow-lg">
+  <app-modal
+    :open="open"
+    :title="mode === 'edit' ? $t('recurringTransactionList.transactionModal.editTitle') : $t('recurringTransactionList.transactionModal.createTitle')"
+    icon="refresh-cw"
+    tone="brand"
+    size="lg"
+    @close="$emit('close')"
+  >
+    <template #head-extra>
+      <ol class="stepper" :aria-label="$t('recurringExtra.steps.label')">
+        <li :class="{ active: step === 1, done: step > 1 }">
+          <span class="step-dot">
+            <vue-feather v-if="step > 1" type="check" size="12"></vue-feather>
+            <template v-else>1</template>
+          </span>
+          <span class="step-text">{{ $t('recurringExtra.steps.details') }}</span>
+        </li>
+        <li class="step-line" :class="{ done: step > 1 }" aria-hidden="true"></li>
+        <li :class="{ active: step === 2 }">
+          <span class="step-dot">2</span>
+          <span class="step-text">{{ $t('recurringExtra.steps.preview') }}</span>
+        </li>
+      </ol>
+    </template>
 
-                <!-- Header -->
-                <div class="modal-header border-0 pb-0 px-4 pt-4">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rt-icon-wrap" :class="mode === 'edit' ? 'icon-edit' : 'icon-create'">
-                            <i :class="mode === 'edit' ? 'fa fa-pencil' : 'fa fa-repeat'"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title mb-0 fw-semibold">
-                                {{ mode === 'create'
-                                    ? $t('recurringTransactionList.transactionModal.createTitle')
-                                    : $t('recurringTransactionList.transactionModal.editTitle') }}
-                            </h5>
-                        </div>
-                    </div>
-                    <button class="btn-close" type="button" aria-label="Close" @click="closeModal"></button>
-                </div>
-
-                <!-- Body -->
-                <div class="modal-body px-4 pt-3 pb-4">
-                    <form novalidate @submit.prevent="save">
-
-                        <!-- Section 1: Recurring Info -->
-                        <div class="form-section mb-4">
-                            <div class="form-section-title">
-                                <i class="fa fa-repeat me-2"></i>
-                                {{ $t('recurringTransactionList.transactionModal.recurringInfo') }}
-                            </div>
-                            <div class="form-section-body">
-                                <div class="row g-3">
-
-                                    <!-- Name -->
-                                    <div class="col-sm-12 col-md-6">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.name') }}
-                                            <span class="text-danger ms-1" v-if="errors.name">*</span>
-                                        </label>
-                                        <input
-                                            class="form-control rt-input"
-                                            :class="{ 'is-invalid': errors.name }"
-                                            v-model="form.name"
-                                            :placeholder="$t('recurringTransactionList.transactionModal.form.placeholder.name')"
-                                        />
-                                    </div>
-
-                                    <!-- Description -->
-                                    <div class="col-sm-12 col-md-6">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.description') }}
-                                        </label>
-                                        <input
-                                            class="form-control rt-input"
-                                            v-model="form.description"
-                                            :placeholder="$t('recurringTransactionList.transactionModal.form.placeholder.description')"
-                                        />
-                                    </div>
-
-                                    <!-- Start Date -->
-                                    <div class="col-sm-12 col-md-6">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.startDate') }}
-                                            <span class="text-danger ms-1" v-if="errors.startDate">*</span>
-                                        </label>
-                                        <VueDatePicker
-                                            v-model="form.startDate"
-                                            :time-config="{ enableTimePicker: false }"
-                                            auto-apply
-                                            teleport
-                                            :locale="dateLocale"
-                                        />
-                                    </div>
-
-                                    <!-- End Date -->
-                                    <div class="col-sm-12 col-md-6">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.endDate') }}
-                                            <span class="text-danger ms-1" v-if="errors.endDate">*</span>
-                                        </label>
-                                        <VueDatePicker
-                                            v-model="form.endDate"
-                                            :time-config="{ enableTimePicker: false }"
-                                            auto-apply
-                                            teleport
-                                            :locale="dateLocale"
-                                        />
-                                    </div>
-
-                                    <!-- Frequency -->
-                                    <div class="col-12">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.frequency') }}
-                                            <span class="text-danger ms-1" v-if="errors.frequency">*</span>
-                                        </label>
-                                        <div class="frequency-grid">
-                                            <button
-                                                v-for="freq in frequencies"
-                                                :key="freq.value"
-                                                type="button"
-                                                class="freq-btn"
-                                                :class="{ 'freq-btn--active': form.frequency === freq.value }"
-                                                @click="form.frequency = freq.value"
-                                            >
-                                                {{ freq.text }}
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Interval -->
-                                    <div class="col-sm-12 col-md-4">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.interval') }}
-                                            <span class="text-danger ms-1" v-if="errors.interval">*</span>
-                                        </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text rt-input-addon">
-                                                <i class="fa fa-refresh"></i>
-                                            </span>
-                                            <input
-                                                type="number"
-                                                class="form-control rt-input"
-                                                :class="{ 'is-invalid': errors.interval }"
-                                                v-model="form.interval"
-                                                min="0"
-                                            />
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Section 2: Transaction Info (create only) -->
-                        <div class="form-section mb-4" v-if="mode === 'create'">
-                            <div class="form-section-title">
-                                <i class="fa fa-exchange me-2"></i>
-                                {{ $t('recurringTransactionList.transactionModal.transactionInfo') }}
-                            </div>
-                            <div class="form-section-body">
-
-                                <!-- Type Toggle -->
-                                <div class="type-toggle mb-3">
-                                    <button
-                                        type="button"
-                                        class="type-btn"
-                                        :class="form.transaction.transactionType === 0 ? 'type-btn--income active' : 'type-btn--income'"
-                                        @click="form.transaction.transactionType = 0"
-                                    >
-                                        <i class="fa fa-arrow-up me-2"></i>
-                                        {{ $t('common.income') }}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="type-btn"
-                                        :class="form.transaction.transactionType === 1 ? 'type-btn--expense active' : 'type-btn--expense'"
-                                        @click="form.transaction.transactionType = 1"
-                                    >
-                                        <i class="fa fa-arrow-down me-2"></i>
-                                        {{ $t('common.expense') }}
-                                    </button>
-                                </div>
-
-                                <div class="row g-3">
-
-                                    <!-- Tx Name -->
-                                    <div class="col-sm-12 col-md-6">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.transaction.name') }}
-                                            <span class="text-danger ms-1" v-if="errors.transaction?.name">*</span>
-                                        </label>
-                                        <input
-                                            class="form-control rt-input"
-                                            :class="{ 'is-invalid': errors.transaction?.name }"
-                                            v-model="form.transaction.name"
-                                            :placeholder="$t('recurringTransactionList.transactionModal.form.placeholder.transaction.name')"
-                                        />
-                                    </div>
-
-                                    <!-- Tx Description -->
-                                    <div class="col-sm-12 col-md-6">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.transaction.description') }}
-                                        </label>
-                                        <input
-                                            class="form-control rt-input"
-                                            v-model="form.transaction.description"
-                                            :placeholder="$t('recurringTransactionList.transactionModal.form.placeholder.transaction.description')"
-                                        />
-                                    </div>
-
-                                    <!-- Amount -->
-                                    <div class="col-sm-12 col-md-6">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.transaction.amount') }}
-                                            <span class="text-danger ms-1" v-if="errors.transaction?.amount">*</span>
-                                        </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text rt-input-addon">
-                                                <i class="fa fa-money"></i>
-                                            </span>
-                                            <input
-                                                type="number"
-                                                class="form-control rt-input"
-                                                :class="{ 'is-invalid': errors.transaction?.amount }"
-                                                v-model="form.transaction.amount"
-                                                :placeholder="$t('recurringTransactionList.transactionModal.form.placeholder.transaction.amount')"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <!-- Currency -->
-                                    <div class="col-sm-12 col-md-6">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.transaction.currency') }}
-                                            <span class="text-danger ms-1" v-if="errors.transaction?.currencyId">*</span>
-                                        </label>
-                                        <VSelect
-                                            :options="currencies"
-                                            v-model="form.transaction.currencyId"
-                                            label="code"
-                                            :reduce="c => c.id"
-                                            :placeholder="$t('recurringTransactionList.transactionModal.form.placeholder.transaction.currency')"
-                                        >
-                                            <template #option="currency">
-                                                <span class="fw-semibold">{{ currency.code }}</span>
-                                                <span class="text-muted ms-1 small">{{ currency.name }}</span>
-                                            </template>
-                                            <template #selected-option="currency">
-                                                {{ currency.code }} - {{ currency.name }}
-                                            </template>
-                                        </VSelect>
-                                    </div>
-
-                                    <!-- Labels -->
-                                    <div class="col-sm-12 col-md-12">
-                                        <label class="field-label">
-                                            {{ $t('recurringTransactionList.transactionModal.form.placeholder.transaction.labels') }}
-                                        </label>
-                                        <VSelect
-                                            :options="labels"
-                                            v-model="form.transaction.labels"
-                                            label="name"
-                                            :reduce="c => c.id"
-                                            multiple
-                                            :placeholder="$t('recurringTransactionList.transactionModal.form.placeholder.transaction.labels')"
-                                        >
-                                            <template #option="label">
-                                                <span class="label-dot me-2" :style="{ background: label.colorCode }"></span>
-                                                {{ label.name }}
-                                            </template>
-                                            <template #selected-option="label">
-                                                <span class="label-dot me-1" :style="{ background: label.colorCode }"></span>
-                                                {{ label.name }}
-                                            </template>
-                                        </VSelect>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Footer -->
-                        <div class="d-flex gap-2 justify-content-end">
-                            <button class="btn btn-light px-4" type="button" @click="closeModal">
-                                {{ $t('common.cancel') }}
-                            </button>
-                            <button
-                                class="btn px-4 save-btn"
-                                :class="mode === 'edit' ? 'btn-warning' : 'btn-success'"
-                                :disabled="!isValid || submitting"
-                                type="submit"
-                            >
-                                <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
-                                <i v-else class="fa me-2" :class="mode === 'edit' ? 'fa-check' : 'fa-plus'"></i>
-                                {{ $t('common.save') }}
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
-
-            </div>
+    <!-- ── Step 1: details ───────────────────────────────────── -->
+    <form v-show="step === 1" id="recurringForm" class="rt-form" novalidate @submit.prevent="goPreview">
+      <template v-if="mode === 'create'">
+        <div class="type-toggle">
+          <button type="button" class="income" :class="{ active: form.transaction.transactionType === 0 }" @click="form.transaction.transactionType = 0">
+            <vue-feather type="arrow-down-left" size="16"></vue-feather>
+            {{ $t('common.income') }}
+          </button>
+          <button type="button" class="expense" :class="{ active: form.transaction.transactionType === 1 }" @click="form.transaction.transactionType = 1">
+            <vue-feather type="arrow-up-right" size="16"></vue-feather>
+            {{ $t('common.expense') }}
+          </button>
         </div>
+
+        <div class="field">
+          <label class="field-label" for="rt-amount">{{ $t('recurringTransactionList.transactionModal.form.placeholder.transaction.amount') }}</label>
+          <div
+            class="amount-field"
+            :class="[{ 'is-invalid': showError('transaction.amount') || showError('transaction.currencyId') }, form.transaction.transactionType === 0 ? 'tone-income' : 'tone-expense']"
+          >
+            <input
+              id="rt-amount"
+              v-model.number="form.transaction.amount"
+              type="number"
+              inputmode="decimal"
+              step="0.01"
+              min="0"
+              placeholder="0,00"
+              autofocus
+            />
+            <div class="amount-currency">
+              <currency-select v-model="form.transaction.currencyId" />
+            </div>
+          </div>
+          <span v-if="showError('transaction.amount')" class="field-error">{{ errors['transaction.amount'] }}</span>
+          <span v-else-if="showError('transaction.currencyId')" class="field-error">{{ errors['transaction.currencyId'] }}</span>
+        </div>
+      </template>
+
+      <div v-else-if="data && data.transaction" class="rt-summary-box">
+        <span class="tx-avatar sm" :class="tone(data.transaction.transactionType)">
+          <vue-feather :type="icon(data.transaction.transactionType)" size="15"></vue-feather>
+        </span>
+        <div>
+          <div class="amount rt-summary-amount" :class="tone(data.transaction.transactionType)">
+            {{ sign(data.transaction.transactionType) }}{{ money(data.transaction.amount, data.transaction.currency?.code) }}
+          </div>
+          <div class="field-hint">{{ $t('recurringExtra.amountLocked') }}</div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label" for="rt-name">{{ $t('recurringTransactionList.transactionModal.form.placeholder.name') }}</label>
+          <input
+            id="rt-name"
+            v-model="form.name"
+            class="input"
+            :class="{ 'is-invalid': showError('name') }"
+            :placeholder="$t('recurringExtra.namePlaceholder')"
+            maxlength="200"
+          />
+          <span v-if="showError('name')" class="field-error">{{ errors.name }}</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="rt-desc">
+            {{ $t('recurringTransactionList.transactionModal.form.placeholder.description') }}
+            <span class="optional">{{ $t('common.optional') }}</span>
+          </label>
+          <input id="rt-desc" v-model="form.description" class="input" maxlength="500" />
+        </div>
+
+        <div v-if="mode === 'create'" class="field span-2">
+          <label class="field-label">
+            {{ $t('recurringTransactionList.transactionModal.form.placeholder.transaction.labels') }}
+            <span class="optional">{{ $t('common.optional') }}</span>
+          </label>
+          <label-select v-model="form.transaction.labels" />
+        </div>
+      </div>
+
+      <div class="rt-section">
+        <div class="rt-section-title">
+          <vue-feather type="repeat" size="15"></vue-feather>
+          {{ $t('recurringTransactionList.transactionModal.recurringInfo') }}
+        </div>
+
+        <div class="field">
+          <label class="field-label">{{ $t('recurringTransactionList.transactionModal.form.placeholder.frequency') }}</label>
+          <div class="choice-chips">
+            <button
+              v-for="freq in frequencies"
+              :key="freq.value"
+              type="button"
+              :class="{ active: form.frequency === freq.value }"
+              @click="form.frequency = freq.value"
+            >{{ freq.text }}</button>
+          </div>
+        </div>
+
+        <div class="form-grid rt-grid">
+          <div class="field">
+            <label class="field-label">{{ $t('recurringTransactionList.transactionModal.form.placeholder.startDate') }}</label>
+            <VueDatePicker
+              v-model="form.startDate"
+              :time-config="{ enableTimePicker: false }"
+              :formats="{ input: 'dd.MM.yyyy' }"
+              :clearable="false"
+              auto-apply
+              teleport
+              :locale="dateLocale"
+            />
+            <span v-if="showError('startDate')" class="field-error">{{ errors.startDate }}</span>
+          </div>
+
+          <div v-if="showInterval" class="field">
+            <label class="field-label" for="rt-interval">{{ intervalLabel }}</label>
+            <input
+              id="rt-interval"
+              v-model.number="form.interval"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              :max="form.frequency === 7 ? 31 : undefined"
+              step="1"
+              class="input"
+              :class="{ 'is-invalid': showError('interval') }"
+            />
+            <span v-if="showError('interval')" class="field-error">{{ errors.interval }}</span>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="rt-count">{{ $t('recurringExtra.count') }}</label>
+            <input
+              id="rt-count"
+              v-model.number="form.count"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              :max="maxCount"
+              step="1"
+              class="input"
+              :class="{ 'is-invalid': showError('count') }"
+            />
+            <span v-if="showError('count')" class="field-error">{{ errors.count }}</span>
+          </div>
+        </div>
+
+        <p v-if="occurrences.length" class="rt-preview-line">
+          <vue-feather type="info" size="14"></vue-feather>
+          {{ summaryLine }}
+        </p>
+      </div>
+    </form>
+
+    <!-- ── Step 2: preview ───────────────────────────────────── -->
+    <div v-if="step === 2" class="rt-review">
+      <div class="review-card">
+        <div class="review-head">
+          <span class="tx-avatar" :class="tone(txType)">
+            <vue-feather type="repeat" size="17"></vue-feather>
+          </span>
+          <div class="review-titles">
+            <div class="review-name truncate">{{ form.name }}</div>
+            <div class="review-sub">{{ frequencyText }}</div>
+          </div>
+          <div class="amount review-amount" :class="tone(txType)">
+            {{ sign(txType) }}{{ money(txAmount, currencyCode) }}
+          </div>
+        </div>
+        <div class="review-stats">
+          <div>
+            <span class="muted">{{ $t('recurringExtra.review.items') }}</span>
+            <strong class="tabular">{{ occurrences.length }}</strong>
+          </div>
+          <div>
+            <span class="muted">{{ $t('recurringExtra.review.first') }}</span>
+            <strong>{{ longDate(occurrences[0]) }}</strong>
+          </div>
+          <div>
+            <span class="muted">{{ $t('recurringExtra.review.last') }}</span>
+            <strong>{{ longDate(lastOccurrence) }}</strong>
+          </div>
+          <div>
+            <span class="muted">{{ $t('recurringExtra.review.total') }}</span>
+            <strong class="tabular amount" :class="tone(txType)">{{ sign(txType) }}{{ money(txAmount * occurrences.length, currencyCode) }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-list-head">
+        <span>{{ $t('recurringExtra.review.listTitle') }}</span>
+      </div>
+      <ol class="review-list">
+        <li v-for="(d, i) in visibleOccurrences" :key="i" class="review-item">
+          <span class="review-index tabular">{{ i + 1 }}</span>
+          <span class="review-date">{{ longDate(d) }}</span>
+          <span class="review-day muted">{{ weekday(d) }}</span>
+          <span class="amount tabular" :class="tone(txType)">{{ sign(txType) }}{{ money(txAmount, currencyCode) }}</span>
+        </li>
+      </ol>
+      <p v-if="hiddenCount > 0" class="review-more muted">
+        {{ $t('recurringExtra.review.more', { n: hiddenCount }, hiddenCount) }}
+      </p>
     </div>
+
+    <template #footer>
+      <template v-if="step === 1">
+        <button type="button" class="btn btn-secondary" @click="$emit('close')">{{ $t('common.cancel') }}</button>
+        <button type="submit" form="recurringForm" class="btn btn-primary">
+          {{ $t('recurringExtra.steps.next') }}
+          <vue-feather type="arrow-right" size="16"></vue-feather>
+        </button>
+      </template>
+      <template v-else>
+        <button type="button" class="btn btn-secondary" :disabled="submitting" @click="step = 1">
+          <vue-feather type="arrow-left" size="16"></vue-feather>
+          {{ $t('common.previous') }}
+        </button>
+        <button type="button" class="btn btn-primary" :disabled="submitting" @click="save">
+          <span v-if="submitting" class="spinner sm"></span>
+          <vue-feather v-else type="check" size="16"></vue-feather>
+          {{ $t('recurringExtra.steps.confirm') }}
+        </button>
+      </template>
+    </template>
+  </app-modal>
 </template>
 
 <script>
 import * as yup from 'yup';
-import { createYupValidator } from '@/services/validator.service';
+import moment from 'moment';
+import AppModal from '@/components/ui/AppModal.vue';
+import CurrencySelect from '@/components/ui/CurrencySelect.vue';
+import LabelSelect from '@/components/ui/LabelSelect.vue';
 import recurringTransactionService from '@/services/recurring.transaction.service';
+import { createYupValidator } from '@/services/validator.service';
 import { useDateLocale } from '@/composables/useDateLocale';
+import {
+  defaultCurrencyId, frequencyOptions, describeFrequency, formatMoney, formatDate, txTone, txIcon, txSign,
+} from '@/utils/format';
+import {
+  buildOccurrences, countOccurrencesUntil, usesInterval, DAY_OF_MONTH_FREQUENCY, MAX_OCCURRENCES,
+} from '@/utils/recurrence';
+
+const PREVIEW_LIMIT = 60;
+
 export default {
-    setup() {
-        const { dateLocale } = useDateLocale();
-        return { dateLocale };
+  name: 'RecurringTransactionModal',
+  components: { AppModal, CurrencySelect, LabelSelect },
+  props: {
+    open: { type: Boolean, default: false },
+    mode: { type: String, default: 'create' },
+    data: { type: Object, default: null },
+  },
+  emits: ['close', 'saved'],
+  setup() {
+    const { dateLocale } = useDateLocale();
+    return { dateLocale };
+  },
+  data() {
+    return {
+      step: 1,
+      resetting: false,
+      form: this.emptyForm(),
+      errors: {},
+      submitted: false,
+      submitting: false,
+      validator: null,
+      frequencies: frequencyOptions(this.$t),
+      maxCount: MAX_OCCURRENCES,
+    };
+  },
+  computed: {
+    showInterval() {
+      return usesInterval(this.form.frequency);
     },
-    props: {
-        modal: {
-            type: Object,
-            required: true
-        },
-        mode: {
-            type: String,
-            required: true
-        },
-        transactionData: {
-            type: Object,
-            required: false
-        }
+    intervalLabel() {
+      switch (this.form.frequency) {
+        case 0: return this.$t('subscriptionList.modal.form.intervalDaily');
+        case 1: return this.$t('subscriptionList.modal.form.intervalWeekly');
+        case 3: return this.$t('subscriptionList.modal.form.intervalYearly');
+        case DAY_OF_MONTH_FREQUENCY: return this.$t('subscriptionList.modal.form.intervalDayOfMonth');
+        default: return this.$t('subscriptionList.modal.form.intervalMonthly');
+      }
     },
-    data() {
-        return {
-            form: {
-                name: '',
-                description: '',
-                startDate: new Date(),
-                endDate: new Date(),
-                frequency: 0,
-                interval: 0,
-                transaction: {
-                    name: '',
-                    description: '',
-                    amount: 0,
-                    currencyId: 0,
-                    transactionType: 0,
-                    transactionDate: new Date(),
-                    labels: []
-                }
-            },
-            validator: null,
-            errors: {},
-            isValid: false,
-            submitting: false,
-            currencies: this.$store.getters['dashboard/getCurrencies'],
-            transactionTypes: [
-                { value: 0, text: this.$t('common.income') },
-                { value: 1, text: this.$t('common.expense') }
-            ],
-            frequencies: [
-                { value: 0, text: this.$t('common.frequency.daily') },
-                { value: 1, text: this.$t('common.frequency.weekly') },
-                { value: 2, text: this.$t('common.frequency.monthly') },
-                { value: 3, text: this.$t('common.frequency.yearly') },
-                { value: 4, text: this.$t('common.frequency.lastDayOfTheMonth') },
-                { value: 5, text: this.$t('common.frequency.firstBusinessDayOfTheMonth') },
-                { value: 6, text: this.$t('common.frequency.lastBusinessDayOfTheMonth') },
-                { value: 7, text: this.$t('common.frequency.xTHOfTheMonth') }
-            ],
-            labels: this.$store.getters['dashboard/getLabels']
-        }
+    occurrences() {
+      return buildOccurrences({
+        startDate: this.form.startDate,
+        frequency: this.form.frequency,
+        interval: this.showInterval ? this.form.interval : null,
+        count: this.form.count,
+      });
     },
-    watch: {
-        modal: {
-            deep: true,
-            async handler(newVal) {
-                this.currencies = this.$store.getters['dashboard/getCurrencies'];
-                this.labels = this.$store.getters['dashboard/getLabels'];
-                if (newVal._isShown) {
-                    if (this.mode === 'edit' && this.transactionData) {
-                        this.form = {
-                            name: this.transactionData.name,
-                            description: this.transactionData.description,
-                            startDate: new Date(this.transactionData.startDate),
-                            endDate: new Date(this.transactionData.endDate),
-                            frequency: this.transactionData.frequency,
-                            interval: this.transactionData.interval,
-                            transaction: {
-                                name: this.transactionData.transaction.name,
-                                description: this.transactionData.transaction.description,
-                                amount: this.transactionData.transaction.amount,
-                                currencyId: this.transactionData.transaction.currency.id,
-                                transactionType: this.transactionData.transaction.transactionType,
-                                transactionDate: new Date(this.transactionData.transaction.transactionDate),
-                                labels: this.transactionData.transaction.labels.map(label => label.id)
-                            }
-                        }
-                    } else if (this.mode === 'create') {
-                        this.form.transaction.currencyId = this.getDefaultCurrencyId();
-                    }
-                } else {
-                    this.form = {
-                        name: '',
-                        description: '',
-                        startDate: new Date(),
-                        endDate: new Date(),
-                        frequency: 0,
-                        interval: 0,
-                        transaction: {
-                            name: '',
-                            description: '',
-                            amount: 0,
-                            currencyId: this.getDefaultCurrencyId(),
-                            transactionType: 0,
-                            transactionDate: new Date(),
-                            labels: []
-                        }
-                    }
-                }
-            }
-        },
-        form: {
-            deep: true,
-            async handler(newVal) {
-                this.isValid = await this.validator.validateForm(this.form, this.errors);
-            }
-        }
+    lastOccurrence() {
+      return this.occurrences[this.occurrences.length - 1] || null;
     },
-    methods: {
-        getDefaultCurrencyId() {
-            const list = this.$store.getters['dashboard/getCurrencies'];
-            const byRank = list.find(c => c.rank === 1);
-            if (byRank) return byRank.id;
-            const byCode = list.find(c => c.code === 'TRY');
-            return byCode ? byCode.id : '';
+    visibleOccurrences() {
+      return this.occurrences.slice(0, PREVIEW_LIMIT);
+    },
+    hiddenCount() {
+      return Math.max(0, this.occurrences.length - PREVIEW_LIMIT);
+    },
+    frequencyText() {
+      return describeFrequency(this.$t, this.form.frequency, this.showInterval ? this.form.interval : null);
+    },
+    summaryLine() {
+      return this.$t('recurringExtra.summaryLine', {
+        freq: this.frequencyText,
+        n: this.occurrences.length,
+        start: this.longDate(this.occurrences[0]),
+        end: this.longDate(this.lastOccurrence),
+      }, this.occurrences.length);
+    },
+    txType() {
+      return this.form.transaction.transactionType;
+    },
+    txAmount() {
+      return Number(this.form.transaction.amount) || 0;
+    },
+    currencyCode() {
+      if (this.mode === 'edit') return this.data?.transaction?.currency?.code;
+      return this.$store.getters['dashboard/getCurrencies'].find((c) => c.id === this.form.transaction.currencyId)?.code;
+    },
+  },
+  watch: {
+    open(val) {
+      if (val) this.reset();
+    },
+    'form.frequency'(freq, old) {
+      // Day-of-month and step intervals mean different things; reset to a sensible value.
+      if (this.resetting || !usesInterval(freq)) return;
+      if (freq === DAY_OF_MONTH_FREQUENCY && old !== DAY_OF_MONTH_FREQUENCY) {
+        this.form.interval = moment(this.form.startDate || undefined).date();
+      } else if (old === DAY_OF_MONTH_FREQUENCY || !usesInterval(old)) {
+        this.form.interval = 1;
+      }
+    },
+    form: {
+      deep: true,
+      handler() {
+        if (this.submitted) this.validator.validateForm(this.form, this.errors);
+      },
+    },
+    // Currencies load asynchronously; fill the default once they arrive.
+    '$store.state.dashboard.currencies'(list) {
+      if (this.open && this.mode === 'create' && !this.form.transaction.currencyId) {
+        this.form.transaction.currencyId = defaultCurrencyId(list);
+      }
+    },
+  },
+  created() {
+    const req = this.$t('validation.message.required');
+    const positiveInt = this.$t('recurringExtra.validation.positiveInt');
+    const isCreate = () => this.mode === 'create';
+    const toNumber = (v, o) => (o === '' || o === null ? null : v);
+    const schema = yup.object({
+      name: yup.string().trim().required(req),
+      description: yup.string().nullable(),
+      startDate: yup.date().typeError(req).required(req),
+      frequency: yup.number().required(req),
+      interval: yup.number().transform(toNumber).nullable().typeError(positiveInt)
+        .test('interval', positiveInt, function (v) {
+          if (!usesInterval(this.parent.frequency)) return true;
+          return v != null && Number.isInteger(v) && v > 0;
+        })
+        .test('day', this.$t('recurringExtra.validation.dayOfMonth'), function (v) {
+          if (this.parent.frequency !== DAY_OF_MONTH_FREQUENCY || v == null) return true;
+          return v >= 1 && v <= 31;
+        }),
+      count: yup.number().transform(toNumber).nullable().typeError(positiveInt)
+        .test('count', positiveInt, (v) => v != null && Number.isInteger(v) && v > 0)
+        .max(MAX_OCCURRENCES, this.$t('recurringExtra.validation.maxCount', { max: MAX_OCCURRENCES })),
+      transaction: yup.object({
+        amount: yup.number().nullable().test('amount', this.$t('validation.message.positive'), (v) => !isCreate() || (v != null && v > 0)),
+        currencyId: yup.mixed().test('currency', req, (v) => !isCreate() || (v !== null && v !== '' && v !== undefined)),
+        labels: yup.array(),
+      }),
+    });
+    this.validator = createYupValidator(schema);
+  },
+  methods: {
+    money: formatMoney,
+    tone: txTone,
+    icon: txIcon,
+    sign: txSign,
+    longDate(d) {
+      return d ? formatDate(d, 'D MMMM YYYY') : '—';
+    },
+    weekday(d) {
+      return moment(d).locale(this.$i18n.locale).format('dddd');
+    },
+    emptyForm() {
+      return {
+        name: '',
+        description: '',
+        startDate: new Date(),
+        frequency: 2,
+        interval: 1,
+        count: 12,
+        transaction: {
+          amount: null,
+          currencyId: defaultCurrencyId(this.$store.getters['dashboard/getCurrencies']),
+          transactionType: 1,
+          labels: [],
         },
-        closeModal() {
-            this.modal.hide();
+      };
+    },
+    reset() {
+      // Prevents the frequency watcher from overwriting the loaded interval.
+      this.resetting = true;
+      this.$nextTick(() => { this.resetting = false; });
+      this.step = 1;
+      this.submitted = false;
+      this.errors = {};
+      if (this.mode === 'edit' && this.data) {
+        const d = this.data;
+        const interval = usesInterval(d.frequency) ? (d.interval > 0 ? d.interval : 1) : null;
+        const startDate = new Date(d.startDate);
+        this.form = {
+          name: d.name || '',
+          description: d.description || '',
+          startDate,
+          frequency: d.frequency,
+          interval,
+          count: countOccurrencesUntil({ startDate, frequency: d.frequency, interval, endDate: d.endDate }) || 12,
+          transaction: {
+            amount: d.transaction?.amount ?? null,
+            currencyId: d.transaction?.currency?.id ?? null,
+            transactionType: d.transaction?.transactionType ?? 1,
+            labels: (d.transaction?.labels || []).map((l) => l.id),
+            name: d.transaction?.name,
+            description: d.transaction?.description,
+            transactionDate: d.transaction?.transactionDate,
+          },
+        };
+      } else {
+        this.form = this.emptyForm();
+      }
+    },
+    showError(field) {
+      return this.submitted && !!this.errors[field];
+    },
+    async goPreview() {
+      this.submitted = true;
+      const ok = await this.validator.validateForm(this.form, this.errors);
+      if (!ok || !this.occurrences.length) return;
+      this.step = 2;
+    },
+    buildRequest() {
+      const f = this.form;
+      const t = f.transaction;
+      const edit = this.mode === 'edit';
+      return {
+        Name: f.name,
+        Description: f.description,
+        StartDate: f.startDate,
+        // End date is derived from the schedule: end of the day of the last item.
+        EndDate: moment(this.lastOccurrence).endOf('day').toDate(),
+        Frequency: f.frequency,
+        Interval: this.showInterval ? f.interval : null,
+        Transaction: {
+          Name: edit ? (t.name || f.name) : f.name,
+          Description: edit ? (t.description ?? f.description) : f.description,
+          Amount: t.amount,
+          CurrencyId: t.currencyId,
+          TransactionType: t.transactionType,
+          TransactionDate: edit && t.transactionDate ? t.transactionDate : f.startDate,
+          Labels: t.labels,
         },
-        async save() {
-            if (this.mode === 'create') {
-                await this.createRecurringTransaction();
-            } else if (this.mode === 'edit') {
-                await this.editRecurringTransaction();
-            }
-        },
-        async createRecurringTransaction() {
-            this.submitting = true;
-            var requestModel = {
-                Name: this.form.name,
-                Description: this.form.description,
-                StartDate: this.form.startDate,
-                EndDate: this.form.endDate,
-                Frequency: this.form.frequency,
-                Interval: this.form.interval,
-                Transaction: {
-                    Name: this.form.transaction.name,
-                    Description: this.form.transaction.description,
-                    Amount: this.form.transaction.amount,
-                    CurrencyId: this.form.transaction.currencyId,
-                    TransactionType: this.form.transaction.transactionType,
-                    TransactionDate: this.form.transaction.transactionDate,
-                    Labels: this.form.transaction.labels
-                }
-            }
+      };
+    },
+    async save() {
+      if (!this.lastOccurrence) return;
+      this.submitting = true;
+      const isIncome = this.form.transaction.transactionType === 0;
+      try {
+        const response = this.mode === 'edit'
+          ? await recurringTransactionService.updateRecurringTransaction(this.data.id, { Id: this.data.id, ...this.buildRequest() })
+          : await recurringTransactionService.createRecurringTransaction(this.buildRequest());
+        if (response.status !== 200) throw new Error('save failed');
 
-            try {
-                var response = await recurringTransactionService.createRecurringTransaction(requestModel);
-                if (response.status === 200) {
-                    const key = this.form.transaction.transactionType === 0
-                        ? 'recurringTransactionList.transactionModal.messages.incomeCreateSuccess'
-                        : 'recurringTransactionList.transactionModal.messages.expenseCreateSuccess';
-                    this.$swal({ icon: 'success', title: this.$t(key) });
-                    this.closeModal();
-                    setTimeout(() => { window.location.reload(); }, 300);
-                    return;
-                }
-                this.$swal({ icon: 'error', title: this.$t('recurringTransactionList.transactionModal.messages.transactionCreateError') });
-            } catch (e) {
-                this.$swal({ icon: 'error', title: this.$t('recurringTransactionList.transactionModal.messages.transactionCreateError') });
-            } finally {
-                this.submitting = false;
-            }
-        },
-        async editRecurringTransaction() {
-            this.submitting = true;
-            var requestModel = {
-                Name: this.form.name,
-                Description: this.form.description,
-                StartDate: this.form.startDate,
-                EndDate: this.form.endDate,
-                Frequency: this.form.frequency,
-                Interval: this.form.interval,
-                Transaction: {
-                    Name: this.form.transaction.name,
-                    Description: this.form.transaction.description,
-                    Amount: this.form.transaction.amount,
-                    CurrencyId: this.form.transaction.currencyId,
-                    TransactionType: this.form.transaction.transactionType,
-                    TransactionDate: this.form.transaction.transactionDate,
-                    Labels: this.form.transaction.labels
-                }
-            }
-
-            try {
-                var response = await recurringTransactionService.updateRecurringTransaction(this.transactionData.id, requestModel);
-                if (response.status === 200) {
-                    const key = this.form.transaction.transactionType === 0
-                        ? 'recurringTransactionList.transactionModal.messages.incomeEditSuccess'
-                        : 'recurringTransactionList.transactionModal.messages.expenseEditSuccess';
-                    this.$swal({ icon: 'success', title: this.$t(key) });
-                    this.closeModal();
-                    setTimeout(() => { window.location.reload(); }, 300);
-                    return;
-                }
-                this.$swal({ icon: 'error', title: this.$t('recurringTransactionList.transactionModal.messages.transactionEditError') });
-            } catch (e) {
-                this.$swal({ icon: 'error', title: this.$t('recurringTransactionList.transactionModal.messages.transactionEditError') });
-            } finally {
-                this.submitting = false;
-            }
-        }
+        const key = this.mode === 'edit'
+          ? (isIncome ? 'incomeEditSuccess' : 'expenseEditSuccess')
+          : (isIncome ? 'incomeCreateSuccess' : 'expenseCreateSuccess');
+        this.$toast.success(this.$t(`recurringTransactionList.transactionModal.messages.${key}`));
+        this.$emit('saved');
+      } catch {
+        const key = this.mode === 'edit' ? 'transactionEditError' : 'transactionCreateError';
+        this.$toast.error(this.$t(`recurringTransactionList.transactionModal.messages.${key}`));
+      } finally {
+        this.submitting = false;
+      }
     },
-    created() {
-        var schema = yup.object({
-            name: yup.string().required(this.$t('validation.required')),
-            description: yup.string(),
-            startDate: yup.date().required(this.$t('validation.required')),
-            endDate: yup.date().required(this.$t('validation.required')),
-            frequency: yup.number().required(this.$t('validation.required')),
-            interval: yup.number().required(this.$t('validation.required')),
-            transaction: yup.object({
-                name: yup.string().required(this.$t('validation.required')),
-                description: yup.string(),
-                amount: yup.number().required(this.$t('validation.required')).min(0, this.$t('validation.min', { min: 0 })),
-                currencyId: yup.number().required(this.$t('validation.required')).min(1, this.$t('validation.required', { min: 1 })),
-                transactionType: yup.number().required(this.$t('validation.required')),
-                transactionDate: yup.date().required(this.$t('validation.required')),
-                labels: yup.array()
-            })
-        });
-
-        this.validator = createYupValidator(schema);
-    }
-}
+  },
+};
 </script>
 
 <style scoped>
-.modal-content {
-    border-radius: 16px;
+/* Stepper */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 8px;
 }
 
-.modal-header {
-    border-radius: 16px 16px 0 0;
+.stepper li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-3);
 }
 
-/* Header icon */
-.rt-icon-wrap {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 16px;
-    flex-shrink: 0;
+.step-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
 }
 
-.icon-create { background: linear-gradient(135deg, #10b981, #059669); }
-.icon-edit   { background: linear-gradient(135deg, #f59e0b, #d97706); }
-
-/* Form sections */
-.form-section {
-    border: 1.5px solid #e5e7eb;
-    border-radius: 12px;
-    overflow: visible;
+.stepper li.active {
+  color: var(--text);
 }
 
-.form-section-title {
-    background: #f9fafb;
-    border-bottom: 1.5px solid #e5e7eb;
-    padding: 10px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: 10px 10px 0 0;
+.stepper li.active .step-dot {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
 }
 
-.form-section-body {
-    padding: 20px;
+.stepper li.done .step-dot {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
 }
 
-/* Field labels */
-.field-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 6px;
+.step-line {
+  width: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--border-strong);
 }
 
-/* Inputs */
-.rt-input {
-    border-radius: 8px;
-    border: 1.5px solid #e5e7eb;
-    font-size: 14px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+.step-line.done {
+  background: var(--primary);
 }
 
-.rt-input:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+@media (max-width: 640px) {
+  .step-text {
+    display: none;
+  }
+
+  .step-line {
+    width: 12px;
+  }
 }
 
-.rt-input.is-invalid {
-    border-color: #ef4444;
+/* Step 1 */
+.rt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.rt-input-addon {
-    background: #f9fafb;
-    border: 1.5px solid #e5e7eb;
-    border-right: none;
-    border-radius: 8px 0 0 8px;
-    color: #9ca3af;
-    font-size: 14px;
+.rt-summary-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
 }
 
-.input-group .rt-input {
-    border-radius: 0 8px 8px 0;
+.rt-summary-amount {
+  font-size: 16px;
 }
 
-/* Frequency grid */
-.frequency-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+.rt-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
 }
 
-.freq-btn {
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1.5px solid #e5e7eb;
-    background: #f9fafb;
-    color: #6b7280;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.18s;
-    white-space: nowrap;
+.rt-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text-2);
 }
 
-.freq-btn:hover {
-    border-color: #10b981;
-    color: #10b981;
-    background: #f0fdf4;
+.rt-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.freq-btn--active {
-    border-color: #10b981;
-    background: #10b981;
-    color: #fff;
-    font-weight: 600;
+@media (max-width: 600px) {
+  .rt-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
-/* Type toggle */
-.type-toggle {
-    display: flex;
-    gap: 0;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 10px;
-    overflow: hidden;
+.rt-preview-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--info-soft);
+  color: var(--info);
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.type-btn {
-    flex: 1;
-    padding: 10px 0;
-    border: none;
-    background: #f9fafb;
-    color: #6b7280;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
+.rt-preview-line .vue-feather {
+  margin-top: 2px;
 }
 
-.type-btn--income.active {
-    background: #ecfdf5;
-    color: #059669;
-    font-weight: 700;
-    box-shadow: inset 0 -2px 0 #10b981;
+/* Step 2 */
+.rt-review {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.type-btn--expense.active {
-    background: #fef2f2;
-    color: #dc2626;
-    font-weight: 700;
-    box-shadow: inset 0 -2px 0 #ef4444;
+.review-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
-.type-btn:hover:not(.active) {
-    background: #f3f4f6;
-    color: #374151;
+.review-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
 }
 
-/* Label dot */
-.label-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
+.review-titles {
+  flex: 1;
+  min-width: 0;
 }
 
-.save-btn {
-    font-weight: 600;
+.review-name {
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.review-sub {
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+
+.review-amount {
+  font-size: 16px;
+}
+
+.review-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.review-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  font-size: 12px;
+  min-width: 0;
+}
+
+.review-stats > div + div {
+  border-left: 1px solid var(--border);
+}
+
+.review-stats strong {
+  font-size: 13.5px;
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .review-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .review-stats > div:nth-child(3) {
+    border-left: 0;
+  }
+
+  .review-stats > div:nth-child(n + 3) {
+    border-top: 1px solid var(--border);
+  }
+}
+
+.review-list-head {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.review-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.review-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+}
+
+.review-item:last-child {
+  border-bottom: 0;
+}
+
+.review-index {
+  width: 26px;
+  height: 22px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--surface-3);
+  color: var(--text-2);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.review-date {
+  font-weight: 600;
+}
+
+.review-day {
+  flex: 1;
+  font-size: 12.5px;
+  text-transform: capitalize;
+}
+
+.review-more {
+  font-size: 12.5px;
+  text-align: center;
 }
 </style>

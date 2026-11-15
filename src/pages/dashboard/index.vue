@@ -1,183 +1,229 @@
 <template>
-  <div class="container-fluid pt-4">
-    <!-- Period Summary -->
-    <div class="row mb-3">
-      <div class="col-12">
-        <period-summary-report></period-summary-report>
+  <div class="page">
+    <div class="page-head dash-head">
+      <div>
+        <h2 class="greeting">{{ greeting }}</h2>
+        <p class="page-subtitle">{{ todayText }}</p>
       </div>
+      <period-picker v-model="range" align="right" />
     </div>
 
-    <!-- Recent Transactions + Category Chart -->
-    <div class="row g-3">
-      <!-- Recent Transactions -->
-      <div class="col-12 col-lg-6">
-        <div class="card border dash-card">
-          <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="mb-0">{{ $t('dashboard.recentTransactions.title') }}</h5>
-            <router-link to="/transactions" class="view-all-link">
+    <div class="stack">
+      <period-summary-report :range="range" />
+
+      <div class="grid grid-main-side">
+        <!-- Recent transactions -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">{{ $t('dashboard.recentTransactions.title') }}</div>
+            <router-link to="/transactions" class="link-btn">
               {{ $t('dashboard.recentTransactions.viewAll') }}
-              <i class="fa fa-chevron-right ms-1" style="font-size:10px"></i>
+              <vue-feather type="arrow-right" size="14"></vue-feather>
             </router-link>
           </div>
-          <div class="card-body p-0">
-            <div v-if="transactionsLoading" class="dash-state">
-              <div class="spinner-border spinner-border-sm text-success"></div>
+
+          <div v-if="txLoading && !recent.length" class="skeleton-list">
+            <div v-for="i in 5" :key="i" class="sk-row">
+              <div class="skeleton" style="width: 38px; height: 38px; border-radius: 11px"></div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px">
+                <div class="skeleton" style="height: 10px; width: 55%"></div>
+                <div class="skeleton" style="height: 10px; width: 30%"></div>
+              </div>
             </div>
-            <div v-else-if="recentTransactions.length === 0" class="dash-state">
-              <i class="fa fa-inbox text-muted" style="font-size:22px"></i>
-              <span class="text-muted small">{{ $t('dashboard.recentTransactions.empty') }}</span>
+          </div>
+
+          <empty-state
+            v-else-if="!recent.length"
+            icon="inbox"
+            :title="$t('dashboard.recentTransactions.empty')"
+            :text="$t('dashExtra.firstTransactionHint')"
+          >
+            <button type="button" class="btn btn-primary btn-sm" @click="openCreate">
+              <vue-feather type="plus" size="15"></vue-feather>
+              {{ $t('header.newTransaction') }}
+            </button>
+          </empty-state>
+
+          <div v-else>
+            <div
+              v-for="tx in recent"
+              :key="tx.id"
+              class="list-row clickable"
+              tabindex="0"
+              @click="openEdit(tx)"
+              @keydown.enter="openEdit(tx)"
+            >
+              <span class="tx-avatar" :class="tone(tx.transactionType)">
+                <vue-feather :type="icon(tx.transactionType)" size="17"></vue-feather>
+              </span>
+              <div class="row-main">
+                <div class="row-title">{{ tx.name }}</div>
+                <div class="row-meta">
+                  <span>{{ relative(tx.transactionDate) }}</span>
+                  <label-chips :labels="tx.labels" :max="2" />
+                </div>
+              </div>
+              <span class="amount" :class="tone(tx.transactionType)">
+                {{ sign(tx.transactionType) }}{{ money(tx.amount, tx.currency?.code) }}
+              </span>
             </div>
-            <ul v-else class="tx-feed">
-              <li v-for="tx in recentTransactions" :key="tx.id" class="tx-item">
-                <div class="tx-icon" :class="txIconClass(tx)">
-                  <i :class="txIconGlyph(tx)"></i>
+          </div>
+        </div>
+
+        <!-- Category breakdown -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">{{ $t('dashboard.categoryChart.title') }}</div>
+            <div class="segmented sm">
+              <button type="button" :class="{ active: chartPage === 0 }" @click="switchPage(0)">{{ $t('dashboard.categoryChart.expense') }}</button>
+              <button type="button" :class="{ active: chartPage === 1 }" @click="switchPage(1)">{{ $t('dashboard.categoryChart.income') }}</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div v-if="chartLoading" class="loading-box"><span class="spinner lg"></span></div>
+            <empty-state v-else-if="!currentChartData.length" icon="pie-chart" :text="$t('dashboard.categoryChart.empty')" compact />
+            <div v-else class="donut-wrap">
+              <div class="donut">
+                <canvas ref="donutCanvas"></canvas>
+                <div class="donut-center">
+                  <span class="donut-label">{{ $t('common.total') }}</span>
+                  <span class="donut-value tabular">{{ money(chartTotal, chartCurrency, true) }}</span>
                 </div>
-                <div class="tx-body">
-                  <div class="tx-name">{{ tx.name }}</div>
-                  <div class="tx-meta">
-                    <span class="tx-date">{{ formatDate(tx.transactionDate) }}</span>
-                    <span v-if="tx.labels && tx.labels.length > 0" class="tx-labels">
-                      <span
-                        v-for="label in tx.labels.slice(0, 3)"
-                        :key="label.id"
-                        class="tx-label-badge"
-                        :style="{ background: label.colorCode + '22', color: label.colorCode, borderColor: label.colorCode + '55' }"
-                      >{{ label.name }}</span>
-                    </span>
-                  </div>
-                </div>
-                <div class="tx-amount" :class="txAmountClass(tx)">
-                  {{ txAmountSign(tx) }}{{ formatCurrency(tx.amount, tx.currency?.code) }}
-                </div>
-              </li>
-            </ul>
+              </div>
+              <ul class="legend">
+                <li v-for="item in currentChartData" :key="item.label" class="legend-row">
+                  <span class="label-dot" :style="{ background: item.color }"></span>
+                  <span class="legend-name truncate">{{ item.label }}</span>
+                  <span class="legend-pct tabular">%{{ item.pct }}</span>
+                  <span class="legend-val tabular">{{ money(item.amount, item.currencyCode) }}</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Category Donut Chart -->
-      <div class="col-12 col-lg-6">
-        <div class="card border dash-card">
-          <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <h5 class="mb-0">{{ $t('dashboard.categoryChart.title') }}</h5>
-            <div class="chart-tabs">
-              <button
-                class="chart-tab-btn"
-                :class="{ active: chartPage === 0 }"
-                @click="switchPage(0)"
-              >
-                <i class="fa fa-arrow-down me-1"></i>{{ $t('dashboard.categoryChart.expense') }}
-              </button>
-              <button
-                class="chart-tab-btn"
-                :class="{ active: chartPage === 1 }"
-                @click="switchPage(1)"
-              >
-                <i class="fa fa-arrow-up me-1"></i>{{ $t('dashboard.categoryChart.income') }}
-              </button>
-            </div>
+      <div class="grid grid-2">
+        <!-- Upcoming bills -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">{{ $t('dashExtra.upcomingBills') }}</div>
+            <router-link to="/subscriptions" class="link-btn">
+              {{ $t('dashboard.recentTransactions.viewAll') }}
+              <vue-feather type="arrow-right" size="14"></vue-feather>
+            </router-link>
           </div>
-
-          <!-- Date filter row -->
-          <div class="chart-date-row">
-            <date-range-preset-picker v-model="chartDateRange" />
-            <div class="chart-datepicker">
-              <VueDatePicker
-                v-model="chartDateRange"
-                range
-                auto-apply
-                :placeholder="$t('reports.filters.dateRange')"
-                :time-config="{ enableTimePicker: false }"
-                :locale="dateLocale"
-              />
-            </div>
-          </div>
-
-          <div class="card-body d-flex flex-column">
-            <div v-if="chartLoading" class="dash-state flex-grow-1">
-              <div class="spinner-border spinner-border-sm text-success"></div>
-            </div>
-            <div v-else-if="currentChartData.length === 0" class="dash-state flex-grow-1">
-              <i class="fa fa-chart-pie text-muted" style="font-size:28px"></i>
-              <span class="text-muted small">{{ $t('dashboard.categoryChart.empty') }}</span>
-            </div>
-            <div v-else class="chart-inner flex-grow-1">
-              <!-- Donut + center overlay -->
-              <div class="chart-donut-wrap">
-                <canvas ref="donutCanvas"></canvas>
-                <div class="chart-center">
-                  <span class="chart-center-label">{{ $t('common.total') }}</span>
-                  <span class="chart-center-value">{{ formatCurrency(chartTotal, chartCurrency) }}</span>
-                </div>
+          <div v-if="billsLoading" class="loading-box"><span class="spinner lg"></span></div>
+          <empty-state v-else-if="!bills.length" icon="check-circle" :text="$t('dashExtra.noUpcomingBills')" compact />
+          <div v-else>
+            <div v-for="b in bills" :key="b.id" class="list-row">
+              <span class="tx-avatar sm" :class="b.status === 'Overdue' ? 'expense' : 'neutral'">
+                <vue-feather type="file-text" size="15"></vue-feather>
+              </span>
+              <div class="row-main">
+                <div class="row-title">{{ b.name }}</div>
+                <div class="row-meta" :class="{ late: b.status === 'Overdue' }">{{ dueText(b.nextOccurrence) }}</div>
               </div>
+              <span class="amount">{{ b.amount == null ? '—' : money(b.amount, b.currency?.code) }}</span>
+              <button type="button" class="btn-icon sm bordered" v-tooltip="$t('subscriptionExtra.markPaid')" @click="pay(b)">
+                <vue-feather type="check" size="15"></vue-feather>
+              </button>
+            </div>
+          </div>
+        </div>
 
-              <!-- Legend -->
-              <transition name="legend-fade" mode="out-in">
-                <ul :key="chartPage" class="chart-legend">
-                  <li v-for="item in currentChartData" :key="item.label" class="legend-row">
-                    <div class="legend-top">
-                      <span class="legend-dot" :style="{ background: item.color }"></span>
-                      <span class="legend-name">{{ item.label }}</span>
-                      <span class="legend-val">{{ formatCurrency(item.amount, item.currencyCode) }}</span>
-                    </div>
-                    <div class="legend-bar-track">
-                      <div
-                        class="legend-bar-fill"
-                        :style="{ width: item.pct + '%', background: item.color }"
-                      ></div>
-                    </div>
-                  </li>
-                </ul>
-              </transition>
+        <!-- Goals -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">{{ $t('dashExtra.goalsInProgress') }}</div>
+            <router-link to="/goals" class="link-btn">
+              {{ $t('dashboard.recentTransactions.viewAll') }}
+              <vue-feather type="arrow-right" size="14"></vue-feather>
+            </router-link>
+          </div>
+          <div v-if="goalsLoading" class="loading-box"><span class="spinner lg"></span></div>
+          <empty-state v-else-if="!goals.length" icon="target" :text="$t('dashExtra.noGoals')" compact>
+            <button type="button" class="btn btn-secondary btn-sm" @click="$store.dispatch('ui/openModal', { type: 'goal' })">
+              <vue-feather type="plus" size="14"></vue-feather>
+              {{ $t('goalList.addButton') }}
+            </button>
+          </empty-state>
+          <div v-else class="card-body goals-body">
+            <div v-for="g in goals" :key="g.id" class="goal-row">
+              <div class="goal-top">
+                <span class="goal-name truncate">{{ g.name }}</span>
+                <span class="goal-pct tabular">%{{ Math.round(g.progressPercent || 0) }}</span>
+              </div>
+              <div class="progress sm">
+                <div class="progress-fill saving-fill" :style="{ width: Math.min(100, g.progressPercent || 0) + '%' }"></div>
+              </div>
+              <div class="goal-bottom">
+                <span class="tabular">{{ money(g.currentAmount, g.currency?.code) }} / {{ money(g.targetAmount, g.currency?.code) }}</span>
+                <button type="button" class="link-btn" @click="contribute(g)">
+                  <vue-feather type="plus" size="13"></vue-feather>
+                  {{ $t('goalList.tooltips.contribute') }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
 import { Chart } from 'chart.js/auto';
-import periodSummaryReport from '@/components/reports/periodSummaryReport.vue';
+import moment from 'moment';
+import PeriodPicker from '@/components/ui/PeriodPicker.vue';
+import EmptyState from '@/components/ui/EmptyState.vue';
+import LabelChips from '@/components/ui/LabelChips.vue';
+import PeriodSummaryReport from '@/components/reports/periodSummaryReport.vue';
 import transactionService from '@/services/transaction.service';
 import reportService from '@/services/report.service';
-import moment from 'moment';
-import { useDateLocale } from '@/composables/useDateLocale';
+import subscriptionService from '@/services/subscription.service';
+import goalService from '@/services/goal.service';
 import { getDefaultDateRange } from '@/composables/dateRangePresets';
-import DateRangePresetPicker from '@/components/common/DateRangePresetPicker.vue';
-
-const PALETTE = [
-  '#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6',
-  '#06b6d4', '#f97316', '#84cc16', '#ec4899', '#14b8a6',
-  '#0ea5e9', '#a78bfa', '#fb923c', '#4ade80', '#f472b6',
-];
+import { computeSubscriptionStatus } from '@/composables/subscriptionStatus';
+import {
+  formatMoney, formatRelative, formatDate, txTone, txIcon, txSign, toStartOfDayISO, toEndOfDayISO,
+} from '@/utils/format';
+import { CHART_PALETTE, OTHER_COLOR, themeColors, baseTooltip } from '@/utils/chart';
 
 export default {
-  setup() {
-    const { dateLocale } = useDateLocale();
-    return { dateLocale };
-  },
-  components: {
-    'period-summary-report': periodSummaryReport,
-    'date-range-preset-picker': DateRangePresetPicker,
-  },
+  name: 'DashboardPage',
+  components: { PeriodPicker, EmptyState, LabelChips, PeriodSummaryReport },
   data() {
     return {
-      recentTransactions: [],
-      transactionsLoading: false,
-
+      range: getDefaultDateRange(),
+      recent: [],
+      txLoading: false,
       chartPage: 0,
       chartLoading: false,
-      chartDateRange: getDefaultDateRange(),
-      chartDebounce: null,
       expenseCategories: [],
       incomeCategories: [],
       chartInstance: null,
+      chartDebounce: null,
+      bills: [],
+      billsLoading: false,
+      goals: [],
+      goalsLoading: false,
     };
   },
   computed: {
+    user() {
+      return this.$store.getters['user/getCurrentUser'] || {};
+    },
+    greeting() {
+      const h = new Date().getHours();
+      const key = h < 6 ? 'night' : h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening';
+      const first = (this.user.name || '').trim().split(/\s+/)[0];
+      return first ? this.$t(`dashExtra.greeting.${key}`, { name: first }) : this.$t(`dashExtra.greetingNoName.${key}`);
+    },
+    todayText() {
+      return moment().locale(this.$i18n.locale).format('D MMMM YYYY, dddd');
+    },
     currentChartData() {
       return this.chartPage === 0 ? this.expenseCategories : this.incomeCategories;
     },
@@ -187,49 +233,133 @@ export default {
     chartCurrency() {
       return this.currentChartData[0]?.currencyCode || '';
     },
-  },
-  watch: {
-    chartDateRange() {
-      clearTimeout(this.chartDebounce);
-      this.chartDebounce = setTimeout(() => this.loadCategoryData(), 400);
+    versions() {
+      return this.$store.state.ui.versions;
+    },
+    theme() {
+      return this.$store.state.ui.theme;
     },
   },
+  watch: {
+    range() {
+      clearTimeout(this.chartDebounce);
+      this.chartDebounce = setTimeout(() => this.loadCategoryData(), 250);
+    },
+    'versions.transactions'() {
+      this.loadRecent();
+      this.loadCategoryData();
+    },
+    'versions.subscriptions'() {
+      this.loadBills();
+    },
+    'versions.goals'() {
+      this.loadGoals();
+    },
+    theme() {
+      this.$nextTick(() => this.refreshChart());
+    },
+  },
+  mounted() {
+    this.loadRecent();
+    this.loadCategoryData();
+    this.loadBills();
+    this.loadGoals();
+  },
+  beforeUnmount() {
+    clearTimeout(this.chartDebounce);
+    if (this.chartInstance) this.chartInstance.destroy();
+  },
   methods: {
-    async loadRecentTransactions() {
-      this.transactionsLoading = true;
+    money(v, code, compact = false) {
+      return formatMoney(v, code, compact ? { compact: v >= 100000 } : {});
+    },
+    tone: txTone,
+    icon: txIcon,
+    sign: txSign,
+    relative: formatRelative,
+    dueText(d) {
+      if (!d) return '—';
+      const days = moment(d).startOf('day').diff(moment().startOf('day'), 'days');
+      if (days < 0) return this.$t('subscriptionExtra.daysLate', { n: Math.abs(days) }, Math.abs(days));
+      if (days === 0) return this.$t('common.today');
+      if (days === 1) return this.$t('common.tomorrow');
+      return `${formatDate(d, 'D MMM')} · ${this.$t('subscriptionExtra.inDays', { n: days }, days)}`;
+    },
+    openCreate() {
+      this.$store.dispatch('ui/openModal', { type: 'transaction', mode: 'create' });
+    },
+    openEdit(tx) {
+      if (tx.transactionType === 2) {
+        this.$toast.info(this.$t('transactionList.savingLocked'));
+        return;
+      }
+      this.$store.dispatch('ui/openModal', { type: 'transaction', mode: 'edit', data: tx });
+    },
+    pay(b) {
+      this.$store.dispatch('ui/openModal', { type: 'subscriptionPay', data: b });
+    },
+    contribute(g) {
+      this.$store.dispatch('ui/openModal', { type: 'goalContribute', data: g });
+    },
+    async loadRecent() {
+      this.txLoading = true;
       try {
         const res = await transactionService.getAllTransactions({
           PageNumber: 1,
-          PageSize: 10,
+          PageSize: 7,
           SortColumn: '',
           SortDirection: 'Descending',
           LabelIds: [],
         });
-        this.recentTransactions = res.status === 200 ? res.data.data.items : [];
+        this.recent = res.status === 200 ? res.data.data.items || [] : [];
       } catch {
-        this.recentTransactions = [];
+        this.recent = [];
       } finally {
-        this.transactionsLoading = false;
+        this.txLoading = false;
+      }
+    },
+    async loadBills() {
+      this.billsLoading = true;
+      try {
+        const res = await subscriptionService.getAllSubscriptions({ PageNumber: 1, PageSize: 50, SortColumn: '', SortDirection: 'Ascending' });
+        const items = res.status === 200 ? res.data.data.items || [] : [];
+        this.bills = items
+          .map((s) => ({ ...s, status: computeSubscriptionStatus(s) }))
+          .filter((s) => s.status === 'Overdue' || s.status === 'Upcoming')
+          .sort((a, b) => new Date(a.nextOccurrence) - new Date(b.nextOccurrence))
+          .slice(0, 5);
+      } catch {
+        this.bills = [];
+      } finally {
+        this.billsLoading = false;
+      }
+    },
+    async loadGoals() {
+      this.goalsLoading = true;
+      try {
+        const res = await goalService.getAllGoals({ PageNumber: 1, PageSize: 4, IsCompleted: false });
+        this.goals = res.status === 200 ? res.data.data.items || [] : [];
+      } catch {
+        this.goals = [];
+      } finally {
+        this.goalsLoading = false;
       }
     },
     async loadCategoryData() {
-      if (this.chartInstance) { this.chartInstance.destroy(); this.chartInstance = null; }
+      this.destroyChart();
       this.chartLoading = true;
       try {
-        const [start, end] = this.chartDateRange || [];
-        const startDate = start ? moment(start).startOf('day').toISOString() : null;
-        const endDate   = end   ? moment(end).endOf('day').toISOString()     : null;
-
-        const base = { StartDate: startDate, EndDate: endDate };
+        const [start, end] = this.range || [];
+        const base = { StartDate: toStartOfDayISO(start), EndDate: toEndOfDayISO(end) };
         const [expRes, incRes] = await Promise.all([
           reportService.getCategorizedTransactionReport({ ...base, TransactionTypes: 1 }),
           reportService.getCategorizedTransactionReport({ ...base, TransactionTypes: 0 }),
         ]);
         this.expenseCategories = this.mapCategories(expRes.status === 200 ? expRes.data.data : []);
-        this.incomeCategories  = this.mapCategories(incRes.status === 200  ? incRes.data.data  : []);
+        this.incomeCategories = this.mapCategories(incRes.status === 200 ? incRes.data.data : []);
       } catch {
         this.expenseCategories = [];
-        this.incomeCategories  = [];
+        this.incomeCategories = [];
       } finally {
         this.chartLoading = false;
       }
@@ -237,18 +367,16 @@ export default {
       this.refreshChart();
     },
     mapCategories(items) {
-      if (!items || items.length === 0) return [];
-
-      // Group by label + currency
+      if (!items || !items.length) return [];
       const groups = {};
-      items.forEach((item, idx) => {
+      items.forEach((item) => {
         const name = item.userLabel?.name || this.$t('dashboard.categoryChart.noLabel');
-        const key  = name + '_' + (item.currency?.code || '');
+        const key = `${name}_${item.currency?.code || ''}`;
         if (!groups[key]) {
           groups[key] = {
-            label:        name,
-            color:        item.userLabel?.colorCode || PALETTE[idx % PALETTE.length],
-            amount:       0,
+            label: name,
+            color: item.userLabel?.colorCode || CHART_PALETTE[Object.keys(groups).length % CHART_PALETTE.length],
+            amount: 0,
             currencyCode: item.currency?.code || '',
           };
         }
@@ -256,68 +384,60 @@ export default {
       });
 
       const sorted = Object.values(groups).sort((a, b) => b.amount - a.amount);
-      const total  = sorted.reduce((s, g) => s + g.amount, 0);
-
-      // Merge anything below 3% of total into "Diğer"
-      const THRESHOLD = 3;
-      const main  = [];
+      const total = sorted.reduce((s, g) => s + g.amount, 0);
+      const main = [];
       let otherAmount = 0;
       let otherCurrency = '';
-
-      sorted.forEach(g => {
+      sorted.forEach((g) => {
         const pct = total > 0 ? (g.amount / total) * 100 : 0;
-        if (pct >= THRESHOLD) {
-          main.push(g);
-        } else {
-          otherAmount  += g.amount;
+        if (pct >= 3) main.push(g);
+        else {
+          otherAmount += g.amount;
           otherCurrency = g.currencyCode;
         }
       });
-
       if (otherAmount > 0) {
-        main.push({
-          label:        this.$t('common.other'),
-          color:        '#d1d5db',
-          amount:       otherAmount,
-          currencyCode: otherCurrency,
-        });
+        main.push({ label: this.$t('common.other'), color: OTHER_COLOR, amount: otherAmount, currencyCode: otherCurrency });
       }
-
-      return main.map(g => ({ ...g, pct: total > 0 ? Math.round((g.amount / total) * 100) : 0 }));
+      return main.map((g) => ({ ...g, pct: total > 0 ? Math.round((g.amount / total) * 100) : 0 }));
+    },
+    destroyChart() {
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+        this.chartInstance = null;
+      }
     },
     refreshChart() {
-      if (this.chartInstance) { this.chartInstance.destroy(); this.chartInstance = null; }
-
+      this.destroyChart();
       const data = this.currentChartData;
-      if (data.length === 0) return;
-
       const canvas = this.$refs.donutCanvas;
-      if (!canvas) return;
-
+      if (!data.length || !canvas) return;
+      const colors = themeColors();
       this.chartInstance = new Chart(canvas, {
         type: 'doughnut',
         data: {
-          labels: data.map(d => d.label),
+          labels: data.map((d) => d.label),
           datasets: [{
-            data:            data.map(d => d.amount),
-            backgroundColor: data.map(d => d.color),
-            borderWidth:     2,
-            borderColor:     '#fff',
-            hoverOffset:     6,
+            data: data.map((d) => d.amount),
+            backgroundColor: data.map((d) => d.color),
+            borderWidth: 2,
+            borderColor: colors.surface,
+            hoverOffset: 6,
           }],
         },
         options: {
-          cutout:      '65%',
-          responsive:  true,
+          cutout: '70%',
+          responsive: true,
           maintainAspectRatio: true,
-          animation:   { duration: 400 },
+          animation: { duration: 400 },
           plugins: {
             legend: { display: false },
             tooltip: {
+              ...baseTooltip(colors),
               callbacks: {
                 label: (ctx) => {
                   const item = data[ctx.dataIndex];
-                  return ` ${item.pct}%  ${this.formatCurrency(item.amount, item.currencyCode)}`;
+                  return ` %${item.pct} · ${formatMoney(item.amount, item.currencyCode)}`;
                 },
               },
             },
@@ -330,319 +450,175 @@ export default {
       await this.$nextTick();
       this.refreshChart();
     },
-    formatDate(date) {
-      return moment(date).locale(this.$i18n.locale).fromNow();
-    },
-    formatCurrency(amount, currencyCode) {
-      if (amount == null) return '';
-      const locale = this.$i18n?.locale || 'tr-TR';
-      if (!currencyCode) {
-        return new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
-      }
-      return new Intl.NumberFormat(locale, {
-        style: 'currency', currency: currencyCode,
-        minimumFractionDigits: 2, maximumFractionDigits: 2,
-      }).format(amount);
-    },
-    txIconClass(tx) {
-      if (tx.transactionType === 0) return 'tx-income';
-      if (tx.transactionType === 2) return 'tx-saving';
-      return 'tx-expense';
-    },
-    txIconGlyph(tx) {
-      if (tx.transactionType === 0) return 'fa fa-arrow-up';
-      if (tx.transactionType === 2) return 'fa fa-bullseye';
-      return 'fa fa-arrow-down';
-    },
-    txAmountClass(tx) {
-      if (tx.transactionType === 0) return 'amount-up';
-      if (tx.transactionType === 2) return 'amount-saving';
-      return 'amount-down';
-    },
-    txAmountSign(tx) {
-      if (tx.transactionType === 1) return '-';
-      return '+';
-    },
-  },
-  mounted() {
-    Promise.all([this.loadRecentTransactions(), this.loadCategoryData()]);
-  },
-  unmounted() {
-    if (this.chartInstance) { this.chartInstance.destroy(); this.chartInstance = null; }
   },
 };
 </script>
 
 <style scoped>
-/* ── Card shell ─────────────────────────────────────────────────── */
-.dash-card {
-  min-height: 420px;
-  display: flex;
-  flex-direction: column;
-}
-.dash-card .card-body {
-  flex: 1;
-}
-
-/* ── Shared empty / loading state ───────────────────────────────── */
-.dash-state {
-  display: flex;
-  flex-direction: column;
+.dash-head {
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 240px;
-  color: #9ca3af;
 }
 
-/* ── Recent Transactions feed ───────────────────────────────────── */
-.view-all-link {
-  font-size: 12px;
-  font-weight: 600;
-  color: #10b981;
-  text-decoration: none;
-}
-.view-all-link:hover { color: #059669; }
-
-.tx-feed {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.greeting {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-.tx-item {
+@media (max-width: 767px) {
+  .greeting {
+    font-size: 19px;
+  }
+}
+
+.skeleton-list {
+  padding: 8px 0;
+}
+
+.sk-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 18px;
-  border-bottom: 1px solid #f3f4f6;
-  transition: background 0.12s;
+  padding: 12px 20px;
 }
-.tx-item:last-child { border-bottom: none; }
-.tx-item:hover { background: #f9fafb; }
 
-.tx-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+.donut-wrap {
   display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.donut {
+  position: relative;
+  width: 168px;
+  flex-shrink: 0;
+}
+
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  flex-shrink: 0;
-  color: #fff;
-}
-.tx-income  { background: linear-gradient(135deg, #10b981, #059669); }
-.tx-expense { background: linear-gradient(135deg, #ef4444, #dc2626); }
-.tx-saving  { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-
-.tx-body {
-  flex: 1;
-  min-width: 0;
-}
-.tx-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #111827;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.tx-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 2px;
-}
-.tx-date {
-  font-size: 11px;
-  color: #9ca3af;
-}
-.tx-labels {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-.tx-label-badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 4px;
-  border: 1px solid;
-  white-space: nowrap;
-  line-height: 1.6;
-}
-
-.tx-amount {
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.amount-up   { color: #10b981; }
-.amount-down { color: #ef4444; }
-.amount-saving { color: #3b82f6; }
-
-/* ── Category chart ─────────────────────────────────────────────── */
-.chart-tabs {
-  display: flex;
-  gap: 4px;
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 3px;
-}
-.chart-tab-btn {
-  padding: 4px 11px;
-  font-size: 12px;
-  font-weight: 600;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.chart-tab-btn.active {
-  background: #fff;
-  color: #111827;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-.chart-tab-btn i { font-size: 10px; }
-.chart-tab-btn.active i.fa-arrow-down { color: #ef4444; }
-.chart-tab-btn.active i.fa-arrow-up   { color: #10b981; }
-
-/* ── Date filter row ────────────────────────────────────────────── */
-.chart-date-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 8px 16px;
-  border-bottom: 1px solid #f3f4f6;
-  background: #fafafa;
-  gap: 6px;
-}
-.chart-date-row :deep(.date-preset-btn) {
-  padding: 3px 9px;
-  font-size: 11px;
-}
-.chart-datepicker {
-  flex: 1;
-  min-width: 220px;
-  max-width: 270px;
-}
-.chart-datepicker :deep(.dp__input) {
-  font-size: 12px;
-  height: 28px;
-  min-height: unset;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  border-color: #e5e7eb;
-  border-radius: 7px;
-}
-
-/* ── Chart body ─────────────────────────────────────────────────── */
-.chart-inner {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-/* Donut + overlay */
-.chart-donut-wrap {
-  position: relative;
-  width: 160px;
-  flex-shrink: 0;
-}
-.chart-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
   pointer-events: none;
-  width: 96px;
+  text-align: center;
+  padding: 0 28px;
 }
-.chart-center-label {
-  display: block;
-  font-size: 10px;
-  font-weight: 600;
+
+.donut-label {
+  font-size: 11px;
+  font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #9ca3af;
-  margin-bottom: 2px;
-}
-.chart-center-value {
-  display: block;
-  font-size: 13px;
-  font-weight: 700;
-  color: #111827;
-  line-height: 1.2;
-  word-break: break-all;
+  color: var(--text-3);
 }
 
-/* Legend */
-.chart-legend {
+.donut-value {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.legend {
   flex: 1;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-height: 200px;
-  overflow-y: auto;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-.legend-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.legend-top {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.legend-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-.legend-name {
-  flex: 1;
-  font-size: 12px;
-  font-weight: 500;
-  color: #374151;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.legend-val {
-  font-size: 12px;
-  font-weight: 700;
-  color: #111827;
-  white-space: nowrap;
-}
-.legend-bar-track {
-  height: 4px;
-  border-radius: 2px;
-  background: #f3f4f6;
-  overflow: hidden;
-}
-.legend-bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.4s ease;
-  opacity: 0.75;
+  max-height: 220px;
+  overflow-y: auto;
 }
 
-/* ── Legend slide transition ────────────────────────────────────── */
-.legend-fade-enter-active,
-.legend-fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
 }
-.legend-fade-enter-from { opacity: 0; transform: translateX(12px); }
-.legend-fade-leave-to   { opacity: 0; transform: translateX(-12px); }
+
+.legend-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-2);
+  font-weight: 550;
+}
+
+.legend-pct {
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.legend-val {
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) and (min-width: 520px) {
+  .donut-wrap {
+    gap: 32px;
+  }
+}
+
+@media (max-width: 519px) {
+  .donut-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .donut {
+    align-self: center;
+  }
+
+  .legend {
+    max-height: none;
+  }
+}
+
+.late {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.goals-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.goal-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goal-top,
+.goal-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.goal-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.goal-pct {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--saving);
+}
+
+.goal-bottom {
+  font-size: 12.5px;
+  color: var(--text-3);
+}
+
+.saving-fill {
+  background: var(--saving);
+}
 </style>

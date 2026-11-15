@@ -7,7 +7,10 @@
     "goals": "Goals",
     "bills": "Bills",
     "calendar": "Calendar",
-    "comingSoon": "Coming Soon"
+    "comingSoon": "Coming Soon",
+    "main": "Main menu",
+    "more": "More",
+    "profile": "Profile"
   },
   "header": {
     "newTransaction": "New Transaction",
@@ -16,6 +19,7 @@
     "newSubscription": "New Subscription",
     "newGoal": "New Goal",
     "dateRangePresets": {
+      "thisMonth": "This Month",
       "week": "Last 1 Week",
       "month": "Last 1 Month",
       "3months": "Last 3 Months",
@@ -92,12 +96,22 @@
     "messages": {
       "currenciesLoadError": "Failed to load currencies",
       "notebookLabelsLoadError": "Failed to load labels"
-    }
+    },
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "delete": "Delete",
+    "close": "Close",
+    "optional": "optional",
+    "noResults": "No results",
+    "remove": "Remove",
+    "cannotUndo": "This action cannot be undone."
   },
-  "validation:": {
+  "validation": {
     "message": {
       "required": "This field is required.",
-      "email": "Please enter a valid email address."
+      "email": "Please enter a valid email address.",
+      "positive": "Amount must be greater than 0."
     }
   },
   "transactionsPage": {
@@ -109,8 +123,8 @@
   "transactionList": {
     "title": "Income - Expense Transactions",
     "transactionModal": {
-      "createTitle": "Create Income - Expense Transaction",
-      "editTitle": "Edit Income - Expense Transaction",
+      "createTitle": "New Transaction",
+      "editTitle": "Edit Transaction",
       "messages": {
         "transactionCreateSuccess": "Income - Expense transaction created successfully.",
         "incomeCreateSuccess": "Income transaction created successfully.",
@@ -141,7 +155,7 @@
       "expenseDeleteSuccess": "Expense transaction deleted successfully.",
       "transactionDeleteError": "An error occurred while deleting the income - expense transaction."
     },
-    "noLabel": "Uncategorized",
+    "noLabel": "Unlabeled",
     "savingLocked": "Goal contribution — cannot be edited",
     "table": {
       "headers": {
@@ -158,8 +172,8 @@
   "recurringTransactionList": {
     "title": "Recurring Income - Expense Transactions",
     "transactionModal": {
-      "createTitle": "Create Recurring Income - Expense Transaction",
-      "editTitle": "Edit Recurring Income - Expense Transaction",
+      "createTitle": "New Recurring Transaction",
+      "editTitle": "Edit Recurring Transaction",
       "messages": {
         "transactionCreateSuccess": "Recurring income - expense transaction created successfully.",
         "incomeCreateSuccess": "Recurring income transaction created successfully.",
@@ -170,7 +184,7 @@
         "expenseEditSuccess": "Recurring expense transaction updated successfully.",
         "transactionEditError": "An error occurred while updating the recurring income - expense transaction."
       },
-      "recurringInfo": "Recurring Info",
+      "recurringInfo": "Recurrence",
       "transactionInfo": "Income - Expense Info",
       "form": {
         "placeholder": {
@@ -212,7 +226,7 @@
     }
   },
   "subscriptionList": {
-    "title": "Subscriptions / Variable Bills",
+    "title": "Bills & Subscriptions",
     "addButton": "New Subscription",
     "amountUndetermined": "—",
     "tabs": {
@@ -403,36 +417,261 @@
       }
     }
   },
-  "upcommingRecurringTransactionList": {
-    "title": "Upcoming Recurring Transactions"
-  },
-  "dashboardTour": {
-    "step1": {
-      "title": "Notebook Management",
-      "description": "Click here to view your notebooks, create a new one, or edit and delete existing notebooks."
-    },
-    "step2": {
-      "title": "Income & Expense Transactions",
-      "description": "View and manage your income and expense transactions from here."
-    },
-    "step3": {
-      "title": "Add Income & Expense Transaction",
-      "description": "Click here to add a new income or expense transaction."
-    },
-    "step4": {
-      "title": "Recurring Income & Expense Transactions",
-      "description": "View and manage your recurring income and expense transactions here."
-    },
-    "step5": {
-      "title": "Add Recurring Income & Expense Transaction",
-      "description": "Click here to add a new recurring income or expense transaction."
-    }
-  },
   "consent": {
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
     "releaseNotes": "New Release Notes",
     "accept": "Accept",
     "reject": "Reject & Logout"
+  },
+  "pagination": {
+    "perPage": "Rows per page",
+    "perPageOption": "{n} / page",
+    "range": "{start}–{end} of {total}"
+  },
+  "period": {
+    "quick": "Quick select",
+    "custom": "Custom range",
+    "select": "Select dates"
+  },
+  "quickAdd": {
+    "title": "Quick Add",
+    "more": "More add options",
+    "transactionDesc": "Income or expense record",
+    "recurringDesc": "Regular items like salary or rent",
+    "subscriptionDesc": "Track bills and subscriptions",
+    "goalDesc": "Set a savings goal",
+    "labelDesc": "Categorize transactions"
+  },
+  "settings": {
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "language": "Language",
+    "toggleTheme": "Change theme",
+    "changeLanguage": "Change language"
+  },
+  "transactionModalExtra": {
+    "namePlaceholder": "e.g. Groceries",
+    "descriptionPlaceholder": "Add a short note",
+    "saveAndNew": "Save & add another"
+  },
+  "transactionsExtra": {
+    "searchPlaceholder": "Search transactions…",
+    "moreFilters": "Filters",
+    "exactAmount": "Exact amount",
+    "noMatchTitle": "No matching transactions",
+    "noMatchText": "Try changing or clearing the filters.",
+    "emptyTitle": "No transactions in this period",
+    "emptyText": "Start by adding your first income or expense."
+  },
+  "recurringExtra": {
+    "amountLocked": "Amount and type cannot be changed later.",
+    "namePlaceholder": "e.g. Salary, Rent",
+    "preview": "Repeats {freq} starting {start}.",
+    "emptyTitle": "No recurring transactions",
+    "emptyText": "Define regular income and expenses like salary or rent once and let them be added automatically.",
+    "next": "Next",
+    "until": "until {date}",
+    "steps": {
+      "label": "Steps",
+      "details": "Details",
+      "preview": "Preview",
+      "next": "Preview",
+      "confirm": "Confirm & save"
+    },
+    "count": "Number of occurrences",
+    "summaryLine": "{freq}, {n} item: {start} – {end} | {freq}, {n} items: {start} – {end}",
+    "review": {
+      "items": "Items",
+      "first": "First item",
+      "last": "Last item",
+      "total": "Total amount",
+      "listTitle": "Items to be created",
+      "more": "… and {n} more item | … and {n} more items"
+    },
+    "validation": {
+      "positiveInt": "Enter a whole number greater than 0.",
+      "dayOfMonth": "Enter a day between 1 and 31.",
+      "maxCount": "At most {max} items can be created."
+    }
+  },
+  "frequencyText": {
+    "everyNDays": "every {n} days",
+    "everyNWeeks": "every {n} weeks",
+    "everyNMonths": "every {n} months",
+    "everyNYears": "every {n} years",
+    "dayOfMonth": "on day {n} of each month"
+  },
+  "subscriptionExtra": {
+    "namePlaceholder": "e.g. Electricity, Netflix",
+    "fixedAmount": "Fixed amount",
+    "variableAmount": "Variable amount",
+    "variableHint": "If the amount changes each period (e.g. electricity bill), you'll enter it when paying.",
+    "emptyTitle": "No bills or subscriptions yet",
+    "emptyFilteredTitle": "Nothing in this status",
+    "emptyText": "Add your regular payments so you never miss upcoming or overdue ones.",
+    "variable": "Variable amount",
+    "markPaid": "Paid",
+    "daysLate": "{n} day late | {n} days late",
+    "inDays": "in {n} day | in {n} days"
+  },
+  "goalExtra": {
+    "namePlaceholder": "e.g. Holiday fund",
+    "monthlyHint": "Save about {amount} per month for {months} months to reach this goal.",
+    "fillRemaining": "Fill remaining",
+    "ofTarget": "Total target: {target}",
+    "emptyTitle": "No goals yet",
+    "emptyFilteredTitle": "No goals in this tab",
+    "emptyText": "Set a savings goal and track your progress as you contribute.",
+    "overdue": "past due",
+    "daysLeft": "{n} day left | {n} days left"
+  },
+  "labelExtra": {
+    "namePlaceholder": "e.g. Groceries, Transport",
+    "customColor": "Custom color",
+    "subtitle": "Label your transactions to see spending by category."
+  },
+  "summaryExtra": {
+    "vsPrevious": "previous period {amount}"
+  },
+  "reportsExtra": {
+    "allLabels": "All labels",
+    "defaultCurrency": "Primary currency"
+  },
+  "dashExtra": {
+    "firstTransactionHint": "Your income and expenses will show up here.",
+    "upcomingBills": "Upcoming Payments",
+    "noUpcomingBills": "No pending payments in the next 7 days.",
+    "goalsInProgress": "Goals",
+    "noGoals": "You have no active goals.",
+    "greeting": {
+      "night": "Good night, {name}",
+      "morning": "Good morning, {name}",
+      "afternoon": "Good afternoon, {name}",
+      "evening": "Good evening, {name}"
+    },
+    "greetingNoName": {
+      "night": "Good night",
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    }
+  },
+  "calendarExtra": {
+    "addForDay": "Add for this day",
+    "recordCount": "{n} record | {n} records"
+  },
+  "consentExtra": {
+    "step": "Step {current} of {total}",
+    "acceptError": "Could not save your consent, please try again."
+  },
+  "errorPage": {
+    "backHome": "Back to home",
+    "notFoundTitle": "Page not found",
+    "notFoundText": "The page you are looking for may have moved or never existed.",
+    "authFailedTitle": "Sign-in failed",
+    "authFailedText": "We could not verify your session. Please sign in again.",
+    "tryAgain": "Sign in again"
+  },
+  "auth": {
+    "signingIn": "Signing in…"
+  },
+  "profile": {
+    "tabs": {
+      "general": "General",
+      "password": "Change Password",
+      "notifications": "Notification Preferences",
+      "short": {
+        "general": "General",
+        "password": "Password",
+        "notifications": "Notifications"
+      }
+    },
+    "general": {
+      "name": "First name",
+      "surname": "Last name",
+      "username": "Username",
+      "email": "Email",
+      "preferences": "Preferences",
+      "preferencesHint": "Adjust the look and language of the app.",
+      "languageHint": "Interface language; your last choice is saved to your account.",
+      "themeHint": "Use light, dark or your device setting.",
+      "logoutHint": "Sign out of your session on this device."
+    },
+    "password": {
+      "title": "Change Password",
+      "subtitle": "Use a strong password to keep your account secure.",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "toggleVisibility": "Show/hide password",
+      "submit": "Update password",
+      "success": "Your password has been updated.",
+      "externalAccount": "Your account was created with an external provider (e.g. Google), so the password cannot be changed.",
+      "rules": {
+        "length": "At least {n} characters",
+        "letterDigit": "Contains letters and numbers",
+        "different": "Different from the current password"
+      },
+      "errors": {
+        "weak": "The new password does not meet the requirements.",
+        "mismatch": "Passwords do not match.",
+        "incorrect": "Current password is incorrect.",
+        "generic": "Could not update the password, please try again."
+      }
+    },
+    "notifications": {
+      "title": "Notification Preferences",
+      "subtitle": "Choose which channels you want to receive notifications from.",
+      "loadError": "Could not load notification preferences.",
+      "retry": "Try again",
+      "empty": "No notification channels are defined.",
+      "saved": "Notification preference saved.",
+      "saveError": "Could not save the preference, please try again.",
+      "defaultDesc": "Receive notifications through this channel.",
+      "channels": {
+        "Email": {
+          "title": "Email",
+          "desc": "Important reminders and account notices are sent to your email address."
+        },
+        "MobileNotification": {
+          "title": "Mobile Notification",
+          "desc": "Get instant notifications from the mobile app."
+        }
+      },
+      "browser": {
+        "title": "Notifications in this browser",
+        "default": "Allow notifications so this browser can receive them even when the app is closed.",
+        "granted": "This browser can receive notifications.",
+        "denied": "Notifications are blocked in your browser settings; you can allow them from the site settings in the address bar.",
+        "enable": "Allow",
+        "grantedBadge": "On",
+        "deniedBadge": "Blocked",
+        "enabledToast": "Browser notifications enabled.",
+        "error": "Could not get notification permission, please try again."
+      }
+    }
+  },
+  "notificationNudge": {
+    "title": "Don't miss important reminders",
+    "text": {
+      "email": "Your email notifications are off.",
+      "mobile": "Your mobile notifications are off.",
+      "emailMobile": "Your email and mobile notifications are off.",
+      "emailBrowser": "Your email notifications are off and this browser hasn't been allowed to show notifications yet.",
+      "browser": "This browser hasn't been allowed to show notifications yet."
+    },
+    "benefit": "Get timely updates on upcoming bills, subscription renewals and your goals.",
+    "enable": "Turn on",
+    "settings": "Settings",
+    "later": "Not now",
+    "enabledToast": "Notifications turned on.",
+    "error": "Could not turn on notifications, please try again."
+  },
+  "inAppNotification": {
+    "label": "New notification",
+    "open": "View"
   }
 }

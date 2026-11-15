@@ -1,378 +1,234 @@
 <template>
-    <div class="modal fade" id="goalModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content border-0 shadow-lg">
+  <app-modal
+    :open="open"
+    :title="mode === 'edit' ? $t('goalList.modal.editTitle') : $t('goalList.modal.createTitle')"
+    icon="target"
+    tone="saving"
+    size="md"
+    @close="$emit('close')"
+  >
+    <form id="goalForm" class="goal-form" novalidate @submit.prevent="save">
+      <div class="field">
+        <label class="field-label" for="goal-name">{{ $t('goalList.modal.form.name') }}</label>
+        <input
+          id="goal-name"
+          v-model="form.name"
+          class="input"
+          :class="{ 'is-invalid': showError('name') }"
+          :placeholder="$t('goalExtra.namePlaceholder')"
+          maxlength="200"
+          autofocus
+        />
+        <span v-if="showError('name')" class="field-error">{{ errors.name }}</span>
+      </div>
 
-                <div class="modal-header border-0 pb-0 px-4 pt-4">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="goal-icon-wrap" :class="mode === 'edit' ? 'icon-edit' : 'icon-create'">
-                            <i :class="mode === 'edit' ? 'fa fa-pencil' : 'fa fa-bullseye'"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title mb-0 fw-semibold">
-                                {{ mode === 'create'
-                                    ? $t('goalList.modal.createTitle')
-                                    : $t('goalList.modal.editTitle') }}
-                            </h5>
-                        </div>
-                    </div>
-                    <button class="btn-close" type="button" aria-label="Close" @click="closeModal"></button>
-                </div>
-
-                <div class="modal-body px-4 pt-3 pb-4">
-                    <form novalidate @submit.prevent="save">
-                        <div class="row g-3">
-
-                            <!-- Name -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('goalList.modal.form.name') }}
-                                    <span class="text-danger ms-1" v-if="errors.name">*</span>
-                                </label>
-                                <input
-                                    class="form-control goal-input"
-                                    :class="{ 'is-invalid': errors.name }"
-                                    v-model="form.name"
-                                    :placeholder="$t('goalList.modal.form.name')"
-                                />
-                            </div>
-
-                            <!-- Deadline -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('goalList.modal.form.deadline') }}
-                                    <span class="field-optional">{{ $t('goalList.modal.form.deadlineOptionalHint') }}</span>
-                                </label>
-                                <VueDatePicker
-                                    v-model="form.deadline"
-                                    :time-config="{ enableTimePicker: false }"
-                                    auto-apply
-                                    teleport
-                                    :clearable="true"
-                                    :locale="dateLocale"
-                                />
-                            </div>
-
-                            <!-- Target amount -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('goalList.modal.form.targetAmount') }}
-                                    <span class="text-danger ms-1" v-if="errors.targetAmount">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text goal-input-addon">
-                                        <i class="fa fa-money"></i>
-                                    </span>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        class="form-control goal-input"
-                                        :class="{ 'is-invalid': errors.targetAmount }"
-                                        v-model="form.targetAmount"
-                                    />
-                                </div>
-                            </div>
-
-                            <!-- Currency -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('goalList.modal.form.currency') }}
-                                    <span class="text-danger ms-1" v-if="errors.currencyId">*</span>
-                                </label>
-                                <VSelect
-                                    :options="currencies"
-                                    v-model="form.currencyId"
-                                    label="code"
-                                    :reduce="c => c.id"
-                                    :placeholder="$t('goalList.modal.form.currency')"
-                                >
-                                    <template #option="c">
-                                        <span class="fw-semibold">{{ c.code }}</span>
-                                        <span class="text-muted ms-1 small">{{ c.name }}</span>
-                                    </template>
-                                    <template #selected-option="c">{{ c.code }} - {{ c.name }}</template>
-                                </VSelect>
-                            </div>
-
-                            <!-- Labels -->
-                            <div class="col-12">
-                                <label class="field-label">
-                                    {{ $t('goalList.modal.form.labels') }}
-                                </label>
-                                <VSelect
-                                    :options="labels"
-                                    v-model="form.labels"
-                                    label="name"
-                                    :reduce="l => l.id"
-                                    multiple
-                                    :placeholder="$t('goalList.modal.form.labels')"
-                                >
-                                    <template #option="label">
-                                        <span class="label-dot me-2" :style="{ background: label.colorCode }"></span>
-                                        {{ label.name }}
-                                    </template>
-                                    <template #selected-option="label">
-                                        <span class="label-dot me-1" :style="{ background: label.colorCode }"></span>
-                                        {{ label.name }}
-                                    </template>
-                                </VSelect>
-                            </div>
-
-                        </div>
-
-                        <div class="d-flex gap-2 justify-content-end mt-4">
-                            <button type="button" class="btn btn-light px-4" @click="closeModal">
-                                {{ $t('common.cancel') }}
-                            </button>
-                            <button
-                                type="submit"
-                                class="btn px-4 save-btn"
-                                :class="mode === 'edit' ? 'btn-warning' : 'btn-success'"
-                                :disabled="!isValid || submitting"
-                            >
-                                <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
-                                <i v-else class="fa me-2" :class="mode === 'edit' ? 'fa-check' : 'fa-plus'"></i>
-                                {{ $t('common.save') }}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
+      <div class="field">
+        <label class="field-label" for="goal-amount">{{ $t('goalList.modal.form.targetAmount') }}</label>
+        <div class="amount-field tone-saving" :class="{ 'is-invalid': showError('targetAmount') || showError('currencyId') }">
+          <input
+            id="goal-amount"
+            v-model.number="form.targetAmount"
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            min="0"
+            placeholder="0,00"
+          />
+          <div class="amount-currency">
+            <currency-select v-model="form.currencyId" />
+          </div>
         </div>
-    </div>
+        <span v-if="showError('targetAmount')" class="field-error">{{ errors.targetAmount }}</span>
+        <span v-else-if="showError('currencyId')" class="field-error">{{ errors.currencyId }}</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label">
+            {{ $t('goalList.modal.form.deadline') }}
+            <span class="optional">{{ $t('common.optional') }}</span>
+          </label>
+          <VueDatePicker
+            v-model="form.deadline"
+            :time-config="{ enableTimePicker: false }"
+            :formats="{ input: 'dd.MM.yyyy' }"
+            :min-date="new Date()"
+            :placeholder="$t('goalList.noDeadline')"
+            auto-apply
+            teleport
+            :locale="dateLocale"
+          />
+        </div>
+
+        <div class="field">
+          <label class="field-label">
+            {{ $t('goalList.modal.form.labels') }}
+            <span class="optional">{{ $t('common.optional') }}</span>
+          </label>
+          <label-select v-model="form.labels" />
+        </div>
+      </div>
+
+      <p v-if="monthlyHint" class="goal-hint">
+        <vue-feather type="zap" size="14"></vue-feather>
+        {{ monthlyHint }}
+      </p>
+    </form>
+
+    <template #footer>
+      <button type="button" class="btn btn-secondary" @click="$emit('close')">{{ $t('common.cancel') }}</button>
+      <button type="submit" form="goalForm" class="btn btn-primary" :disabled="submitting">
+        <span v-if="submitting" class="spinner sm"></span>
+        <vue-feather v-else type="check" size="16"></vue-feather>
+        {{ $t('common.save') }}
+      </button>
+    </template>
+  </app-modal>
 </template>
 
 <script>
 import * as yup from 'yup';
-import { createYupValidator } from '@/services/validator.service';
+import moment from 'moment';
+import AppModal from '@/components/ui/AppModal.vue';
+import CurrencySelect from '@/components/ui/CurrencySelect.vue';
+import LabelSelect from '@/components/ui/LabelSelect.vue';
 import goalService from '@/services/goal.service';
+import { createYupValidator } from '@/services/validator.service';
 import { useDateLocale } from '@/composables/useDateLocale';
+import { defaultCurrencyId, formatMoney } from '@/utils/format';
 
 function emptyForm() {
-    return {
-        name: '',
-        targetAmount: null,
-        currencyId: null,
-        deadline: null,
-        labels: [],
-    };
+  return { name: '', targetAmount: null, currencyId: null, deadline: null, labels: [] };
 }
 
 export default {
-    setup() {
-        const { dateLocale } = useDateLocale();
-        return { dateLocale };
+  name: 'GoalModal',
+  components: { AppModal, CurrencySelect, LabelSelect },
+  props: {
+    open: { type: Boolean, default: false },
+    mode: { type: String, default: 'create' },
+    data: { type: Object, default: null },
+  },
+  emits: ['close', 'saved'],
+  setup() {
+    const { dateLocale } = useDateLocale();
+    return { dateLocale };
+  },
+  data() {
+    return {
+      form: emptyForm(),
+      errors: {},
+      submitted: false,
+      submitting: false,
+      validator: null,
+    };
+  },
+  computed: {
+    monthlyHint() {
+      const { targetAmount, deadline, currencyId } = this.form;
+      if (!targetAmount || !deadline || targetAmount <= 0) return '';
+      const current = this.mode === 'edit' ? (this.data?.currentAmount || 0) : 0;
+      const remaining = targetAmount - current;
+      if (remaining <= 0) return '';
+      const months = Math.max(1, Math.ceil(moment(deadline).diff(moment(), 'months', true)));
+      const code = this.$store.getters['dashboard/getCurrencies'].find((c) => c.id === currencyId)?.code;
+      return this.$t('goalExtra.monthlyHint', { amount: formatMoney(remaining / months, code), months });
     },
-    props: {
-        modal: {
-            type: Object,
-            required: true
-        },
-        mode: {
-            type: String,
-            required: true
-        },
-        goalData: {
-            type: Object,
-            required: false,
-            default: null
-        }
+  },
+  watch: {
+    open(val) {
+      if (val) this.reset();
     },
-    emits: ['saved'],
-    data() {
-        return {
-            form: emptyForm(),
-            validator: null,
-            errors: {},
-            isValid: false,
-            submitting: false,
-            currencies: this.$store.getters['dashboard/getCurrencies'],
-            labels: this.$store.getters['dashboard/getLabels'],
+    form: {
+      deep: true,
+      handler() {
+        if (this.submitted) this.validator.validateForm(this.form, this.errors);
+      },
+    },
+  },
+  created() {
+    const req = this.$t('validation.message.required');
+    const schema = yup.object({
+      name: yup.string().trim().required(req),
+      targetAmount: yup.number().typeError(req).required(req).moreThan(0, this.$t('validation.message.positive')),
+      currencyId: yup.mixed().test('currency', req, (v) => v !== null && v !== '' && v !== undefined),
+      deadline: yup.date().nullable(),
+      labels: yup.array(),
+    });
+    this.validator = createYupValidator(schema);
+  },
+  methods: {
+    reset() {
+      this.submitted = false;
+      this.errors = {};
+      if (this.mode === 'edit' && this.data) {
+        const d = this.data;
+        this.form = {
+          name: d.name || '',
+          targetAmount: d.targetAmount,
+          currencyId: d.currency?.id ?? null,
+          deadline: d.deadline ? new Date(d.deadline) : null,
+          labels: (d.labels || []).map((l) => l.id),
         };
+      } else {
+        this.form = { ...emptyForm(), currencyId: defaultCurrencyId(this.$store.getters['dashboard/getCurrencies']) };
+      }
     },
-    watch: {
-        modal: {
-            deep: true,
-            async handler(newVal) {
-                this.currencies = this.$store.getters['dashboard/getCurrencies'];
-                this.labels = this.$store.getters['dashboard/getLabels'];
-                if (newVal._isShown) {
-                    if (this.mode === 'edit' && this.goalData) {
-                        this.form = {
-                            name: this.goalData.name,
-                            targetAmount: this.goalData.targetAmount,
-                            currencyId: this.goalData.currency?.id ?? null,
-                            deadline: this.goalData.deadline ? new Date(this.goalData.deadline) : null,
-                            labels: (this.goalData.labels || []).map(l => l.id),
-                        };
-                    } else if (this.mode === 'create') {
-                        this.form = { ...emptyForm(), currencyId: this.getDefaultCurrencyId() };
-                    }
-                } else {
-                    this.form = emptyForm();
-                }
-            }
-        },
-        form: {
-            deep: true,
-            async handler() {
-                this.isValid = await this.validator.validateForm(this.form, this.errors);
-            }
-        }
+    showError(field) {
+      return this.submitted && !!this.errors[field];
     },
-    methods: {
-        getDefaultCurrencyId() {
-            const list = this.$store.getters['dashboard/getCurrencies'];
-            const byRank = list.find(c => c.rank === 1);
-            if (byRank) return byRank.id;
-            const byCode = list.find(c => c.code === 'TRY');
-            return byCode ? byCode.id : null;
-        },
-        closeModal() {
-            this.modal.hide();
-        },
-        buildRequestModel() {
-            return {
-                Name: this.form.name,
-                TargetAmount: this.form.targetAmount,
-                CurrencyId: this.form.currencyId,
-                Deadline: this.form.deadline,
-                Labels: this.form.labels,
-            };
-        },
-        async save() {
-            if (this.mode === 'create') {
-                await this.createGoal();
-            } else {
-                await this.editGoal();
-            }
-        },
-        async createGoal() {
-            this.submitting = true;
-            try {
-                const response = await goalService.createGoal(this.buildRequestModel());
-                if (response.status === 200) {
-                    this.$swal({ icon: 'success', title: this.$t('goalList.modal.messages.createSuccess') });
-                    this.closeModal();
-                    this.$emit('saved');
-                    return;
-                }
-                this.$swal({ icon: 'error', title: this.$t('goalList.modal.messages.createError') });
-            } catch (e) {
-                this.$swal({ icon: 'error', title: this.$t('goalList.modal.messages.createError') });
-            } finally {
-                this.submitting = false;
-            }
-        },
-        async editGoal() {
-            this.submitting = true;
-            try {
-                const requestModel = { Id: this.goalData.id, ...this.buildRequestModel() };
-                const response = await goalService.updateGoal(this.goalData.id, requestModel);
-                if (response.status === 200) {
-                    this.$swal({ icon: 'success', title: this.$t('goalList.modal.messages.editSuccess') });
-                    this.closeModal();
-                    this.$emit('saved');
-                    return;
-                }
-                this.$swal({ icon: 'error', title: this.$t('goalList.modal.messages.editError') });
-            } catch (e) {
-                this.$swal({ icon: 'error', title: this.$t('goalList.modal.messages.editError') });
-            } finally {
-                this.submitting = false;
-            }
-        }
+    buildRequest() {
+      return {
+        Name: this.form.name,
+        TargetAmount: this.form.targetAmount,
+        CurrencyId: this.form.currencyId,
+        Deadline: this.form.deadline,
+        Labels: this.form.labels,
+      };
     },
-    created() {
-        const schema = yup.object({
-            name: yup.string().required(this.$t('validation.message.required')),
-            targetAmount: yup.number().typeError(this.$t('validation.message.required')).required(this.$t('validation.message.required')).moreThan(0, this.$t('validation.message.required')),
-            currencyId: yup.number().typeError(this.$t('validation.message.required')).required(this.$t('validation.message.required')),
-            deadline: yup.date().nullable(),
-            labels: yup.array(),
-        });
-        this.validator = createYupValidator(schema);
-    }
-}
+    async save() {
+      this.submitted = true;
+      const ok = await this.validator.validateForm(this.form, this.errors);
+      if (!ok) return;
+
+      this.submitting = true;
+      try {
+        const response = this.mode === 'edit'
+          ? await goalService.updateGoal(this.data.id, { Id: this.data.id, ...this.buildRequest() })
+          : await goalService.createGoal(this.buildRequest());
+        if (response.status !== 200) throw new Error('save failed');
+        this.$toast.success(this.$t(`goalList.modal.messages.${this.mode === 'edit' ? 'editSuccess' : 'createSuccess'}`));
+        this.$emit('saved');
+      } catch {
+        this.$toast.error(this.$t(`goalList.modal.messages.${this.mode === 'edit' ? 'editError' : 'createError'}`));
+      } finally {
+        this.submitting = false;
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-.modal-content {
-    border-radius: 16px;
+.goal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.goal-icon-wrap {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 16px;
-    flex-shrink: 0;
+.goal-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--saving-soft);
+  color: var(--saving);
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.icon-create { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-.icon-edit   { background: linear-gradient(135deg, #f59e0b, #d97706); }
-
-.field-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 6px;
-}
-
-.field-optional {
-    text-transform: none;
-    font-weight: 500;
-    color: #9ca3af;
-    letter-spacing: normal;
-    font-size: 11px;
-}
-
-.goal-input {
-    border-radius: 8px;
-    border: 1.5px solid #e5e7eb;
-    font-size: 14px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.goal-input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-}
-
-.goal-input.is-invalid {
-    border-color: #ef4444;
-}
-
-.goal-input-addon {
-    background: #f9fafb;
-    border: 1.5px solid #e5e7eb;
-    border-right: none;
-    border-radius: 8px 0 0 8px;
-    color: #9ca3af;
-    font-size: 14px;
-}
-
-.input-group .goal-input {
-    border-radius: 0 8px 8px 0;
-}
-
-.label-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-.save-btn {
-    font-weight: 600;
+.goal-hint .vue-feather {
+  margin-top: 2px;
 }
 </style>

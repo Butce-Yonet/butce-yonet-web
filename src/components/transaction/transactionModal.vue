@@ -1,503 +1,329 @@
 <template>
-    <div class="modal fade modal-bookmark" id="transactionModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content border-0 shadow-lg">
+  <app-modal
+    :open="open"
+    :title="mode === 'edit' ? $t('transactionList.transactionModal.editTitle') : $t('transactionList.transactionModal.createTitle')"
+    :icon="form.transactionType === 0 ? 'arrow-down-left' : 'arrow-up-right'"
+    :tone="form.transactionType === 0 ? 'income' : 'expense'"
+    size="md"
+    @close="$emit('close')"
+  >
+    <form id="transactionForm" class="tx-form" novalidate @submit.prevent="save()">
+      <div class="type-toggle">
+        <button
+          type="button"
+          class="income"
+          :class="{ active: form.transactionType === 0 }"
+          @click="form.transactionType = 0"
+        >
+          <vue-feather type="arrow-down-left" size="16"></vue-feather>
+          {{ $t('common.income') }}
+        </button>
+        <button
+          type="button"
+          class="expense"
+          :class="{ active: form.transactionType === 1 }"
+          @click="form.transactionType = 1"
+        >
+          <vue-feather type="arrow-up-right" size="16"></vue-feather>
+          {{ $t('common.expense') }}
+        </button>
+      </div>
 
-                <!-- Header -->
-                <div class="modal-header border-0 pb-0 px-4 pt-4">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="tx-icon-wrap" :class="mode === 'edit' ? 'icon-edit' : (form.transactionType === 1 ? 'icon-expense' : 'icon-income')">
-                            <i :class="mode === 'edit' ? 'fa fa-pencil' : (form.transactionType === 1 ? 'fa fa-arrow-down' : 'fa fa-arrow-up')"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title mb-0 fw-semibold">
-                                {{ mode === 'create' ? $t('transactionList.transactionModal.createTitle') : $t('transactionList.transactionModal.editTitle') }}
-                            </h5>
-                        </div>
-                    </div>
-                    <button class="btn-close" type="button" aria-label="Close" @click="closeModal"></button>
-                </div>
-
-                <!-- Body -->
-                <div class="modal-body px-4 pt-4 pb-4">
-                    <form novalidate @submit.prevent="save">
-
-                        <!-- Transaction Type Toggle -->
-                        <div class="type-toggle mb-4">
-                            <button
-                                type="button"
-                                class="type-btn"
-                                :class="form.transactionType === 0 ? 'type-btn--income active' : 'type-btn--income'"
-                                @click="form.transactionType = 0"
-                            >
-                                <i class="fa fa-arrow-up me-2"></i>
-                                {{ $t('common.income') }}
-                            </button>
-                            <button
-                                type="button"
-                                class="type-btn"
-                                :class="form.transactionType === 1 ? 'type-btn--expense active' : 'type-btn--expense'"
-                                @click="form.transactionType = 1"
-                            >
-                                <i class="fa fa-arrow-down me-2"></i>
-                                {{ $t('common.expense') }}
-                            </button>
-                        </div>
-
-                        <div class="row g-3">
-                            <!-- Name -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('transactionList.transactionModal.form.placeholder.nameLabel') }}
-                                    <span class="text-danger ms-1" v-if="errors.name">*</span>
-                                </label>
-                                <input
-                                    class="form-control tx-input"
-                                    :class="{ 'is-invalid': errors.name }"
-                                    v-model="form.name"
-                                    :placeholder="$t('transactionList.transactionModal.form.placeholder.nameLabel')"
-                                />
-                            </div>
-
-                            <!-- Description -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('transactionList.transactionModal.form.placeholder.descriptionLabel') }}
-                                </label>
-                                <input
-                                    class="form-control tx-input"
-                                    v-model="form.description"
-                                    :placeholder="$t('transactionList.transactionModal.form.placeholder.descriptionLabel')"
-                                />
-                            </div>
-
-                            <!-- Amount -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('transactionList.transactionModal.form.placeholder.amountLabel') }}
-                                    <span class="text-danger ms-1" v-if="errors.amount">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text tx-input-addon">
-                                        <i class="fa fa-money"></i>
-                                    </span>
-                                    <input
-                                        class="form-control tx-input"
-                                        :class="{ 'is-invalid': errors.amount }"
-                                        type="number"
-                                        v-model.number="form.amount"
-                                        :placeholder="$t('transactionList.transactionModal.form.placeholder.amountLabel')"
-                                    />
-                                </div>
-                            </div>
-
-                            <!-- Currency -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('transactionList.transactionModal.form.placeholder.currencyLabel') }}
-                                    <span class="text-danger ms-1" v-if="errors.currencyId">*</span>
-                                </label>
-                                <VSelect
-                                    :options="currencies"
-                                    label="code"
-                                    :reduce="c => c.id"
-                                    v-model="form.currencyId"
-                                    :placeholder="$t('transactionList.transactionModal.form.placeholder.currencyLabel')"
-                                >
-                                    <template #option="currency">
-                                        <span class="fw-semibold">{{ currency.code }}</span>
-                                        <span class="text-muted ms-1 small">{{ currency.name }}</span>
-                                    </template>
-                                    <template #selected-option="currency">
-                                        {{ currency.code }} - {{ currency.name }}
-                                    </template>
-                                </VSelect>
-                            </div>
-
-                            <!-- Date -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('transactionList.transactionModal.form.placeholder.transactionDateLabel') }}
-                                    <span class="text-danger ms-1" v-if="errors.transactionDate">*</span>
-                                </label>
-                                <VueDatePicker
-                                    v-model="form.transactionDate"
-                                    :time-config="{ enableTimePicker: false }"
-                                    auto-apply
-                                    :locale="dateLocale"
-                                />
-                            </div>
-
-                            <!-- Labels -->
-                            <div class="col-sm-12 col-md-6">
-                                <label class="field-label">
-                                    {{ $t('transactionList.transactionModal.form.placeholder.labelsLabel') }}
-                                </label>
-                                <VSelect
-                                    :options="labels"
-                                    label="name"
-                                    :reduce="c => c.id"
-                                    v-model="form.labels"
-                                    multiple
-                                    :placeholder="$t('transactionList.transactionModal.form.placeholder.labelsLabel')"
-                                >
-                                    <template #option="label">
-                                        <span
-                                            class="label-dot me-2"
-                                            :style="{ background: label.colorCode }"
-                                        ></span>
-                                        {{ label.name }}
-                                    </template>
-                                    <template #selected-option="label">
-                                        <span
-                                            class="label-dot me-1"
-                                            :style="{ background: label.colorCode }"
-                                        ></span>
-                                        {{ label.name }}
-                                    </template>
-                                </VSelect>
-                            </div>
-                        </div>
-
-                        <!-- Footer Buttons -->
-                        <div class="d-flex gap-2 justify-content-end mt-4">
-                            <button class="btn btn-light px-4" type="button" @click="closeModal">
-                                {{ $t('common.cancel') }}
-                            </button>
-                            <button
-                                class="btn px-4 save-btn"
-                                :class="mode === 'edit' ? 'btn-warning' : (form.transactionType === 1 ? 'btn-danger' : 'btn-success')"
-                                :disabled="!isValid || submitting"
-                                type="submit"
-                            >
-                                <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
-                                <i v-else class="fa me-2" :class="mode === 'edit' ? 'fa-check' : 'fa-plus'"></i>
-                                {{ $t('common.save') }}
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
-
-            </div>
+      <div class="field">
+        <label class="field-label" for="tx-amount">
+          {{ $t('transactionList.transactionModal.form.placeholder.amountLabel') }}
+        </label>
+        <div
+          class="amount-field"
+          :class="[{ 'is-invalid': showError('amount') || showError('currencyId') }, form.transactionType === 0 ? 'tone-income' : 'tone-expense']"
+        >
+          <input
+            id="tx-amount"
+            ref="amount"
+            v-model.number="form.amount"
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            min="0"
+            placeholder="0,00"
+            autocomplete="off"
+            autofocus
+          />
+          <div class="amount-currency">
+            <currency-select v-model="form.currencyId" />
+          </div>
         </div>
-    </div>
+        <span v-if="showError('amount')" class="field-error">{{ errors.amount }}</span>
+        <span v-else-if="showError('currencyId')" class="field-error">{{ errors.currencyId }}</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label" for="tx-name">{{ $t('transactionList.transactionModal.form.placeholder.nameLabel') }}</label>
+          <input
+            id="tx-name"
+            v-model="form.name"
+            class="input"
+            :class="{ 'is-invalid': showError('name') }"
+            :placeholder="$t('transactionModalExtra.namePlaceholder')"
+            autocomplete="off"
+            maxlength="200"
+          />
+          <span v-if="showError('name')" class="field-error">{{ errors.name }}</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label">{{ $t('transactionList.transactionModal.form.placeholder.transactionDateLabel') }}</label>
+          <VueDatePicker
+            v-model="form.transactionDate"
+            :time-config="{ enableTimePicker: false }"
+            :formats="{ input: 'dd.MM.yyyy' }"
+            :clearable="false"
+            auto-apply
+            teleport
+            :locale="dateLocale"
+          />
+          <div class="date-shortcuts">
+            <button type="button" class="link-btn" @click="setDate(0)">{{ $t('common.today') }}</button>
+            <button type="button" class="link-btn" @click="setDate(1)">{{ $t('common.yesterday') }}</button>
+          </div>
+        </div>
+
+        <div class="field span-2">
+          <label class="field-label">
+            {{ $t('transactionList.transactionModal.form.placeholder.labelsLabel') }}
+            <span class="optional">{{ $t('common.optional') }}</span>
+          </label>
+          <label-select v-model="form.labels" />
+        </div>
+
+        <div class="field span-2">
+          <label class="field-label" for="tx-desc">
+            {{ $t('transactionList.transactionModal.form.placeholder.descriptionLabel') }}
+            <span class="optional">{{ $t('common.optional') }}</span>
+          </label>
+          <input
+            id="tx-desc"
+            v-model="form.description"
+            class="input"
+            :placeholder="$t('transactionModalExtra.descriptionPlaceholder')"
+            autocomplete="off"
+            maxlength="500"
+          />
+        </div>
+      </div>
+    </form>
+
+    <template #footer>
+      <button v-if="mode === 'edit'" type="button" class="btn btn-danger-ghost" :disabled="submitting" @click="remove">
+        <vue-feather type="trash-2" size="15"></vue-feather>
+        <span class="hide-mobile">{{ $t('common.delete') }}</span>
+      </button>
+      <span class="spacer"></span>
+      <button
+        v-if="mode === 'create'"
+        type="button"
+        class="btn btn-secondary hide-mobile"
+        :disabled="submitting"
+        @click="save({ addAnother: true })"
+      >
+        {{ $t('transactionModalExtra.saveAndNew') }}
+      </button>
+      <button type="submit" form="transactionForm" class="btn btn-primary" :disabled="submitting">
+        <span v-if="submitting" class="spinner sm"></span>
+        <vue-feather v-else type="check" size="16"></vue-feather>
+        {{ $t('common.save') }}
+      </button>
+    </template>
+  </app-modal>
 </template>
 
 <script>
-import transactionService from '@/services/transaction.service';
 import * as yup from 'yup';
+import moment from 'moment';
+import AppModal from '@/components/ui/AppModal.vue';
+import CurrencySelect from '@/components/ui/CurrencySelect.vue';
+import LabelSelect from '@/components/ui/LabelSelect.vue';
+import transactionService from '@/services/transaction.service';
 import { createYupValidator } from '@/services/validator.service';
 import { useDateLocale } from '@/composables/useDateLocale';
+import { defaultCurrencyId } from '@/utils/format';
+import { confirmDelete } from '@/utils/confirm';
+
 export default {
-    setup() {
-        const { dateLocale } = useDateLocale();
-        return { dateLocale };
+  name: 'TransactionModal',
+  components: { AppModal, CurrencySelect, LabelSelect },
+  props: {
+    open: { type: Boolean, default: false },
+    mode: { type: String, default: 'create' },
+    data: { type: Object, default: null },
+  },
+  emits: ['close', 'saved'],
+  setup() {
+    const { dateLocale } = useDateLocale();
+    return { dateLocale };
+  },
+  data() {
+    return {
+      form: this.emptyForm(),
+      errors: {},
+      submitted: false,
+      submitting: false,
+      validator: null,
+    };
+  },
+  watch: {
+    open(val) {
+      if (val) this.reset();
     },
-    props: {
-        modal: {
-            type: Object,
-            required: true
-        },
-        mode: {
-            type: String,
-            required: true
-        },
-        transactionData: {
-            type: Object,
-            required: false
-        }
+    // Currencies load asynchronously; fill the default once they arrive.
+    '$store.state.dashboard.currencies'(list) {
+      if (this.open && !this.form.currencyId) this.form.currencyId = defaultCurrencyId(list);
     },
-    data() {
-        return {
-            form: {
-                name: '',
-                description: '',
-                amount: 0,
-                currencyId: '',
-                transactionType: 0,
-                transactionDate: new Date(),
-                labels: []
-            },
-            validator: null,
-            errors: {},
-            isValid: false,
-            submitting: false,
-            currencies: this.$store.getters['dashboard/getCurrencies'],
-            transactionTypes: [
-                { value: 0, text: this.$t('common.income') },
-                { value: 1, text: this.$t('common.expense') }
-            ],
-            labels: this.$store.getters['dashboard/getLabels']
-        }
+    form: {
+      deep: true,
+      handler() {
+        if (this.submitted) this.validator.validateForm(this.form, this.errors);
+      },
     },
-    watch: {
-        modal: {
-            deep: true,
-            async handler(newVal) {
-                this.currencies = this.$store.getters['dashboard/getCurrencies'];
-                this.labels = this.$store.getters['dashboard/getLabels'];
-                if (newVal._isShown) {
-                    this.fillForm();
-                } else {
-                    this.form = {
-                        name: '',
-                        description: '',
-                        amount: 0,
-                        currencyId: this.getDefaultCurrencyId(),
-                        transactionType: 0,
-                        transactionDate: new Date(),
-                        labels: []
-                    }
-                }
-            }
-        },
-        form: {
-            deep: true,
-            async handler(newVal) {
-                this.isValid = await this.validator.validateForm(this.form, this.errors);
-            }
-        },
+  },
+  created() {
+    const req = this.$t('validation.message.required');
+    const schema = yup.object({
+      name: yup.string().trim().required(req),
+      description: yup.string().nullable(),
+      amount: yup.number().typeError(req).required(req).moreThan(0, this.$t('validation.message.positive')),
+      currencyId: yup.mixed().test('required', req, (v) => v !== null && v !== '' && v !== undefined),
+      transactionType: yup.number().required(req),
+      transactionDate: yup.date().typeError(req).required(req),
+      labels: yup.array(),
+    });
+    this.validator = createYupValidator(schema);
+  },
+  methods: {
+    emptyForm(keep = {}) {
+      return {
+        name: '',
+        description: '',
+        amount: null,
+        currencyId: keep.currencyId ?? defaultCurrencyId(this.$store.getters['dashboard/getCurrencies']),
+        transactionType: keep.transactionType ?? 1,
+        transactionDate: keep.transactionDate ?? new Date(),
+        labels: [],
+      };
     },
-    methods: {
-        closeModal() {
-            this.modal.hide();
-        },
-        async save() {
-            if (this.mode === 'create') {
-                await this.saveTransaction();
-            } else if (this.mode === 'edit') {
-                await this.editTransaction();
-            }
-        },
-        async saveTransaction() {
-            this.submitting = true;
-            var requestModel = {
-                Transactions: []
-            }
-
-            requestModel.Transactions.push(this.form)
-
-            try {
-                var response = await transactionService.createTransaction(requestModel)
-
-                if (response.status === 200) {
-                    const key = this.form.transactionType === 0
-                        ? 'transactionList.transactionModal.messages.incomeCreateSuccess'
-                        : 'transactionList.transactionModal.messages.expenseCreateSuccess';
-                    this.$swal({ title: this.$t(key), icon: "success" });
-                    this.closeModal();
-
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 300);
-                } else {
-                    this.$swal({
-                        title: this.$t('transactionList.transactionModal.messages.transactionCreateError'),
-                        icon: "error",
-                    });
-                }
-            } catch (e) {
-                this.$swal({
-                    title: this.$t('transactionList.transactionModal.messages.transactionCreateError'),
-                    icon: "error",
-                });
-            } finally {
-                this.submitting = false;
-            }
-        },
-        async editTransaction() {
-            this.submitting = true;
-            var requestModel = {
-                transactionId: this.transactionData.id,
-                name: this.form.name,
-                description: this.form.description,
-                amount: this.form.amount,
-                currencyId: this.form.currencyId,
-                transactionType: this.form.transactionType,
-                transactionDate: this.form.transactionDate,
-                labels: this.form.labels
-            }
-
-            try {
-                var response = await transactionService.updateTransaction(requestModel)
-
-                if (response.status === 200) {
-                    const key = this.form.transactionType === 0
-                        ? 'transactionList.transactionModal.messages.incomeEditSuccess'
-                        : 'transactionList.transactionModal.messages.expenseEditSuccess';
-                    this.$swal({ title: this.$t(key), icon: "success" });
-                    this.closeModal();
-
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500);
-                } else {
-                    this.$swal({
-                        title: this.$t('transactionList.transactionModal.messages.transactionEditError'),
-                        icon: "error",
-                    });
-                }
-            } catch (e) {
-                this.$swal({
-                    title: this.$t('transactionList.transactionModal.messages.transactionEditError'),
-                    icon: "error",
-                });
-            } finally {
-                this.submitting = false;
-            }
-        },
-        getDefaultCurrencyId() {
-            const list = this.$store.getters['dashboard/getCurrencies'];
-            const byRank = list.find(c => c.rank === 1);
-            if (byRank) return byRank.id;
-            const byCode = list.find(c => c.code === 'TRY');
-            return byCode ? byCode.id : '';
-        },
-        fillForm() {
-            if (this.mode === 'edit' && this.transactionData) {
-                this.form.name = this.transactionData.name;
-                this.form.description = this.transactionData.description;
-                this.form.amount = this.transactionData.amount;
-                this.form.currencyId = this.transactionData.currency.id;
-                this.form.transactionType = this.transactionData.transactionType;
-                this.form.transactionDate = new Date(this.transactionData.transactionDate);
-                this.form.labels = this.transactionData.labels.map(label => label.id);
-            } else {
-                this.form.currencyId = this.getDefaultCurrencyId();
-            }
-        }
-    },
-    created() {
-        var schema = yup.object({
-            name: yup.string().required(this.$t('validation.message.required')),
-            description: yup.string(),
-            amount: yup.number().required(this.$t('validation.message.required')).min(0, this.$t('validation.message.required')),
-            currencyId: yup.string().required(this.$t('validation.message.required')),
-            transactionType: yup.string().required(this.$t('validation.message.required')),
-            transactionDate: yup.date().required(this.$t('validation.message.required')),
-            labels: yup.array()
+    reset() {
+      this.submitted = false;
+      this.errors = {};
+      if (this.mode === 'edit' && this.data) {
+        const d = this.data;
+        this.form = {
+          name: d.name || '',
+          description: d.description || '',
+          amount: d.amount,
+          currencyId: d.currency?.id ?? null,
+          transactionType: d.transactionType,
+          transactionDate: new Date(d.transactionDate),
+          labels: (d.labels || []).map((l) => l.id),
+        };
+      } else {
+        this.form = this.emptyForm({
+          transactionType: this.data?.transactionType,
+          transactionDate: this.data?.transactionDate ? new Date(this.data.transactionDate) : undefined,
         });
+      }
+    },
+    showError(field) {
+      return this.submitted && !!this.errors[field];
+    },
+    setDate(daysAgo) {
+      this.form.transactionDate = moment().subtract(daysAgo, 'days').toDate();
+    },
+    async save({ addAnother = false } = {}) {
+      this.submitted = true;
+      const ok = await this.validator.validateForm(this.form, this.errors);
+      if (!ok) return;
 
-        this.validator = createYupValidator(schema);
-    }
-}
+      this.submitting = true;
+      const isIncome = this.form.transactionType === 0;
+      try {
+        let response;
+        if (this.mode === 'edit') {
+          response = await transactionService.updateTransaction({
+            transactionId: this.data.id,
+            name: this.form.name,
+            description: this.form.description,
+            amount: this.form.amount,
+            currencyId: this.form.currencyId,
+            transactionType: this.form.transactionType,
+            transactionDate: this.form.transactionDate,
+            labels: this.form.labels,
+          });
+        } else {
+          response = await transactionService.createTransaction({ Transactions: [{ ...this.form }] });
+        }
+
+        if (response.status !== 200) throw new Error('save failed');
+
+        const key = this.mode === 'edit'
+          ? (isIncome ? 'incomeEditSuccess' : 'expenseEditSuccess')
+          : (isIncome ? 'incomeCreateSuccess' : 'expenseCreateSuccess');
+        this.$toast.success(this.$t(`transactionList.transactionModal.messages.${key}`));
+
+        if (addAnother) {
+          this.$emit('saved', { keepOpen: true });
+          this.form = this.emptyForm({
+            currencyId: this.form.currencyId,
+            transactionType: this.form.transactionType,
+            transactionDate: this.form.transactionDate,
+          });
+          this.submitted = false;
+          this.errors = {};
+          this.$nextTick(() => this.$refs.amount?.focus());
+        } else {
+          this.$emit('saved');
+        }
+      } catch {
+        const key = this.mode === 'edit' ? 'transactionEditError' : 'transactionCreateError';
+        this.$toast.error(this.$t(`transactionList.transactionModal.messages.${key}`));
+      } finally {
+        this.submitting = false;
+      }
+    },
+    async remove() {
+      if (!this.data) return;
+      const ok = await confirmDelete(this.$t('transactionList.messages.areYouSureDeleteTransaction'));
+      if (!ok) return;
+      this.submitting = true;
+      try {
+        const response = await transactionService.deleteTransaction(this.data.id);
+        if (response.status !== 200) throw new Error('delete failed');
+        const key = this.data.transactionType === 0 ? 'incomeDeleteSuccess' : 'expenseDeleteSuccess';
+        this.$toast.success(this.$t(`transactionList.messages.${key}`));
+        this.$emit('saved');
+      } catch {
+        this.$toast.error(this.$t('transactionList.messages.transactionDeleteError'));
+      } finally {
+        this.submitting = false;
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-.modal-content {
-    border-radius: 16px;
+.tx-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.modal-header {
-    border-radius: 16px 16px 0 0;
+.date-shortcuts {
+  display: flex;
+  gap: 12px;
 }
 
-.tx-icon-wrap {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 16px;
-    flex-shrink: 0;
-}
-
-.icon-income  { background: linear-gradient(135deg, #10b981, #059669); }
-.icon-expense { background: linear-gradient(135deg, #ef4444, #dc2626); }
-.icon-edit    { background: linear-gradient(135deg, #f59e0b, #d97706); }
-
-/* Type toggle */
-.type-toggle {
-    display: flex;
-    gap: 0;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.type-btn {
-    flex: 1;
-    padding: 10px 0;
-    border: none;
-    background: #f9fafb;
-    color: #6b7280;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.type-btn--income.active {
-    background: #ecfdf5;
-    color: #059669;
-    font-weight: 700;
-    box-shadow: inset 0 -2px 0 #10b981;
-}
-
-.type-btn--expense.active {
-    background: #fef2f2;
-    color: #dc2626;
-    font-weight: 700;
-    box-shadow: inset 0 -2px 0 #ef4444;
-}
-
-.type-btn:hover:not(.active) {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-/* Fields */
-.field-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 6px;
-}
-
-.tx-input {
-    border-radius: 8px;
-    border: 1.5px solid #e5e7eb;
-    font-size: 14px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.tx-input:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
-}
-
-.tx-input.is-invalid {
-    border-color: #ef4444;
-}
-
-.tx-input-addon {
-    background: #f9fafb;
-    border: 1.5px solid #e5e7eb;
-    border-right: none;
-    border-radius: 8px 0 0 8px;
-    color: #9ca3af;
-    font-size: 14px;
-}
-
-.input-group .tx-input {
-    border-radius: 0 8px 8px 0;
-}
-
-.label-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-.save-btn {
-    font-weight: 600;
+.date-shortcuts .link-btn {
+  font-size: 12px;
 }
 </style>
